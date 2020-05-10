@@ -1,0 +1,13 @@
+[Unit]
+Description=Mopo Pinball
+Documentation=https://github.com/mopopinball
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/home/pi/.nvm/versions/node/v10.18.0/bin/node /home/pi/mopo/index.js
+Environment=NODE_ENV=production
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

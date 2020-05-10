@@ -1,0 +1,40 @@
+{
+  "name": "mopo-pinball",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": "10.18.0"
+  },
+  "main": "src/app.js",
+  "scripts": {
+    "lint": "eslint --ext .js .",
+    "lint-fix": "eslint --fix --ext .js .",
+    "test-games": "mocha --exit --recursive './src/games/*/*/test/*.test.js'",
+    "test-eng": "mocha --exit --recursive './test/*.test.js'",
+    "test": "NODE_ENV=test npm run test-eng && NODE_ENV=test npm run test-games",
+    "pretest": "npm run lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bitwise": "2.0.4",
+    "express": "4.17.1",
+    "express-basic-auth": "^1.2.0",
+    "i2c-bus": "5.1.0",
+    "javascript-state-machine": "3.1.0",
+    "lodash": "^4.17.15",
+    "moment": "2.24.0",
+    "mqtt": "3.0.0",
+    "rpi-gpio": "2.1.5",
+    "semver": "^7.1.1",
+    "uuid": "3.3.3",
+    "winston": "3.2.1"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "eslint": "6.8.0",
+    "eslint-config-google": "0.14.0",
+    "mocha": "7.0.1",
+    "sinon": "8.0.1"
+  }
+}

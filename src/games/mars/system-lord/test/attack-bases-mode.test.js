@@ -1,0 +1,2 @@
+describe('Attack bases mode', () => {
+});
