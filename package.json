@@ -9,13 +9,11 @@
   "scripts": {
     "lint": "eslint --ext .js .",
     "lint-fix": "eslint --fix --ext .js .",
-    "test-games": "mocha --exit --recursive './src/games/*/*/test/*.test.js'",
-    "test-eng": "mocha --exit --recursive './test/*.test.js'",
-    "test": "NODE_ENV=test npm run test-eng && NODE_ENV=test npm run test-games",
+    "test": "NODE_ENV=test mocha --exit --recursive",
     "pretest": "npm run lint"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bitwise": "2.0.4",
     "express": "4.17.1",
