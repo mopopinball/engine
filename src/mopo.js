@@ -7,6 +7,19 @@ const Security = require('../modules/security');
 const Server = require('../apps/server');
 const Maintenance = require('../modules/maintenance');
 
+function onUncaughtError(err) {
+    const detail = err.stack ? err.stack : JSON.stringify(err);
+    logger.error(`${err.message} ${detail}`);
+}
+
+process.on('uncaughtException', (err) => onUncaughtError(err));
+process.on('unhandledRejection', (reason) => onUncaughtError(reason));
+
+logger.info('STARTING MOPO PINBALL');
+
+const mopo = new Mopo();
+mopo.start();
+
 /**
  * Main class.
  */

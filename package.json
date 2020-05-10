@@ -5,7 +5,7 @@
   "engines": {
     "node": "10.18.0"
   },
-  "main": "src/app.js",
+  "main": "src/mopo.js",
   "scripts": {
     "lint": "eslint --ext .js .",
     "lint-fix": "eslint --fix --ext .js .",
