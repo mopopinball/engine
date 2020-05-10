@@ -1,5 +1,5 @@
 const bitwise = require('bitwise');
-const Utils = require('../../modules/utils');
+const Utils = require('./utils');
 
 /**
  * Special glyphs.

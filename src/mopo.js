@@ -1,11 +1,11 @@
-const Setup = require('../modules/setup');
-const logger = require('../util/logger');
-const Config = require('../modules/config');
-const {MessageBroker, EVENTS} = require('../modules/messages');
 const path = require('path');
-const Security = require('../modules/security');
-const Server = require('../apps/server');
-const Maintenance = require('../modules/maintenance');
+const Setup = require('./system/setup');
+const logger = require('./system/logger');
+const Config = require('./system/config');
+const {MessageBroker, EVENTS} = require('./system/messages');
+const Security = require('./system/security');
+const Server = require('./system/server');
+const Maintenance = require('./system/maintenance');
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);

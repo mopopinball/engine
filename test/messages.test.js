@@ -1,7 +1,7 @@
 // const bufferOperations = require('bitwise/buffer');
 // const sinon = require('sinon');
 const expect = require('chai').expect;
-const {MessageBroker} = require('../src/modules/messages');
+const {MessageBroker} = require('../src/system/messages');
 
 describe('messages', () => {
     beforeEach(() => {

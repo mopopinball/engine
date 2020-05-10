@@ -1,6 +1,6 @@
-const {MessageBroker} = require('../modules/messages');
+const {MessageBroker} = require('../system/messages');
 const EventEmitter = require('events');
-// const logger = require('../util/logger');
+// const logger = require('../system/logger');
 
 /**
  * An abstract switch.

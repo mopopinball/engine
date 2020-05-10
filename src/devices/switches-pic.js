@@ -3,8 +3,8 @@ const gpiop = require('rpi-gpio').promise;
 const gpio = require('rpi-gpio');
 const pins = require('../../pins.json');
 const Buffer = require('buffer').Buffer;
-const {MessageBroker, EVENTS} = require('../modules/messages');
-const logger = require('../util/logger');
+const {MessageBroker, EVENTS} = require('../system/messages');
+const logger = require('../system/logger');
 const GpioPin = require('./gpio-pin');
 const bitwise = require('bitwise');
 

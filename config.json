@@ -1,5 +1,5 @@
 {
-    "gamePath": "/games/mars/system-lord/mars-system-lord.js",
+    "gamePath": "../SYSTEM_NAME/GAME_NAME/GAME_FILE.js",
     "pics": {
         "IC1": {
             "version": "0.1.0"

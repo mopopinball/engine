@@ -1,4 +1,4 @@
-const Wlan = require('../src/modules/wlan');
+const Wlan = require('../src/system/wlan');
 const sinon = require('sinon');
 const expect = require('chai').expect;
 

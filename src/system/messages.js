@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const mqtt = require('mqtt');
 const client = mqtt.connect('mqtt://127.0.0.1:1883');
-const logger = require('../util/logger');
+const logger = require('./logger');
 
 /**
  * Message broker.

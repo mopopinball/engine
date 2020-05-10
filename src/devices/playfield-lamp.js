@@ -1,5 +1,5 @@
 const Light = require('./light');
-const {MessageBroker} = require('../modules/messages');
+const {MessageBroker} = require('../system/messages');
 
 const LAMP_ROLES = {
     LAMP: 'lamp',

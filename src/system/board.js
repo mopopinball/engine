@@ -3,7 +3,7 @@ const StatusLed = require('../devices/status-led');
 const BoardSwitch = require('../devices/board-switch');
 const {MessageBroker, EVENTS} = require('./messages');
 const OutputDeviceCollection = require('../devices/output-device-collection');
-const logger = require('../util/logger');
+const logger = require('../system/logger');
 const spawn = require('child_process').spawnSync;
 
 /**

@@ -1,19 +1,19 @@
-const logger = require('../util/logger');
-const {MessageBroker, EVENTS} = require('../modules/messages');
-const {PlayfieldLamp, LAMP_ROLES} = require('../devices/playfield-lamp');
-const {Coil, DRIVER_TYPES} = require('../devices/coil');
-const Relay = require('../devices/relay');
-const Sound = require('../devices/sound');
-const PlayfieldSwitch = require('../devices/playfield-switch');
-const DriverPicSingleton = require('../devices/driver-pic');
-const DisplaysPicSingleton = require('../devices/displays-pic');
+const logger = require('./system/logger');
+const {MessageBroker, EVENTS} = require('./system/messages');
+const {PlayfieldLamp, LAMP_ROLES} = require('./devices/playfield-lamp');
+const {Coil, DRIVER_TYPES} = require('./devices/coil');
+const Relay = require('./devices/relay');
+const Sound = require('./devices/sound');
+const PlayfieldSwitch = require('./devices/playfield-switch');
+const DriverPicSingleton = require('./devices/driver-pic');
+const DisplaysPicSingleton = require('./devices/displays-pic');
 // const FrameBasedOperation = require('./engine/frame-based-operation');
 const StateMachine = require('javascript-state-machine');
-const FpsTracker = require('./engine/fps-tracker');
-const Test = require('./engine/test');
-const Attract = require('./engine/attract');
-const AttractSystem = require('./engine/attract-system-contrib');
-const STATE_CONSTANTS = require('./engine/common-game-state-constants');
+const FpsTracker = require('./system/fps-tracker');
+const Test = require('./system/test');
+const Attract = require('./system/attract');
+const AttractSystem = require('./system/attract-system-contrib');
+const STATE_CONSTANTS = require('./system/common-game-state-constants');
 
 const MS_PER_FRAME = 33; // 30 fps
 

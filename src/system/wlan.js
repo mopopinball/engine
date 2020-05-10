@@ -1,6 +1,6 @@
 const spawn = require('child_process').spawnSync;
 const uuidv4 = require('uuid/v4');
-const logger = require('../util/logger');
+const logger = require('./logger');
 
 /**
  * WiFi helpers.

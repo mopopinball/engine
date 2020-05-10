@@ -1,5 +1,5 @@
 const spawnSync = require('child_process').spawnSync;
-const logger = require('../util/logger');
+const logger = require('../system/logger');
 
 /**
  * An abstract PIC.

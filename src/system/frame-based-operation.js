@@ -1,4 +1,4 @@
-// const logger = require('../../util/logger');
+// const logger = require('./logger');
 const MS_PER_FRAME = 33;
 
 /**

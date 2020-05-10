@@ -1,5 +1,5 @@
-const {MessageBroker, EVENTS} = require('../../modules/messages');
-const logger = require('../../util/logger');
+const {MessageBroker, EVENTS} = require('./messages');
+const logger = require('./logger');
 
 /**
  * Manages the ball including releasing new balls, tracking active balls, ball save,

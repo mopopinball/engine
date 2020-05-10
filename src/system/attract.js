@@ -1,4 +1,4 @@
-const FrameBasedOperation = require('../engine/frame-based-operation');
+const FrameBasedOperation = require('./frame-based-operation');
 
 /**
  * Manages attract mode.

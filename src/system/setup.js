@@ -1,7 +1,7 @@
 const Wlan = require('./wlan');
 const {MessageBroker, EVENTS} = require('./messages');
-const logger = require('../util/logger');
-const Board = require('../modules/board');
+const logger = require('./logger');
+const Board = require('./board');
 const SwitchesPic = require('../devices/switches-pic');
 // const DriverPic = require('../devices/driver-pic');
 const semver = require('semver');

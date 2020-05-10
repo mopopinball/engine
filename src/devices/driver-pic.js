@@ -3,7 +3,7 @@ const bufferOperations = require('bitwise/buffer');
 const bitwise = require('bitwise');
 const Pic = require('./pic');
 const i2c = require('i2c-bus');
-const logger = require('../util/logger');
+const logger = require('../system/logger');
 const {DRIVER_TYPES} = require('./coil');
 
 const PIC_ADDRESS = 0x41;

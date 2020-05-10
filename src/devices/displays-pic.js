@@ -1,6 +1,6 @@
 const Pic = require('./pic');
 const i2c = require('i2c-bus');
-const logger = require('../util/logger');
+const logger = require('../system/logger');
 const font = require('../games/engine/sys-80-80a-font');
 
 const PIC_ADDRESS = 0x13;

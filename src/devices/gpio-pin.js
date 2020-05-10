@@ -1,6 +1,6 @@
 const gpiop = require('rpi-gpio').promise;
-const logger = require('../util/logger');
-const {MessageBroker, EVENTS} = require('../modules/messages');
+const logger = require('../system/logger');
+const {MessageBroker, EVENTS} = require('../system/messages');
 
 /**
  * A GPIO pin.

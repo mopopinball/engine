@@ -1,5 +1,5 @@
 const {OutputDevice, OUTPUT_DEVICE_TYPES} = require('./output-device');
-const logger = require('../util/logger');
+const logger = require('../system/logger');
 const ACTUATION_TYPE = {
     FIRE: 'FIRE',
     ON: 'ON',
