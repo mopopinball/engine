@@ -32,3 +32,6 @@ sudo ./install.sh
 cp pgmifcfg.xml ~
 rm -rf picpgm_install
 cd ~
+
+npm install --production
+node select-game.js
