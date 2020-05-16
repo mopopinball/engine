@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "bitwise": "2.0.4",
+    "eval": "0.1.4",
     "express": "4.17.1",
     "express-basic-auth": "^1.2.0",
     "i2c-bus": "5.1.0",
