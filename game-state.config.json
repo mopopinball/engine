@@ -1,0 +1,35 @@
+{
+    "name": "root",
+    "devices": {
+        "SHOOT_AGAIN": {
+            "state": false
+        },
+        "TWO_TIMES_MULTIPLIERS": {
+            "state": false
+        }
+    },
+    "states": {
+        "attract": {
+            "init": true,
+            "devices": {
+                "TWO_TIMES_MULTIPLIERS": {
+                    "blink": 1000
+                }
+            },
+            "actions": [{
+                "id": "REPLAY",
+                "target": {
+                    "type": "state",
+                    "value": "play"
+                }
+            }]
+        },
+        "play": {
+            "devices": {
+                "SHOOT_AGAIN": {
+                    "blink": 500
+                }
+            }
+        }
+    }
+}

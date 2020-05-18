@@ -1,4 +1,6 @@
 const logger = require('./system/logger');
+const equal = require('deep-equal');
+const GameState = require('./game-state');
 const {MessageBroker, EVENTS} = require('./system/messages');
 const {PlayfieldLamp, LAMP_ROLES} = require('./devices/playfield-lamp');
 const {Coil, DRIVER_TYPES} = require('./devices/coil');
@@ -7,77 +9,60 @@ const Sound = require('./devices/sound');
 const PlayfieldSwitch = require('./devices/playfield-switch');
 const DriverPicSingleton = require('./devices/driver-pic');
 const DisplaysPicSingleton = require('./devices/displays-pic');
-// const FrameBasedOperation = require('./engine/frame-based-operation');
-const StateMachine = require('javascript-state-machine');
+const Maintenance = require('./system/maintenance');
+const Setup = require('./system/setup');
+const Server = require('./system/server');
 const FpsTracker = require('./system/fps-tracker');
-const Test = require('./system/test');
-const Attract = require('./system/attract');
-const AttractSystem = require('./system/attract-system-contrib');
-const STATE_CONSTANTS = require('./system/common-game-state-constants');
+
+function onUncaughtError(err) {
+    const detail = err.stack ? err.stack : JSON.stringify(err);
+    logger.error(`${err.message} ${detail}`);
+}
+process.on('uncaughtException', (err) => onUncaughtError(err));
+process.on('unhandledRejection', (reason) => onUncaughtError(reason));
 
 const MS_PER_FRAME = 33; // 30 fps
 
 /**
- * Abstract base game.
- * @abstract
+ * The Mopo Pinball engine.
  */
-class Game extends StateMachine {
-    constructor(hardwareConfig, displays, gameSpecificStateMachineConfig = {}) {
-        // Construct the full state machine for this game.
-        const commonStates = {
-            transitions: [
-                {
-                    name: STATE_CONSTANTS.TRANSITIONS.START_ATTRACT,
-                    from: '*',
-                    to: STATE_CONSTANTS.STATES.ATTRACT
-                },
-                {
-                    name: STATE_CONSTANTS.TRANSITIONS.START_PLAY,
-                    from: STATE_CONSTANTS.STATES.ATTRACT,
-                    to: STATE_CONSTANTS.STATES.PLAY
-                },
-                {
-                    name: STATE_CONSTANTS.TRANSITIONS.END_BALL,
-                    from: '*',
-                    to: '*'
-                },
-                {
-                    name: STATE_CONSTANTS.TRANSITIONS.END_GAME,
-                    from: '*',
-                    to: STATE_CONSTANTS.STATES.ATTRACT
-                },
-                {
-                    name: STATE_CONSTANTS.TRANSITIONS.ENTER_TEST,
-                    from: STATE_CONSTANTS.STATES.ATTRACT,
-                    to: STATE_CONSTANTS.STATES.TEST
-                }
-            ]
-        };
-        const completeStateMachineConfig = {
-            transitions: commonStates.transitions.concat(gameSpecificStateMachineConfig.transitions)
-        };
-        super(completeStateMachineConfig);
-        this.stateHandlers = {};
-        this.observe('onAfterTransition', (event) => {
-            MessageBroker.emit(EVENTS.ON_GAME_STATE_TRANSITION, event);
-            MessageBroker.emit(EVENTS.NEW_GAME_STATE, event.to);
-        });
+class Game {
+    constructor(hardwareConfig, gameStateConfig) {
+        if (!hardwareConfig || !gameStateConfig) {
+            throw new Error('Required config not provided');
+        }
+        this.hardwareConfig = hardwareConfig;
+        this.gameStateConfig = gameStateConfig;
+        this.maintenance = new Maintenance();
+        if (!hardwareConfig.system) {
+            throw new Error('No system defined');
+        }
+        this.security = new Security(this.game.system);
+
+        MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
+        this.setup = new Setup();
+        this.setup.setup();
+    }
+
+    onSetupComplete() {
+        this.server = new Server();
+        this.server.start();
 
         // Load our hardware config.
         this._loadConfig(hardwareConfig);
+        if (this.hardwareConfig.system === '80' || this.hardwareConfig.system === '80a') {
+            this.displays = require('./system/display-80-80a');
+        }
+        else {
+            throw new Error('Unexpected system type.');
+        }
 
         // init our instance variables.
-        this.isGameInProgress = false;
-        this.displays = displays;
-        this.queuedStateTransitions = [];
-        this.entities = [];
         this.name = hardwareConfig.name;
         this.fpsTracker = new FpsTracker();
-        this.attractContribSystem = new AttractSystem(this.displays);
-        this.attract = new Attract();
-        this.entities.push(this.attract);
-        this.test = new Test(this.displays, this.switches, this.lamps, this.coils, this.sounds);
-        this.entities.push(this.test);
+
+        this.callStates = {};
+        this.gameState = new GameState(this.name, this.gameStateConfig);
 
         // Setup all message bindings.
         MessageBroker.publish('mopo/devices/lamps/all/state', JSON.stringify(this.lamps), {retain: true});
@@ -85,8 +70,6 @@ class Game extends StateMachine {
         MessageBroker.publish('mopo/devices/sounds/all/state', JSON.stringify(this.sounds), {retain: true});
         MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), {retain: true});
         MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
-        MessageBroker.on(EVENTS.GAME_STATE_TRANSITION, (transitionName) => this._gotoState(transitionName));
-        MessageBroker.on(EVENTS.ALL_BALLS_PRESENT, () => this.onAllBallsReady());
     }
 
     onSwitchMatrixEvent(payload) {
@@ -97,8 +80,7 @@ class Game extends StateMachine {
         else {
             logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
             try {
-                sw.onChange(payload.activated);
-                this.onSwitchChange(sw, payload.activated);
+                this.gameState.onAction(sw.id);
             }
             catch (e) {
                 logger.error(`${e.message} ${e.stack}`);
@@ -106,40 +88,28 @@ class Game extends StateMachine {
         }
     }
 
-    onInvalidTransition(transition, from, to) {
-        throw new Error(`Transition ${transition} not allowed from ${from} to ${to}`);
-    }
-
     update() {
-        if (this.queuedStateTransitions.length > 0) {
-            const newState = this.queuedStateTransitions.shift();
-            this._gotoState(newState);
-        }
-        this.entities.forEach((e) => e.update());
+        const allDeviceIds = this.gameState.getAllDeviceStates();
+        allDeviceIds.forEach((id) => {
+            const state = this.gameState.getDeviceState(id);
+            const device = this.outputDevices[id];
+            // only call device if the calling state has changed
+            if (this._hasCallStateChanged(id), state) {
+                this._callDevice(device, state);
+            }
+        });
     }
 
-    _gotoState(transitionName) {
-        logger.info(`Requested to transition: ${transitionName}`);
-        if (this.can(transitionName)) {
-            this[transitionName]();
-        }
-        else {
-            logger.debug('cannot apply transition ' + transitionName);
-        }
+    _hasCallStateChanged(deviceId, state) {
+        const currentState = this.callStates[deviceId];
+        return !currentState || !equal(currentState, state);
     }
 
-    registerStateHandler(handlerObj) {
-        this.stateHandlers[handlerObj.stateName] = handlerObj;
-    }
-
-    onTransition(evt) {
-        logger.info(`Tranisioning from state "${evt.from}" to "${evt.to}".`);
-        if (this.stateHandlers[evt.from]) {
-            this.stateHandlers[evt.from].leave(evt);
+    _callDevice(device, state) {
+        for (const entry of Object.entries(state)) {
+            device[entry[0]](entry[1]);
         }
-        if (this.stateHandlers[evt.to]) {
-            this.stateHandlers[evt.to].enter(evt);
-        }
+        this.callStates[deviceId] = state;
     }
 
     setup() {
@@ -208,6 +178,9 @@ class Game extends StateMachine {
                 this.sounds[soundEntry[0]] = new Sound(soundEntry[1].number, soundEntry[1].description)
             );
 
+        // keep track of all output devices;
+        this.outputDevices = Object.assign({}, this.lamps, this.coils, this.sounds);
+
         const swCount = Object.keys(this.switches).length;
         const lampCount = Object.keys(this.lamps).length;
         const coilCount = Object.keys(this.coils).length;
@@ -252,38 +225,10 @@ class Game extends StateMachine {
         return new Date().valueOf();
     }
 
-    // global switch handling. Handles high level actions like entering test mode, etc.
-    onSwitchChange(sw, activated) {
-        // if any entity has a onSwitchChange method, call it.
-        this.entities.forEach((entity) => {
-            if (entity.onSwitchChange) {
-                entity.onSwitchChange(sw, activated);
-            }
-        });
-
-        if (!activated) {
-            return;
-        }
-
-        if (this.isGameInProgress && sw === this.switches.PLAY_TEST) {
-            this.endGame();
-        }
-        else if (this.state === 'attract' && sw === this.switches.PLAY_TEST) {
-            this.enterTest();
-        }
-        else if (this.state === 'test' && sw === this.switches.PLAY_TEST) {
-            this.startAttract();
-        }
-    }
-
     /**
      * Updates all output devices defined for this game. This includes lights, coils and sounds.
      */
     async _updateDevices() {
-        const payload = Object.values(this.lamps)
-            .concat(Object.values(this.coils))
-            .concat(Object.values(this.sounds));
-
         // check if there is at least one dirty device.
         const dirtyDevices = payload.filter((device) => device.dirty());
         if (dirtyDevices.length === 0) {
@@ -297,7 +242,7 @@ class Game extends StateMachine {
         const dirtyOffDevices = dirtyDevices.filter((device) => !device._ackOff);
 
         // send the update(s) to the pic.
-        const updateSuccess = await DriverPicSingleton.update(payload);
+        const updateSuccess = await DriverPicSingleton.update(Object.values(this.outputDevices));
         if (updateSuccess) {
             dirtyOnDevices.forEach((device) => device.ackDirty(true));
             dirtyOffDevices.forEach((device) => device.ackDirty(false));
@@ -316,60 +261,6 @@ class Game extends StateMachine {
             this.lastPayload = this.displays.getHash();
             await DisplaysPicSingleton.update(this.displays);
         }
-    }
-
-    onAttract(attractContributors = []) {
-        // we always include the system/common attract contributors
-        this.coils.TILT_RELAY.off();
-        this.attract.onAttract([this.attractContribSystem].concat(attractContributors));
-        this.displays.setBall('');
-        this.isGameInProgress = false;
-        this.ballManager.reset();
-        this.coils.GAME_OVER_RELAY.off();
-        this.switches.REPLAY.on('change', (activated) => {
-            if (activated && this.state === 'attract') {
-                this.startPlay();
-            }
-        });
-    }
-
-    onLeaveAttract() {
-        logger.info('Leaving attract mode.');
-        this.attract.onLeaveAttract();
-    }
-
-    onPlay() {
-        this.scoreComponent.reset();
-        this.ballManager.play();
-        this.isGameInProgress = true;
-        this.displays.onPlay();
-    }
-
-    releaseBallWhenReady() {
-        MessageBroker.emit(EVENTS.RELEASE_BALL, {whenReady: true});
-    }
-
-    onAllBallsReady() {
-        this.coils.GAME_OVER_RELAY.on();
-    }
-
-    onEndBall() {
-    }
-
-    onEndGame() {
-        this.ballManager.reset();
-    }
-
-    onEnterTest() {
-        this.test.start();
-    }
-
-    onLeaveTest() {
-        this.test.end();
-    }
-
-    onSlam() {
-        // todo
     }
 }
 

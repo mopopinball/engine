@@ -28,7 +28,7 @@ class GameState extends StateMachine {
 
         this.devices = gameplayConfig.devices;
 
-        this.actions = gameplayConfig.actions;
+        this.actions = gameplayConfig.actions || {};
         this.wrapActions(this.actions);
         Object.values(this.states).forEach((s) => this.wrapActions(s.actions));
 
@@ -65,22 +65,41 @@ class GameState extends StateMachine {
         }
     }
 
-    wrapActions(actionCollection = []) {
-        for (const action of actionCollection) {
-            if (typeof action.target === 'function') {
-                action.wrapped = action.target.bind(this);
-            }
-            else if (typeof action.target === 'object') {
-                if (action.target.type === 'state') {
-                    action.wrapped = () => {
-                        this['to' + action.target.target]();
-                    };
+    wrapActions(actions = {}) {
+        for (const action of Object.values(actions)) {
+            action.wrapped = [];
+            for (const target of action.targets) {
+                if (typeof target === 'function') {
+                    action.wrapped.push(target.bind(this));
                 }
-                else if (action.target.type === 'data') {
-                    action.wrapped = () => this.setData(action.target.id, action.target.value);
+                else if (typeof target === 'object') {
+                    if (target.type === 'state') {
+                        action.wrapped.push(() => {
+                            this['to' + target.target]();
+                        });
+                    }
+                    else if (target.type === 'data') {
+                        action.wrapped.push(() => this.setData(target.id, target.value));
+                    }
                 }
             }
         }
+
+        // for (const action of actionCollection) {
+        //     if (typeof action.target === 'function') {
+        //         action.wrapped = action.target.bind(this);
+        //     }
+        //     else if (typeof action.target === 'object') {
+        //         if (action.target.type === 'state') {
+        //             action.wrapped = () => {
+        //                 this['to' + action.target.target]();
+        //             };
+        //         }
+        //         else if (action.target.type === 'data') {
+        //             action.wrapped = () => this.setData(action.target.id, action.target.value);
+        //         }
+        //     }
+        // }
     }
 
     getDeviceState(id) {
@@ -110,13 +129,10 @@ class GameState extends StateMachine {
         return this.states[this.state];
     }
 
-    onSwitchMatrixEvent(payload) {
-    }
-
     onAction(id) {
         const action = GameState.__getAction(this, id);
         if (action) {
-            return action.wrapped();
+            return action.wrapped.map((w) => w());
         }
     }
 
@@ -131,13 +147,13 @@ class GameState extends StateMachine {
 
         // get active state device
         const activeState = obj.getActiveStateObj();
-        const actions = (activeState ? activeState.actions : obj.actions) || [];
-        const stateAction = actions.find((a) => a.id === id);
+        const actions = (activeState ? activeState.actions : obj.actions) || {};
+        const stateAction = actions[id];
         if (stateAction) {
             return stateAction;
         }
         else {
-            return (obj.actions || []).find((act) => act.id === id);
+            return (obj.actions || {})[id];
         }
     }
 

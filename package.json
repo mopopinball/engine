@@ -5,7 +5,7 @@
   "engines": {
     "node": "10.18.0"
   },
-  "main": "src/mopo.js",
+  "main": "src/game.js",
   "scripts": {
     "lint": "eslint --ext .js .",
     "lint-fix": "eslint --fix --ext .js .",
@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "bitwise": "2.0.4",
+    "deep-equal": "2.0.3",
     "eval": "0.1.4",
     "express": "4.17.1",
     "express-basic-auth": "^1.2.0",

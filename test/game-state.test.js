@@ -174,18 +174,49 @@ describe('GameState', () => {
                 data: {
                     score: 0
                 },
-                actions: [{
-                    id: 'sw1',
-                    target: () => 1
-                }]
+                actions: {
+                    sw1: {
+                        targets: [
+                            () => 1
+                        ]
+                    }
+                }
             });
 
             // exercise
-            const result = gameState.onAction('sw1');
+            gameState.onAction('sw1');
 
             // check
-            expect(gameState.actions.length).to.be.equal(1);
-            expect(result).to.be.equal(1);
+            expect(Object.keys(gameState.actions).length).to.be.equal(1);
+        });
+
+        it('can define actions with multiple targets', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    d0: 0,
+                    d1: 0
+                },
+                actions: {
+                    sw1: {
+                        targets: [
+                            function() {
+                                this.data.d0 = 10;
+                            },
+                            function() {
+                                this.data.d1 = 11;
+                            }
+                        ]
+                    }
+                }
+            });
+
+            // exercise
+            gameState.onAction('sw1');
+
+            // check
+            expect(gameState.data.d0).to.be.equal(10);
+            expect(gameState.data.d1).to.be.equal(11);
         });
 
         it('can define state actions', () => {
@@ -194,17 +225,23 @@ describe('GameState', () => {
                 data: {
                     score: 0
                 },
-                actions: [{
-                    id: 'sw1',
-                    target: () => 1
-                }],
+                actions: {
+                    sw1: {
+                        targets: [
+                            () => 1
+                        ]
+                    }
+                },
                 states: {
                     a: {
                         init: true,
-                        actions: [{
-                            id: 'sw1',
-                            target: () => 2
-                        }]
+                        actions: {
+                            sw1: {
+                                targets: [
+                                    () => 2
+                                ]
+                            }
+                        }
                     }
                 }
             });
@@ -213,7 +250,7 @@ describe('GameState', () => {
             const result = gameState.onAction('sw1');
 
             // check
-            expect(result).to.be.equal(2);
+            expect(result[0]).to.be.equal(2);
         });
 
         it('can define children actions', () => {
@@ -222,25 +259,34 @@ describe('GameState', () => {
                 data: {
                     score: 0
                 },
-                actions: [{
-                    id: 'sw1',
-                    target: () => 1
-                }],
+                actions: {
+                    sw1: {
+                        targets: [
+                            () => 1
+                        ]
+                    }
+                },
                 states: {
                     a: {
                         init: true,
-                        actions: [{
-                            id: 'sw1',
-                            target: () => 2
-                        }]
+                        actions: {
+                            sw1: {
+                                targets: [
+                                    () => 2
+                                ]
+                            }
+                        }
                     }
                 },
                 children: {
                     c0: {
-                        actions: [{
-                            id: 'sw1',
-                            target: () => 3
-                        }],
+                        actions: {
+                            sw1: {
+                                targets: [
+                                    () => 3
+                                ]
+                            }
+                        },
                     }
                 }
             });
@@ -249,19 +295,20 @@ describe('GameState', () => {
             const result = gameState.onAction('sw1');
 
             // check
-            expect(result).to.be.equal(3);
+            expect(result[0]).to.be.equal(3);
         });
 
         it('machine action changes state', () => {
             // setup
             const gameState = new GameState('root', {
-                actions: [{
-                    id: 'sw1',
-                    target: {
-                        type: 'state',
-                        target: 'b'
+                actions: {
+                    sw1: {
+                        targets: [{
+                            type: 'state',
+                            target: 'b'
+                        }]
                     }
-                }],
+                },
                 states: {
                     a: {
                         init: true,
@@ -290,18 +337,20 @@ describe('GameState', () => {
                     score: 0,
                     d2: 0
                 },
-                actions: [{
-                    id: 'sw1',
-                    target: function() {
-                        this.data.score += 10;
+                actions: {
+                    sw1: {
+                        targets: [function() {
+                            this.data.score += 10;
+                        }]
+                    },
+                    sw2: {
+                        targets: [
+                            function() {
+                                _eval('this.data.score = 1; this.data.d2 = 100;', this);
+                            }
+                        ]
                     }
-                },
-                {
-                    id: 'sw2',
-                    target: function() {
-                        _eval('this.data.score = 1; this.data.d2 = 100;', this);
-                    }
-                }]
+                }
             });
 
             // exercise
@@ -327,14 +376,15 @@ describe('GameState', () => {
                 states: {
                     a: {
                         init: true,
-                        actions: [{
-                            id: 'sw1',
-                            target: {
-                                type: 'data',
-                                id: 'score',
-                                value: 100
+                        actions: {
+                            sw1: {
+                                targets: [{
+                                    type: 'data',
+                                    id: 'score',
+                                    value: 100
+                                }]
                             }
-                        }]
+                        }
                     }
                 }
             });
@@ -358,14 +408,15 @@ describe('GameState', () => {
                         data: {
                             d0: 0
                         },
-                        actions: [{
-                            id: 'sw1',
-                            target: {
-                                type: 'data',
-                                id: 'd0',
-                                value: 100
+                        actions: {
+                            sw1: {
+                                targets: [{
+                                    type: 'data',
+                                    id: 'd0',
+                                    value: 100
+                                }]
                             }
-                        }]
+                        }
                     }
                 }
             });
