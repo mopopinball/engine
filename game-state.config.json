@@ -16,13 +16,14 @@
                     "blink": 1000
                 }
             },
-            "actions": [{
-                "id": "REPLAY",
-                "target": {
-                    "type": "state",
-                    "value": "play"
+            "actions": {
+                "REPLAY": {
+                    "targets": [{
+                        "type": "state",
+                        "value": "play"
+                    }]
                 }
-            }]
+            }
         },
         "play": {
             "devices": {
