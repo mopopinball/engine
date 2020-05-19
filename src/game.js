@@ -31,6 +31,7 @@ class Game {
         if (!hardwareConfig || !gameStateConfig) {
             throw new Error('Required config not provided');
         }
+        // todo: Validate hardware config for duplicate ids
         this.hardwareConfig = hardwareConfig;
         this.gameStateConfig = gameStateConfig;
         this.maintenance = new Maintenance();

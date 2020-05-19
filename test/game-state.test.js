@@ -167,6 +167,54 @@ describe('GameState', () => {
         });
     });
 
+    describe('getAllDeviceStates', () => {
+        it('gets devices from all levels', () => {
+            // setup
+            const gameState = new GameState('root', {
+                devices: {
+                    lamp1: false
+                },
+                states: {
+                    a: {
+                        init: true,
+                        devices: {
+                            lamp2: false
+                        }
+                    },
+                    b: {
+                        devices: {
+                            lamp3: false // wont fetch, not active
+                        }
+                    }
+                },
+                children: {
+                    c0: {
+                        devices: {
+                            lamp4: false
+                        },
+                        states: {
+                            c: {
+                                init: true,
+                                devices: {
+                                    lamp5: false
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // exercise
+            const allDevices = gameState.getAllDeviceStates();
+
+            // check
+            expect(allDevices.length).to.be.equal(4);
+            allDevices.forEach((d) => {
+                expect(gameState.getDeviceState(d)).to.be.false;
+            });
+        });
+    });
+
     describe('onAction', () => {
         it('can define machine actions', () => {
             // setup
@@ -427,52 +475,59 @@ describe('GameState', () => {
             // check
             expect(gameState.states['a'].data.d0).to.be.equal(100);
         });
-    });
 
-    describe('getAllDeviceStates', () => {
-        it('gets devices from all levels', () => {
+        describe('can have conditional targets', () => {
             // setup
             const gameState = new GameState('root', {
-                devices: {
-                    lamp1: false
+                data: {
+                    d0: 0
+                },
+                actions: {
+                    a0: {
+                        targets: [{
+                            type: 'conditional',
+                            condition: 'this.data.d0 < 1',
+                            true: {
+                                type: 'data',
+                                id: 'd0',
+                                value: 'v'
+                            },
+                            false: {
+                                type: 'state',
+                                target: 's1'
+                            }
+                        }],
+                    }
                 },
                 states: {
-                    a: {
+                    s0: {
                         init: true,
-                        devices: {
-                            lamp2: false
-                        }
+                        to: 's1'
                     },
-                    b: {
-                        devices: {
-                            lamp3: false // wont fetch, not active
-                        }
-                    }
-                },
-                children: {
-                    c0: {
-                        devices: {
-                            lamp4: false
-                        },
-                        states: {
-                            c: {
-                                init: true,
-                                devices: {
-                                    lamp5: false
-                                }
-                            }
-                        }
-                    }
+                    s1: {}
                 }
             });
 
-            // exercise
-            const allDevices = gameState.getAllDeviceStates();
+            it('evaluates true condition', () => {
+                // setup
+                gameState.data.d0 = 0;
 
-            // check
-            expect(allDevices.length).to.be.equal(4);
-            allDevices.forEach((d) => {
-                expect(gameState.getDeviceState(d)).to.be.false;
+                // exercise
+                gameState.onAction('a0');
+
+                // check
+                expect(gameState.data.d0).to.be.equal('v');
+            });
+
+            it('evaluates false condition', () => {
+                // setup
+                gameState.data.d0 = 2;
+
+                // exercise
+                gameState.onAction('a0');
+
+                // check
+                expect(gameState.state).to.be.equal('s1');
             });
         });
     });

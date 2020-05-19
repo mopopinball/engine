@@ -1,5 +1,5 @@
 {
-    "name": "root",
+    "name": "mars",
     "devices": {
         "SHOOT_AGAIN": {
             "state": false
@@ -7,6 +7,10 @@
         "TWO_TIMES_MULTIPLIERS": {
             "state": false
         }
+    },
+    "data": {
+        "currentBall": 0,
+        "ballsPerGame": 3
     },
     "states": {
         "attract": {
@@ -20,7 +24,14 @@
                 "REPLAY": {
                     "targets": [{
                         "type": "state",
-                        "value": "play"
+                        "target": "play"
+                    }]
+                },
+                "OUTHOLE": {
+                    "targets": [{
+                        "type": "device",
+                        "id": "OUTHOLE",
+                        "action": "on"
                     }]
                 }
             }
@@ -29,6 +40,29 @@
             "devices": {
                 "SHOOT_AGAIN": {
                     "blink": 500
+                },
+                "TROUGH_RELEASE": {
+                    "action": "on"
+                }
+            },
+            "data": {
+                "currentBall": 1
+            },
+            "actions": {
+                "OUTHOLE": {
+                    "targets": [{
+                        "type": "conditional",
+                        "condition": "this.data.currentBall <= this.data.ballsPerGame",
+                        "true": {
+                            "type": "data",
+                            "id": "currentBall",
+                            "increment": 1
+                        },
+                        "false": {
+                            "type": "state",
+                            "target": "attract"
+                        }
+                    }]
                 }
             }
         }

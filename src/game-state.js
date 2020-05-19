@@ -1,4 +1,5 @@
 const StateMachine = require('javascript-state-machine');
+const _eval = require('eval');
 
 /**
  * game.
@@ -69,37 +70,32 @@ class GameState extends StateMachine {
         for (const action of Object.values(actions)) {
             action.wrapped = [];
             for (const target of action.targets) {
-                if (typeof target === 'function') {
-                    action.wrapped.push(target.bind(this));
-                }
-                else if (typeof target === 'object') {
-                    if (target.type === 'state') {
-                        action.wrapped.push(() => {
-                            this['to' + target.target]();
-                        });
-                    }
-                    else if (target.type === 'data') {
-                        action.wrapped.push(() => this.setData(target.id, target.value));
-                    }
-                }
+                action.wrapped.push(this._wrapTarget(target));
             }
         }
+    }
 
-        // for (const action of actionCollection) {
-        //     if (typeof action.target === 'function') {
-        //         action.wrapped = action.target.bind(this);
-        //     }
-        //     else if (typeof action.target === 'object') {
-        //         if (action.target.type === 'state') {
-        //             action.wrapped = () => {
-        //                 this['to' + action.target.target]();
-        //             };
-        //         }
-        //         else if (action.target.type === 'data') {
-        //             action.wrapped = () => this.setData(action.target.id, action.target.value);
-        //         }
-        //     }
-        // }
+    _wrapTarget(target) {
+        if (typeof target === 'function') {
+            return target.bind(this);
+        }
+        else if (typeof target === 'object') {
+            if (target.type === 'state') {
+                return () => {
+                    this['to' + target.target]();
+                };
+            }
+            else if (target.type === 'data') {
+                return () => this.setData(target.id, target.value);
+            }
+            else if (target.type === 'conditional') {
+                const evaluatedCondition = _eval(`module.exports = function() { return ${target.condition}}`);
+                const wrappedCondition = this._wrapTarget(evaluatedCondition);
+                const wrappedTrue = this._wrapTarget(target.true);
+                const wrappedFalse = this._wrapTarget(target.false);
+                return () => wrappedCondition() ? wrappedTrue() : wrappedFalse();
+            }
+        }
     }
 
     getDeviceState(id) {
