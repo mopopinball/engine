@@ -4,8 +4,8 @@ const logger = require('./logger');
 const Board = require('./board');
 const SwitchesPic = require('../devices/switches-pic');
 // const DriverPic = require('../devices/driver-pic');
-const semver = require('semver');
-const Config = require('./config');
+// const semver = require('semver');
+// const Config = require('./config');
 
 /**
  * Sets up the system and configures the main hardward.
@@ -42,7 +42,7 @@ class Setup {
         // const config = Config.read();
         // const expectedVersion = config.pics[versionMessage.pic].version;
         // if (semver.lt(versionMessage.version, expectedVersion)) {
-        //     // eslint-disable-next-line max-len
+        // eslint-disable-next-line max-len
         //     logger.warn(`Pic ${versionMessage.pic} is not running the current version ${expectedVersion}. Its running ${versionMessage.version} Please flash ${versionMessage.pic}.`);
         // }
         // else {
