@@ -29,7 +29,8 @@ class PlayfieldLamp extends Light {
         // this._publish();
     }
 
-    setState(state) {
+    state(state) {
+        this.clearTimers();
         if (state) {
             this.on();
         }

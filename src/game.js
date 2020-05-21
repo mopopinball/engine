@@ -10,6 +10,7 @@ const PlayfieldSwitch = require('./devices/playfield-switch');
 const DriverPicSingleton = require('./devices/driver-pic');
 const DisplaysPicSingleton = require('./devices/displays-pic');
 const Maintenance = require('./system/maintenance');
+const Security = require('./system/security');
 const Setup = require('./system/setup');
 const Server = require('./system/server');
 const FpsTracker = require('./system/fps-tracker');
@@ -38,7 +39,7 @@ class Game {
         if (!hardwareConfig.system) {
             throw new Error('No system defined');
         }
-        this.security = new Security(this.game.system);
+        this.security = new Security(this.hardwareConfig.system);
 
         MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
         this.setup = new Setup();
@@ -50,16 +51,17 @@ class Game {
         this.server.start();
 
         // Load our hardware config.
-        this._loadConfig(hardwareConfig);
+        this._loadConfig(this.hardwareConfig);
         if (this.hardwareConfig.system === '80' || this.hardwareConfig.system === '80a') {
-            this.displays = require('./system/display-80-80a');
+            const Displays = require('./system/display-80-80a');
+            this.displays = new Displays();
         }
         else {
             throw new Error('Unexpected system type.');
         }
 
         // init our instance variables.
-        this.name = hardwareConfig.name;
+        this.name = this.hardwareConfig.name;
         this.fpsTracker = new FpsTracker();
 
         this.callStates = {};
@@ -71,6 +73,9 @@ class Game {
         MessageBroker.publish('mopo/devices/sounds/all/state', JSON.stringify(this.sounds), {retain: true});
         MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), {retain: true});
         MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
+
+        this._setupPics();
+        this._gameLoop();
     }
 
     onSwitchMatrixEvent(payload) {
@@ -95,8 +100,8 @@ class Game {
             const state = this.gameState.getDeviceState(id);
             const device = this.outputDevices[id];
             // only call device if the calling state has changed
-            if (this._hasCallStateChanged(id), state) {
-                this._callDevice(device, state);
+            if (this._hasCallStateChanged(id, state)) {
+                this._callDevice(id, device, state);
             }
         });
     }
@@ -106,17 +111,18 @@ class Game {
         return !currentState || !equal(currentState, state);
     }
 
-    _callDevice(device, state) {
+    _callDevice(id, device, state) {
         for (const entry of Object.entries(state)) {
+            logger.debug(`Calling ${id}.${entry[0]}(${entry[1]})`);
             device[entry[0]](entry[1]);
         }
-        this.callStates[deviceId] = state;
+        this.callStates[id] = state;
     }
 
-    setup() {
-        this._setupPics();
-        this._gameLoop();
-    }
+    // setup() {
+    //     this._setupPics();
+    //     this._gameLoop();
+    // }
 
     _setupPics() {
         DriverPicSingleton.setup();
@@ -231,7 +237,7 @@ class Game {
      */
     async _updateDevices() {
         // check if there is at least one dirty device.
-        const dirtyDevices = payload.filter((device) => device.dirty());
+        const dirtyDevices = Object.values(this.outputDevices).filter((device) => device.dirty());
         if (dirtyDevices.length === 0) {
             return;
         }

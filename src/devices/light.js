@@ -51,9 +51,9 @@ class Light extends OutputDevice {
         }, intervalMs);
     }
 
-    blinkStop() {
+    clearTimers() {
         clearInterval(this.blinkInterval);
-        this.off();
+        clearTimeout(this.pulseTimeout);
     }
 }
 

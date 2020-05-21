@@ -1,3 +1,4 @@
+const logger = require('./system/logger');
 const StateMachine = require('javascript-state-machine');
 const _eval = require('eval');
 
@@ -86,7 +87,16 @@ class GameState extends StateMachine {
                 };
             }
             else if (target.type === 'data') {
-                return () => this.setData(target.id, target.value);
+                if (target.increment !== undefined) {
+                    return () => {
+                        // todo: getData does not exist
+                        const newValue = this.getData(target.id) + target.increment;
+                        this.setData(target.id, newValue);
+                    };
+                }
+                else {
+                    return () => this.setData(target.id, target.value);
+                }
             }
             else if (target.type === 'conditional') {
                 const evaluatedCondition = _eval(`module.exports = function() { return ${target.condition}}`);
@@ -126,6 +136,7 @@ class GameState extends StateMachine {
     }
 
     onAction(id) {
+        logger.debug(`Running action: ${id}`);
         const action = GameState.__getAction(this, id);
         if (action) {
             return action.wrapped.map((w) => w());

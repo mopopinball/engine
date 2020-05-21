@@ -1,5 +1,5 @@
 const {MessageBroker, EVENTS} = require('./messages');
-const STATE_CONSTANTS = require('../games/engine/common-game-state-constants');
+const STATE_CONSTANTS = require('./common-game-state-constants');
 
 /**
  * mainten.
