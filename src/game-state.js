@@ -1,6 +1,7 @@
 const logger = require('./system/logger');
 const StateMachine = require('javascript-state-machine');
 const _eval = require('eval');
+const _ = require('lodash');
 
 /**
  * game.
@@ -14,7 +15,6 @@ class GameState extends StateMachine {
             transitions: Object.entries(gameplayConfig.states || {}).map((entry) => {
                 const entryName = entry[0];
                 const state = entry[1];
-                // states.push(new GameState(entryName, state));
                 states[entryName] = state;
                 return {name: `to${state.to}`, from: entryName, to: state.to};
             })
@@ -69,6 +69,12 @@ class GameState extends StateMachine {
 
     wrapActions(actions = {}) {
         for (const action of Object.values(actions)) {
+            if (!action.type) {
+                throw new Error('Actions require a type');
+            }
+            else if (['switch', 'interval', 'timeout', 'collection'].indexOf(action.type) < 0) {
+                throw new Error('Invalid action type');
+            }
             action.wrapped = [];
             for (const target of action.targets) {
                 action.wrapped.push(this._wrapTarget(target));
@@ -109,59 +115,31 @@ class GameState extends StateMachine {
     }
 
     getDeviceState(id) {
-        return GameState.__getDevice(this, id);
-    }
-
-    static __getDevice(obj, id) {
-        // depth first: state device, then machine device
-        for (const child of obj.children) {
-            const device = GameState.__getDevice(child, id);
-            if (device !== undefined) {
-                return device;
-            }
-        }
-
-        // get active state device
-        const activeState = obj.getActiveStateObj();
-        if (activeState && activeState.devices && activeState.devices[id] !== undefined) {
-            return activeState.devices[id];
-        }
-        else {
-            return (obj.devices || {})[id];
-        }
+        const compressed = this.getCompressedState();
+        return compressed.devices[id];
     }
 
     getActiveStateObj() {
         return this.states[this.state];
     }
 
-    onAction(id) {
-        logger.debug(`Running action: ${id}`);
-        const action = GameState.__getAction(this, id);
-        if (action) {
-            return action.wrapped.map((w) => w());
-        }
+    getActiveTimers() {
+        const compressed = this.getCompressedState();
+        const timers = compressed.actions || {};
+        return Object.values(timers).filter((a) => a.type === 'interval' || a.type === 'timeout');
     }
 
-    static __getAction(obj, id) {
-        // depth first state device, then machine device
-        for (const child of obj.children) {
-            const action = GameState.__getAction(child, id);
-            if (action) {
-                return action;
-            }
+    onAction(id) {
+        logger.debug(`Running action: ${id}`);
+        const compressed = this.getCompressedState();
+        const actions = Object.entries(compressed.actions).filter((entry) => {
+            return entry[0] === id || entry[1].type === 'collection';
+        }).map((entry2) => entry2[1]);
+        let results = [];
+        for (const action of actions) {
+            results = results.concat(action.wrapped.map((w) => w()));
         }
-
-        // get active state device
-        const activeState = obj.getActiveStateObj();
-        const actions = (activeState ? activeState.actions : obj.actions) || {};
-        const stateAction = actions[id];
-        if (stateAction) {
-            return stateAction;
-        }
-        else {
-            return (obj.actions || {})[id];
-        }
+        return results;
     }
 
     setData(id, value) {
@@ -189,6 +167,41 @@ class GameState extends StateMachine {
         }
         else {
             return false;
+        }
+    }
+
+    static _makeObj(candidate) {
+        return candidate || {};
+    }
+
+    getCompressedState() {
+        const result = {
+            data: {},
+            devices: {},
+            actions: {}
+        };
+        this._compress(this, result);
+        return result;
+    }
+
+    _compress(obj, result) {
+        // merge our machine level properties
+        _.merge(result.data, obj.data);
+        _.merge(result.devices, obj.devices);
+        _.merge(result.actions, obj.actions);
+
+        // get active state device
+        const activeState = obj.getActiveStateObj();
+        if (activeState) {
+            // merge our state level properties
+            _.merge(result.data, activeState.data);
+            _.merge(result.devices, activeState.devices);
+            _.merge(result.actions, activeState.actions);
+        }
+
+        // recurse for children
+        for (const child of obj.children) {
+            this._compress(child, result);
         }
     }
 }

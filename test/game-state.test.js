@@ -114,7 +114,7 @@ describe('GameState', () => {
         });
 
         it('states can define output device state', () => {
-            // exercise
+            // setup
             const gameState = new GameState('root', {
                 devices: {
                     lamp1: false
@@ -224,6 +224,7 @@ describe('GameState', () => {
                 },
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [
                             () => 1
                         ]
@@ -247,6 +248,7 @@ describe('GameState', () => {
                 },
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [
                             function() {
                                 this.data.d0 = 10;
@@ -275,6 +277,7 @@ describe('GameState', () => {
                 },
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [
                             () => 1
                         ]
@@ -285,6 +288,7 @@ describe('GameState', () => {
                         init: true,
                         actions: {
                             sw1: {
+                                type: 'switch',
                                 targets: [
                                     () => 2
                                 ]
@@ -309,6 +313,7 @@ describe('GameState', () => {
                 },
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [
                             () => 1
                         ]
@@ -319,6 +324,7 @@ describe('GameState', () => {
                         init: true,
                         actions: {
                             sw1: {
+                                type: 'switch',
                                 targets: [
                                     () => 2
                                 ]
@@ -330,6 +336,7 @@ describe('GameState', () => {
                     c0: {
                         actions: {
                             sw1: {
+                                type: 'switch',
                                 targets: [
                                     () => 3
                                 ]
@@ -351,6 +358,7 @@ describe('GameState', () => {
             const gameState = new GameState('root', {
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [{
                             type: 'state',
                             target: 'b'
@@ -387,11 +395,13 @@ describe('GameState', () => {
                 },
                 actions: {
                     sw1: {
+                        type: 'switch',
                         targets: [function() {
                             this.data.score += 10;
                         }]
                     },
                     sw2: {
+                        type: 'switch',
                         targets: [
                             function() {
                                 _eval('this.data.score = 1; this.data.d2 = 100;', this);
@@ -426,6 +436,7 @@ describe('GameState', () => {
                         init: true,
                         actions: {
                             sw1: {
+                                type: 'switch',
                                 targets: [{
                                     type: 'data',
                                     id: 'score',
@@ -458,6 +469,7 @@ describe('GameState', () => {
                         },
                         actions: {
                             sw1: {
+                                type: 'switch',
                                 targets: [{
                                     type: 'data',
                                     id: 'd0',
@@ -484,6 +496,7 @@ describe('GameState', () => {
                 },
                 actions: {
                     a0: {
+                        type: 'switch',
                         targets: [{
                             type: 'conditional',
                             condition: 'this.data.d0 < 1',
@@ -529,6 +542,216 @@ describe('GameState', () => {
                 // check
                 expect(gameState.state).to.be.equal('s1');
             });
+        });
+
+        it('supports interval actions', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    score: 0
+                },
+                actions: {
+                    t0: {
+                        type: 'interval',
+                        period: 1000,
+                        targets: [() => 1000]
+                    }
+                },
+                states: {
+                    s0: {
+                        init: true,
+                        actions: {
+                            t1: {
+                                type: 'interval',
+                                period: 2000,
+                                targets: [() => 2000]
+                            },
+                            t0: {
+                                type: 'interval',
+                                period: 3000,
+                                targets: [() => 3000]
+                            }
+                        }
+                    }
+                },
+                children: {
+                    c0: {
+                        actions: {
+                            t2: {
+                                type: 'timeout',
+                                delay: 4000,
+                                targets: [() => 4000]
+                            }
+                        }
+                    }
+                }
+            });
+
+            // exercise
+            const actions = gameState.getActiveTimers();
+
+            // check
+            expect(actions.length).to.be.equal(3);
+            const periods = actions.map((a) => a.period);
+            expect(periods.indexOf(2000)).to.be.gte(0);
+            expect(periods.indexOf(3000)).to.be.gte(0);
+            const delays = actions.map((a) => a.delay);
+            expect(delays.indexOf(4000)).to.be.gte(0);
+        });
+
+        it('supports collection actions', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    score: 0
+                },
+                actions: {
+                    qualifiesPlayfield: {
+                        type: 'collection',
+                        collection: ['sw1', 'sw2'],
+                        targets: [() => 1000]
+                    }
+                }
+            });
+
+            // exercise
+            const actions = gameState.onAction('sw1');
+
+            // check
+            expect(actions.length).to.be.equal(1);
+            expect(actions[0]).to.be.equal(1000);
+        });
+    });
+
+    describe('getCompressedState', () => {
+        it('can compress down data', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    d0: 0,
+                    d1: 1
+                },
+                states: {
+                    s0: {
+                        init: true,
+                        data: {
+                            d1: 11,
+                            d2: 2,
+                            d3: 3
+                        }
+                    }
+                },
+                children: {
+                    c0: {
+                        data: {
+                            d3: 33
+                        }
+                    }
+                }
+            });
+
+            // exercise
+            const compressed = gameState.getCompressedState();
+
+            // check
+            expect(compressed).to.exist;
+            expect(compressed.data.d0).to.be.equal(0);
+            expect(compressed.data.d1).to.be.equal(11);
+            expect(compressed.data.d2).to.be.equal(2);
+            expect(compressed.data.d3).to.be.equal(33);
+        });
+
+        it('can compress down devices', () => {
+            // setup
+            const gameState = new GameState('root', {
+                devices: {
+                    lamp0: false,
+                    lamp1: false
+                },
+                states: {
+                    a: {
+                        init: true,
+                        devices: {
+                            lamp1: true,
+                            lamp2: false
+                        }
+                    }
+                },
+                children: {
+                    c0: {
+                        devices: {
+                            lamp2: 'a'
+                        }
+                    }
+                }
+            });
+
+            // exercise
+            const compressed = gameState.getCompressedState();
+
+            // check
+            expect(compressed.devices.lamp0).to.be.false;
+            expect(compressed.devices.lamp1).to.be.true;
+            expect(compressed.devices.lamp2).to.be.equal('a');
+        });
+
+        it('can compress down actions', () => {
+            // setup
+            const gameState = new GameState('root', {
+                actions: {
+                    sw0: {
+                        type: 'switch',
+                        targets: [
+                            () => 0
+                        ]
+                    },
+                    sw1: {
+                        type: 'switch',
+                        targets: [
+                            () => 1
+                        ]
+                    }
+                },
+                states: {
+                    a: {
+                        init: true,
+                        actions: {
+                            sw1: {
+                                type: 'switch',
+                                targets: [
+                                    () => 11
+                                ]
+                            },
+                            sw2: {
+                                type: 'switch',
+                                targets: [
+                                    () => 2
+                                ]
+                            }
+                        }
+                    }
+                },
+                children: {
+                    c0: {
+                        actions: {
+                            sw2: {
+                                type: 'switch',
+                                targets: [
+                                    () => 22
+                                ]
+                            }
+                        }
+                    }
+                }
+            });
+
+            // exercise
+            const compressed = gameState.getCompressedState();
+
+            // check
+            expect(compressed.actions.sw0.targets[0]()).to.be.equal(0);
+            expect(compressed.actions.sw1.targets[0]()).to.be.equal(11);
+            expect(compressed.actions.sw2.targets[0]()).to.be.equal(22);
         });
     });
 });
