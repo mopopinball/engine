@@ -423,6 +423,58 @@ describe('GameState', () => {
             // check
             expect(gameState.data.score).to.be.equal(1);
             expect(gameState.data.d2).to.be.equal(100);
+            expect(gameState.getCompressedState().data.score).to.be.equal(1);
+            expect(gameState.getCompressedState().data.d2).to.be.equal(100);
+        });
+
+        it('can define actions to increment data', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    score: 123
+                },
+                actions: {
+                    sw1: {
+                        type: 'switch',
+                        targets: [{
+                            type: 'data',
+                            id: 'score',
+                            increment: 100
+                        }]
+                    }
+                }
+            });
+
+            // exercise
+            gameState.onAction('sw1');
+
+            // check
+            expect(gameState.data.score).to.be.equal(223);
+        });
+
+        it('can define actions to decrement data', () => {
+            // setup
+            const gameState = new GameState('root', {
+                data: {
+                    score: 123
+                },
+                actions: {
+                    sw1: {
+                        type: 'switch',
+                        targets: [{
+                            type: 'data',
+                            id: 'score',
+                            increment: -10
+                        }]
+                    }
+                }
+            });
+
+            // exercise
+            gameState.onAction('sw1');
+
+            // check
+            expect(gameState.data.score).to.be.equal(113);
         });
 
         it('can define state actions which set machine data', () => {
@@ -453,6 +505,7 @@ describe('GameState', () => {
 
             // check
             expect(gameState.data.score).to.be.equal(100);
+            expect(gameState.getCompressedState().data.score).to.be.equal(100);
         });
 
         it('can define state actions which set state data', () => {
@@ -486,6 +539,7 @@ describe('GameState', () => {
 
             // check
             expect(gameState.states['a'].data.d0).to.be.equal(100);
+            expect(gameState.getCompressedState().data.d0).to.be.equal(100);
         });
 
         describe('can have conditional targets', () => {

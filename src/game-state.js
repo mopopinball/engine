@@ -95,8 +95,8 @@ class GameState extends StateMachine {
             else if (target.type === 'data') {
                 if (target.increment !== undefined) {
                     return () => {
-                        // todo: getData does not exist
-                        const newValue = this.getData(target.id) + target.increment;
+                        const compressed = this.getCompressedState();
+                        const newValue = compressed.data[target.id] + target.increment;
                         this.setData(target.id, newValue);
                     };
                 }
