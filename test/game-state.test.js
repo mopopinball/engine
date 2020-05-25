@@ -3,35 +3,6 @@ const expect = require('chai').expect;
 const _eval = require('eval');
 
 describe('GameState', () => {
-// todo: when going depth first on operations, only consider active states for data, actions.
-// all active actions in each branch should be considered.
-
-    // const gameplayConfig = {
-    //      name: 'root',
-    //     data: {},
-    //     actions: [{
-    //         id: 'sw1',
-    //         target: 'newState',
-    //          target: {type: 'state', value: 'newState'}
-    //          target: {type: 'data', id: 'a', value: 100, operator: '+='}
-    //     }, {
-    //         id: 'sw2',
-    //         target: (args) => {}
-    //     }],
-    //     states: {
-    //         stateA: {
-    //             data: {},
-    //             actions: [{
-    //                 id: 'sw3',
-    //                 target: require('something')()
-    //             }, {
-    //                 id: 'sw4',
-    //                 target: (lamp, method, ...args) => lamp[method](args)
-    //             }]
-    //         }
-    //     }
-    // };
-
     it('machine can have data', () => {
         // exercise
         const gameState = new GameState('root', {
@@ -95,6 +66,81 @@ describe('GameState', () => {
         // check
         expect(gameState.allStates().length).to.be.equal(2 + 1); // includes "none"
         expect(gameState.children.length).to.be.equal(1);
+    });
+
+    it('states can define children', () => {
+        // exercise
+        const gameState = new GameState('root', {
+            states: {
+                a: {
+                    init: true,
+                    children: {
+                        c0: {
+                            data: {
+                                d0: 100
+                            }
+                        }
+                    }
+                },
+                b: {
+                    children: {
+                        c1: {
+                            data: {
+                                d1: 200
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // check
+        const compressed = gameState.getCompressedState();
+        expect(compressed.data.d0).to.be.equal(100);
+    });
+
+    it('resets child states when parent changes', () => {
+        // setup
+        const gameState = new GameState('root', {
+            states: {
+                a: {
+                    init: true,
+                    to: 'b',
+                    children: {
+                        c0: {
+                            states: {
+                                c: {
+                                    init: true,
+                                    to: 'd'
+                                },
+                                d: {
+                                    to: 'c' // needs to be implicit
+                                }
+                            }
+                        }
+                    }
+                },
+                b: {
+                    to: 'a',
+                    children: {
+                        c1: {
+                        }
+                    }
+                }
+            }
+        });
+
+        expect(gameState.state).to.be.equal('a');
+        expect(gameState.states.a.children[0].state).to.be.equal('c');
+
+        // exercise
+        gameState.states.a.children[0].tod();
+        expect(gameState.states.a.children[0].state).to.be.equal('d');
+
+        gameState.tob(); // should reset c0 to state 'c'.
+
+        // verify
+        expect(gameState.states.a.children[0].state).to.be.equal('c');
     });
 
     describe('getDeviceState', () => {

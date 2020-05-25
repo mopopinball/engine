@@ -10,14 +10,19 @@ class GameState extends StateMachine {
     constructor(name, gameplayConfig) {
         const states = {};
         const initEntry = Object.entries(gameplayConfig.states || {}).find((entry) => entry[1].init);
+        const initState = initEntry ? initEntry[0] : undefined;
         const cc = {
-            init: initEntry ? initEntry[0] : undefined,
-            transitions: Object.entries(gameplayConfig.states || {}).map((entry) => {
-                const entryName = entry[0];
-                const state = entry[1];
-                states[entryName] = state;
-                return {name: `to${state.to}`, from: entryName, to: state.to};
-            })
+            init: initState,
+            transitions: Object.entries(gameplayConfig.states || {})
+            // TODO: Add filter and fix tests.
+                // .filter((ent) => ent[1].to)
+                .map((entry) => {
+                    const entryName = entry[0];
+                    const state = entry[1];
+                    states[entryName] = state;
+                    return {name: `to${state.to}`, from: entryName, to: state.to};
+                })
+                .concat([{name: 'reset', from: '*', to: initState}])
         };
         super(cc);
         this.name = name;
@@ -27,6 +32,11 @@ class GameState extends StateMachine {
         this.children = Object.entries(gameplayConfig.children || {}).map((cEntry) => {
             return new GameState(cEntry[0], cEntry[1]);
         });
+        for (const stateEntry of Object.entries(GameState._makeObj(this.states))) {
+            stateEntry[1].children = Object.entries(GameState._makeObj(stateEntry[1].children)).map((cEntry) => {
+                return new GameState(cEntry[0], cEntry[1]);
+            });
+        }
 
         this.devices = gameplayConfig.devices;
 
@@ -197,11 +207,25 @@ class GameState extends StateMachine {
             _.merge(result.data, activeState.data);
             _.merge(result.devices, activeState.devices);
             _.merge(result.actions, activeState.actions);
+            for (const child of activeState.children) {
+                this._compress(child, result);
+            }
         }
 
         // recurse for children
         for (const child of obj.children) {
             this._compress(child, result);
+        }
+    }
+
+    onLeaveState(transition) {
+        if (!this.states) {
+            return;
+        }
+        // If we're leaving a state and that state has children, reset each child sm
+        // to its 'init' state.
+        for (const child of this.states[transition.from].children) {
+            child.reset();
         }
     }
 }
