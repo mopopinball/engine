@@ -1,6 +1,7 @@
 const logger = require('./system/logger');
 const equal = require('deep-equal');
-const GameState = require('./game-state');
+// const GameState = require('./game-state');
+const {GameState} = require('../build/sm');
 const {MessageBroker, EVENTS} = require('./system/messages');
 const {PlayfieldLamp, LAMP_ROLES} = require('./devices/playfield-lamp');
 const {Coil, DRIVER_TYPES} = require('./devices/coil');

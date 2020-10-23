@@ -1,11 +1,11 @@
-const GameState = require('../src/game-state');
+const {GameState} = require('../src/system/sm.ts');
 const expect = require('chai').expect;
 const _eval = require('eval');
 
 describe('GameState', () => {
     it('machine can have data', () => {
         // exercise
-        const gameState = new GameState('root', {
+        const gameState = new GameState({
             data: {
                 a: 1,
                 b: 2
@@ -20,7 +20,7 @@ describe('GameState', () => {
 
     it('machine can define states', () => {
         // exercise
-        const gameState = new GameState('root', {
+        const gameState = new GameState({
             states: {
                 a: {
                     init: true,
@@ -36,15 +36,15 @@ describe('GameState', () => {
         });
 
         // check
-        expect(gameState.allStates().length).to.be.equal(2 + 1); // includes none, a, b
+        expect(gameState.getStates().length).to.be.equal(2 + 1); // includes none, a, b
         expect(Object.keys(gameState.states).length).to.be.equal(2);
-        expect(gameState.state).to.be.equal('a');
+        expect(gameState._stateMachine.state).to.be.equal('a');
         expect(gameState.states['a'].data.c).to.be.equal(3);
     });
 
     it('machine can define children', () => {
         // exercise
-        const gameState = new GameState('root', {
+        const gameState = new GameState({
             states: {
                 a: {
                     init: true
@@ -64,13 +64,13 @@ describe('GameState', () => {
         });
 
         // check
-        expect(gameState.allStates().length).to.be.equal(2 + 1); // includes "none"
+        expect(gameState.getStates().length).to.be.equal(2 + 1); // includes "none"
         expect(gameState.children.length).to.be.equal(1);
     });
 
     it('states can define children', () => {
         // exercise
-        const gameState = new GameState('root', {
+        const gameState = new GameState({
             states: {
                 a: {
                     init: true,
@@ -101,7 +101,7 @@ describe('GameState', () => {
 
     it('resets child states when parent changes', () => {
         // setup
-        const gameState = new GameState('root', {
+        const gameState = new GameState({
             states: {
                 a: {
                     init: true,
@@ -130,25 +130,25 @@ describe('GameState', () => {
             }
         });
 
-        expect(gameState.state).to.be.equal('a');
-        expect(gameState.states.a.children[0].state).to.be.equal('c');
+        expect(gameState.getCurrentState()).to.be.equal('a');
+        expect(gameState.states.a.children[0].getCurrentState()).to.be.equal('c');
 
         // exercise
-        gameState.states.a.children[0].tod();
-        expect(gameState.states.a.children[0].state).to.be.equal('d');
+        gameState.states.a.children[0]._stateMachine.tod();
+        expect(gameState.states.a.children[0].getCurrentState()).to.be.equal('d');
 
-        gameState.tob(); // should reset c0 to state 'c'.
+        gameState._stateMachine.tob(); // should reset c0 to state 'c'.
 
         // verify
-        expect(gameState.states.a.children[0].state).to.be.equal('c');
+        expect(gameState.states.a.children[0].getCurrentState()).to.be.equal('c');
     });
 
     describe('getDeviceState', () => {
         it('machines can define output device state', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 devices: {
-                    lamp1: false
+                    lamp1: {}
                 }
             });
 
@@ -156,20 +156,24 @@ describe('GameState', () => {
             const deviceState = gameState.getDeviceState('lamp1');
 
             // check
-            expect(deviceState).to.be.equal(false);
+            expect(deviceState).to.exist;
         });
 
         it('states can define output device state', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 devices: {
-                    lamp1: false
+                    lamp1: {
+                        type: 'a'
+                    }
                 },
                 states: {
                     a: {
                         init: true,
                         devices: {
-                            lamp1: true
+                            lamp1: {
+                                type: 'b'
+                            }
                         }
                     }
                 }
@@ -179,27 +183,33 @@ describe('GameState', () => {
             const deviceState = gameState.getDeviceState('lamp1');
 
             // check
-            expect(deviceState).to.be.equal(true);
+            expect(deviceState.type).to.be.equal('b');
         });
 
         it('can define children output device state', () => {
             // exercise
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 devices: {
-                    lamp1: false
+                    lamp1: {
+                        type: 'a'
+                    }
                 },
                 states: {
                     a: {
                         init: true,
                         devices: {
-                            lamp1: true
+                            lamp1: {
+                                type: 'b'
+                            }
                         }
                     }
                 },
                 children: {
                     c0: {
                         devices: {
-                            lamp1: 'blink'
+                            lamp1: {
+                                type: 'c'
+                            }
                         }
                     }
                 }
@@ -209,40 +219,40 @@ describe('GameState', () => {
             const deviceState = gameState.getDeviceState('lamp1');
 
             // check
-            expect(deviceState).to.be.equal('blink');
+            expect(deviceState.type).to.be.equal('c');
         });
     });
 
     describe('getAllDeviceStates', () => {
         it('gets devices from all levels', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 devices: {
-                    lamp1: false
+                    lamp1: {type: 'a'}
                 },
                 states: {
                     a: {
                         init: true,
                         devices: {
-                            lamp2: false
+                            lamp2: {type: 'b'}
                         }
                     },
                     b: {
                         devices: {
-                            lamp3: false // wont fetch, not active
+                            lamp3: {type: 'c'} // wont fetch, not active
                         }
                     }
                 },
                 children: {
                     c0: {
                         devices: {
-                            lamp4: false
+                            lamp4: {type: 'd'}
                         },
                         states: {
                             c: {
                                 init: true,
                                 devices: {
-                                    lamp5: false
+                                    lamp5: {type: 'e'}
                                 }
                             }
                         }
@@ -255,27 +265,28 @@ describe('GameState', () => {
 
             // check
             expect(allDevices.length).to.be.equal(4);
-            allDevices.forEach((d) => {
-                expect(gameState.getDeviceState(d)).to.be.false;
-            });
+            expect(allDevices[0]).to.be.equal('lamp1');
+            expect(allDevices[1]).to.be.equal('lamp2');
+            expect(allDevices[2]).to.be.equal('lamp4');
+            expect(allDevices[3]).to.be.equal('lamp5');
         });
     });
 
     describe('onAction', () => {
         it('can define machine actions', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [
                             () => 1
                         ]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -287,13 +298,13 @@ describe('GameState', () => {
 
         it('can define actions with multiple targets', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     d0: 0,
                     d1: 0
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [
                             function() {
@@ -304,7 +315,7 @@ describe('GameState', () => {
                             }
                         ]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -317,29 +328,29 @@ describe('GameState', () => {
 
         it('can define state actions', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [
                             () => 1
                         ]
                     }
-                },
+                ],
                 states: {
                     a: {
                         init: true,
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
                                 type: 'switch',
                                 targets: [
                                     () => 2
                                 ]
                             }
-                        }
+                        ]
                     }
                 }
             });
@@ -353,41 +364,41 @@ describe('GameState', () => {
 
         it('can define children actions', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [
                             () => 1
                         ]
                     }
-                },
+                ],
                 states: {
                     a: {
                         init: true,
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
                                 type: 'switch',
                                 targets: [
                                     () => 2
                                 ]
                             }
-                        }
+                        ]
                     }
                 },
                 children: {
                     c0: {
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
                                 type: 'switch',
                                 targets: [
                                     () => 3
                                 ]
                             }
-                        },
+                        ]
                     }
                 }
             });
@@ -401,16 +412,16 @@ describe('GameState', () => {
 
         it('machine action changes state', () => {
             // setup
-            const gameState = new GameState('root', {
-                actions: {
-                    sw1: {
+            const gameState = new GameState({
+                actions: [
+                    {
                         type: 'switch',
                         targets: [{
                             type: 'state',
                             target: 'b'
                         }]
                     }
-                },
+                ],
                 states: {
                     a: {
                         init: true,
@@ -434,19 +445,19 @@ describe('GameState', () => {
 
         it('machine action is callable on data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0,
                     d2: 0
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [function() {
                             this.data.score += 10;
                         }]
                     },
-                    sw2: {
+                    {
                         type: 'switch',
                         targets: [
                             function() {
@@ -454,7 +465,7 @@ describe('GameState', () => {
                             }
                         ]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -475,12 +486,12 @@ describe('GameState', () => {
 
         it('can define actions to increment data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 123
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [{
                             type: 'data',
@@ -488,7 +499,7 @@ describe('GameState', () => {
                             increment: 100
                         }]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -500,12 +511,12 @@ describe('GameState', () => {
 
         it('can define actions to decrement data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 123
                 },
-                actions: {
-                    sw1: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [{
                             type: 'data',
@@ -513,7 +524,7 @@ describe('GameState', () => {
                             increment: -10
                         }]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -525,15 +536,15 @@ describe('GameState', () => {
 
         it('can define state actions which set machine data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
                 states: {
                     a: {
                         init: true,
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
                                 type: 'switch',
                                 targets: [{
                                     type: 'data',
@@ -541,7 +552,7 @@ describe('GameState', () => {
                                     value: 100
                                 }]
                             }
-                        }
+                        ]
                     }
                 }
             });
@@ -556,7 +567,7 @@ describe('GameState', () => {
 
         it('can define state actions which set state data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
@@ -566,8 +577,8 @@ describe('GameState', () => {
                         data: {
                             d0: 0
                         },
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
                                 type: 'switch',
                                 targets: [{
                                     type: 'data',
@@ -575,7 +586,7 @@ describe('GameState', () => {
                                     value: 100
                                 }]
                             }
-                        }
+                        ]
                     }
                 }
             });
@@ -590,12 +601,12 @@ describe('GameState', () => {
 
         describe('can have conditional targets', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     d0: 0
                 },
-                actions: {
-                    a0: {
+                actions: [
+                    {
                         type: 'switch',
                         targets: [{
                             type: 'conditional',
@@ -610,15 +621,13 @@ describe('GameState', () => {
                                 target: 's1'
                             }
                         }],
-                    }
-                },
-                states: {
-                    s0: {
+                    },
+                    {
                         init: true,
                         to: 's1'
                     },
-                    s1: {}
-                }
+                    {}
+                ]
             });
 
             it('evaluates true condition', () => {
@@ -646,43 +655,43 @@ describe('GameState', () => {
 
         it('supports interval actions', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
-                actions: {
-                    t0: {
+                actions: [
+                    {
                         type: 'interval',
                         period: 1000,
                         targets: [() => 1000]
                     }
-                },
+                ],
                 states: {
                     s0: {
                         init: true,
-                        actions: {
-                            t1: {
+                        actions: [
+                            {
                                 type: 'interval',
                                 period: 2000,
                                 targets: [() => 2000]
                             },
-                            t0: {
+                            {
                                 type: 'interval',
                                 period: 3000,
                                 targets: [() => 3000]
                             }
-                        }
+                        ]
                     }
                 },
                 children: {
                     c0: {
-                        actions: {
-                            t2: {
+                        actions: [
+                            {
                                 type: 'timeout',
                                 delay: 4000,
                                 targets: [() => 4000]
                             }
-                        }
+                        ]
                     }
                 }
             });
@@ -701,17 +710,17 @@ describe('GameState', () => {
 
         it('supports collection actions', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     score: 0
                 },
-                actions: {
-                    qualifiesPlayfield: {
+                actions: [
+                    {
                         type: 'collection',
                         collection: ['sw1', 'sw2'],
                         targets: [() => 1000]
                     }
-                }
+                ]
             });
 
             // exercise
@@ -726,7 +735,7 @@ describe('GameState', () => {
     describe('getCompressedState', () => {
         it('can compress down data', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 data: {
                     d0: 0,
                     d1: 1
@@ -763,7 +772,7 @@ describe('GameState', () => {
 
         it('can compress down devices', () => {
             // setup
-            const gameState = new GameState('root', {
+            const gameState = new GameState({
                 devices: {
                     lamp0: false,
                     lamp1: false
@@ -797,50 +806,54 @@ describe('GameState', () => {
 
         it('can compress down actions', () => {
             // setup
-            const gameState = new GameState('root', {
-                actions: {
-                    sw0: {
+            const gameState = new GameState({
+                actions: [
+                    {
                         type: 'switch',
                         targets: [
                             () => 0
                         ]
                     },
-                    sw1: {
+                    {
+                        name: 'sw0',
                         type: 'switch',
                         targets: [
                             () => 1
                         ]
                     }
-                },
+                ],
                 states: {
                     a: {
                         init: true,
-                        actions: {
-                            sw1: {
+                        actions: [
+                            {
+                                name: 'sw1',
                                 type: 'switch',
                                 targets: [
                                     () => 11
                                 ]
                             },
-                            sw2: {
+                            {
+                                name: 'sw2',
                                 type: 'switch',
                                 targets: [
                                     () => 2
                                 ]
                             }
-                        }
+                        ]
                     }
                 },
                 children: {
                     c0: {
-                        actions: {
-                            sw2: {
+                        actions: [
+                            {
+                                name: 'sw2',
                                 type: 'switch',
                                 targets: [
                                     () => 22
                                 ]
                             }
-                        }
+                        ]
                     }
                 }
             });

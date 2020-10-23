@@ -17,6 +17,9 @@
                 "NODE_ENV": "test"
             },
             "args": [
+                "-r",
+                "ts-node/register",
+                "test/*.test.js",
                 "--timeout",
                 "999999",
                 "--colors",

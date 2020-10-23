@@ -1,0 +1,6 @@
+{
+    "autostart": true,
+    "data": ["d0"],
+    "switches": [["sw0", {"key": "d0", "operation": 0, "operand": 5}]],
+    "devices": [[13, "lamp", "outhole"]]
+}
