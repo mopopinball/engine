@@ -1,8 +1,11 @@
 export class PlayfieldLamp2 {
     private state: LampState;
     
-    constructor(private number: number, private role: string, private name: string) {
-        this.state = LampState.OFF;
+    constructor(
+        private number: number, private role: string, private name: string,
+        state: LampState = LampState.OFF
+    ) {
+        this.state = state;
     }
 
     setState(state: LampState): void {
@@ -15,7 +18,7 @@ export class PlayfieldLamp2 {
 }
 
 export enum LampState {
-    ON,
-    OFF,
-    BLINK
+    OFF = 0,
+    ON = 1,
+    BLINK = 2
 }

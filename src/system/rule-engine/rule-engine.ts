@@ -10,8 +10,8 @@ export class RuleEngine {
     active: boolean;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, PlayfieldLamp2> = new Map();
-    switches: Map<string, Action[]> = new Map();
-    protected children: RuleEngine[] = [];
+    actions: Map<string, Action[]> = new Map();
+    children: RuleEngine[] = [];
 
     constructor(public id: string, public autoStart: boolean) {
     }
@@ -19,11 +19,13 @@ export class RuleEngine {
     static load(schema: RuleSchema): RuleEngine {
         const engine = new RuleEngine(schema.id, schema.autostart);
 
+        engine.children = schema.children.map((c) => RuleEngine.load(c));
+
         for (const deviceSchema of schema.devices) {
             switch (deviceSchema.type) {
                 case "lamp":
                     engine.devices.set(deviceSchema.id, new PlayfieldLamp2(
-                        deviceSchema.number, deviceSchema.role, deviceSchema.name
+                        deviceSchema.number, deviceSchema.role, deviceSchema.name, deviceSchema.state
                     ));
                     break;
                 default:
@@ -48,9 +50,11 @@ export class RuleEngine {
                 case 'state':
                     engine.addAction(action.switchId,
                         new StateAction(
-                            engine.children.find((c) => c.id === action.childId)
+                            engine.children.find((c) => c.id === action.childId),
+                            action.state
                         )
                     );
+                    break;
                 default:
                     throw new Error('Not implemented');
             }
@@ -64,10 +68,10 @@ export class RuleEngine {
     }
 
     addAction(key: string, action: Action): void {
-        if (!this.switches.has(key)) {
-            this.switches.set(key, []);
+        if (!this.actions.has(key)) {
+            this.actions.set(key, []);
         }
-        this.switches.get(key).push(action);
+        this.actions.get(key).push(action);
     }
 
     start(): void {
@@ -93,8 +97,8 @@ export class RuleEngine {
 
         if (childHandled) {
             return true;
-        } else if (this.switches.has(id)) {
-            for (const action of this.switches.get(id)) {
+        } else if (this.actions.has(id)) {
+            for (const action of this.actions.get(id)) {
                 action.handle(this.getData(), this.getDevices());
             }
             return true;

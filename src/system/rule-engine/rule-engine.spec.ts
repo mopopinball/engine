@@ -3,65 +3,56 @@ import { RuleSchema } from "./schema/rule.schema";
 import { RuleEngine } from "./rule-engine";
 import * as testData from "./test-data.json";
 
-describe.skip('Rules', () => {
+describe('Rules', () => {
     const data: RuleSchema = testData as RuleSchema;
 
-    it('constructs and auto starts', () => {
-        const rule = new RuleEngine('root', true);
-        rule.start();
-        
-        expect(rule).toBeTruthy();
-        expect(rule.active).toBeTruthy();
+    let ruleEngine: RuleEngine = null;
 
-        const x = new Map<string, string>();
-        x.set('a', 'b');
-        x.set('c','d');
-        const json = JSON.stringify(Array.from(x.entries()));
-        console.log(json);
+    beforeEach(() => {
+        ruleEngine = RuleEngine.load(data);
     });
 
-    // it('loads switches from schema', () => {
-    //     // exercise
-    //     const rule = new RuleEngine('root', false);
-    //     rule.load(data);
+    it('constructs and auto starts', () => {
+        // exercise
+        ruleEngine.start();
 
-    //     // check
-    //     expect(rule.autoStart).toBeTruthy();
-    //     expect(rule.switches.size).toEqual(1);
-    // });
+        expect(ruleEngine.active).toBeTruthy();
+    });
 
-    // it('loads lamps from schema', () => {
-    //     // exercise
-    //     const rule = new RuleEngine('root', false);
-    //     rule.load(data);
+    it('collapes devices', () => {
+        // setup
+        ruleEngine.start();
 
-    //     // check
-    //     expect(rule.devices.size).toBe(1);
-    //     expect(rule.devices.get('outhole').getState()).toEqual(LampState.OFF);
-    // });
+        // exercise
+        const devices = ruleEngine.getDevices();
 
-    // it('collapes devices', () => {
-    //     // setup
-    //     const rule = new RuleEngine('root', false);
-    //     rule.load(data);
+        // check
+        expect(devices.size).toBe(2);
+        expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LampState.OFF);
+        expect(devices.get('L1').getState()).toEqual(LampState.ON);
+    });
 
-    //     // exercise
-    //     const devices = rule.getDevices();
+    it('modifies data', () => {
+        // exercise
+        ruleEngine.onSwitch('sw0');
 
-    //     // check
-    //     expect(devices.size).toBe(1);
-    //     expect(devices.get('outhole').getState()).toEqual(LampState.OFF);
-    // });
+        // check
+        expect(ruleEngine.data.get('d0').value).toEqual(18);
+    });
 
-    // it('modifies data', () => {
-    //     // setup
-    //     const rule = new RuleEngine('root', false);
-    //     rule.load(data);
+    it('modifies device', () => {
+        // exercise
+        ruleEngine.onSwitch('sw0');
 
-    //     // exercise
-    //     rule.onSwitch('sw0');
+        // check
+        expect(ruleEngine.devices.get('L1').getState()).toEqual(LampState.BLINK);
+    });
 
-    //     // check
-    //     expect(rule.data.get('d0').value).toEqual(5);
-    // });
+    it('modifies state', () => {
+        // exercise
+        ruleEngine.onSwitch('sw1');
+
+        // check
+        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LampState.OFF);
+    });
 })

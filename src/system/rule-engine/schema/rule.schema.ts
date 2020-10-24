@@ -1,4 +1,5 @@
 import { LampState } from "../../playfieldLamp2";
+import { Action } from "../actions/action";
 import { DataOperation } from "./rule-data-handler";
 
 export interface RuleSchema {
@@ -7,7 +8,8 @@ export interface RuleSchema {
     // switches: string[];
     data: DataSchema[];
     devices: [LampSchema | SolenoidSchema],
-    actions: [DataActionSchema | DeviceActionSchema | StateActionSchema]
+    actions: [DataActionSchema | DeviceActionSchema | StateActionSchema],
+    children: RuleSchema[]
 }
 
 export interface DataSchema {
@@ -21,6 +23,7 @@ export interface LampSchema {
     number: number;
     role: string;
     name: string;
+    state?: number;
 }
 
 export interface SolenoidSchema {
@@ -28,25 +31,27 @@ export interface SolenoidSchema {
     type: 'coil';
 }
 
-export interface DataActionSchema {
-    type: 'data';
+export interface ActionSchema {
     switchId: string;
+}
+
+export interface DataActionSchema extends ActionSchema {
+    type: 'data';
     dataId: string;
     operation: number;
     operand: number;
 }
 
-export interface DeviceActionSchema {
+export interface DeviceActionSchema extends ActionSchema {
     type: 'device';
-    switchId: string;
     deviceId: string;
     state: number;
 }
 
-export interface StateActionSchema {
+export interface StateActionSchema extends ActionSchema {
     type: 'state';
-    switchId: string;
     childId: string;
+    state: boolean;
 }
 
 export interface SwitchHandlerSchema {

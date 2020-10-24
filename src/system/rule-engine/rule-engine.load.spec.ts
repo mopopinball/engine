@@ -30,7 +30,19 @@ describe('Rule Engine Load()', () => {
 
     it('loads devices', () => {
         // check
-        expect(ruleEngine.devices.size).toBe(1);
+        expect(ruleEngine.devices.size).toBe(2);
         expect(ruleEngine.devices.get('SHOOT_AGAIN').getState()).toEqual(LampState.OFF);
+        expect(ruleEngine.devices.get('L1').getState()).toEqual(LampState.OFF);
+    });
+
+    it('loads children', () => {
+        expect(ruleEngine.children.length).toEqual(1);
+        expect(ruleEngine.children[0].devices.size).toEqual(1);
+        expect(ruleEngine.children[0].devices.get('L1').getState()).toEqual(LampState.ON);
+    });
+
+    it('loads actions', () => {
+        expect(ruleEngine.actions.size).toBe(2);
+        expect(ruleEngine.actions.get('sw0').length).toBe(2);
     });
 });

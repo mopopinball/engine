@@ -7,12 +7,56 @@
             "value": 13
         }
     ],
-    "devices": [{
-        "id": "SHOOT_AGAIN",
-        "type": "lamp",
-        "number": 13,
-        "role": "lamp",
-        "name": "SHOOT_AGAIN"
+    "devices": [
+        {
+            "id": "SHOOT_AGAIN",
+            "type": "lamp",
+            "number": 13,
+            "role": "lamp",
+            "name": "SHOOT_AGAIN"
+        },
+        {
+            "id": "L1",
+            "type": "lamp",
+            "number": 1,
+            "role": "lamp",
+            "name": "lamp 1"
+        }
+    ],
+    "actions": [{
+        "type": "data",
+        "switchId": "sw0",
+        "dataId": "d0",
+        "operation": 0,
+        "operand": 5
+    }, {
+        "type": "device",
+        "switchId": "sw0",
+        "deviceId": "L1",
+        "state": 2
+    }, {
+        "type": "state",
+        "switchId": "sw1",
+        "childId": "attractMode",
+        "state": false
     }],
-    "actions": []
+    "children": [
+        {
+            "id": "attractMode",
+            "autostart": true,
+            "actions": [],
+            "data": [],
+            "children": [],
+            "devices": [
+                {
+                    "id": "L1",
+                    "type": "lamp",
+                    "number": 1,
+                    "role": "lamp",
+                    "name": "lamp 1",
+                    "state": 1
+                }
+            ]
+        }
+    ]
 }
