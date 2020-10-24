@@ -2,6 +2,7 @@ import { PlayfieldLamp2 } from "../playfieldLamp2";
 import { Action } from "./actions/action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
+import { StateAction } from "./actions/state-action";
 import { RuleData } from "./rule-data";
 import { RuleSchema } from "./schema/rule.schema";
 
@@ -10,43 +11,67 @@ export class RuleEngine {
     data: Map<string, RuleData> = new Map();
     devices: Map<string, PlayfieldLamp2> = new Map();
     switches: Map<string, Action[]> = new Map();
-    private children: RuleEngine[] = [];
+    protected children: RuleEngine[] = [];
 
-    constructor(public name: string, public autoStart: boolean){
+    constructor(public id: string, public autoStart: boolean) {
     }
 
-    load(schema: RuleSchema) {
-        this.autoStart = schema.autostart;
-        
+    static load(schema: RuleSchema): RuleEngine {
+        const engine = new RuleEngine(schema.id, schema.autostart);
+
+        for (const deviceSchema of schema.devices) {
+            switch (deviceSchema.type) {
+                case "lamp":
+                    engine.devices.set(deviceSchema.id, new PlayfieldLamp2(
+                        deviceSchema.number, deviceSchema.role, deviceSchema.name
+                    ));
+                    break;
+                default:
+                    throw new Error('Not implemented');
+            }
+        }
+
         for (const action of schema.actions) {
-            switch(action.type) {
+            switch (action.type) {
                 case 'data':
-                    this.addAction(
+                    engine.addAction(
                         action.switchId,
                         new DataAction(action.dataId, action.operation, action.operand)
                     );
-                break;
+                    break;
                 case 'device':
-                    this.addAction(
+                    engine.addAction(
                         action.switchId,
                         new DeviceAction(action.deviceId, action.state)
                     )
-                    break;        
+                    break;
+                case 'state':
+                    engine.addAction(action.switchId,
+                        new StateAction(
+                            engine.children.find((c) => c.id === action.childId)
+                        )
+                    );
+                default:
+                    throw new Error('Not implemented');
             }
         }
+
         for (const data of schema.data) {
-            this.data.set(data.id, {value: 0});
+            engine.data.set(data.id, { value: data.value });
         }
+
+        return engine;
     }
 
-    private addAction(key: string, action: Action): void {
-        if(!this.switches.has(key)) {
+    addAction(key: string, action: Action): void {
+        if (!this.switches.has(key)) {
             this.switches.set(key, []);
         }
         this.switches.get(key).push(action);
     }
 
     start(): void {
+        // when starting, need to reset any state, or clone it to reset on end?
         this.active = true;
         this.children
             .filter((child) => child.autoStart)
@@ -68,8 +93,8 @@ export class RuleEngine {
 
         if (childHandled) {
             return true;
-        } else if(this.switches.has(id)) {
-            for(const action of this.switches.get(id)) {
+        } else if (this.switches.has(id)) {
+            for (const action of this.switches.get(id)) {
                 action.handle(this.getData(), this.getDevices());
             }
             return true;
@@ -86,11 +111,11 @@ export class RuleEngine {
             newData.set(entry[0], entry[1]);
         }
         // copy our data which overwrites parents
-        for(const entry of this.data.entries()) {
+        for (const entry of this.data.entries()) {
             newData.set(entry[0], entry[1]);
         }
         // recurse down on our children and repeat.
-        for(const activeChild of this.getActiveChildren()) {
+        for (const activeChild of this.getActiveChildren()) {
             newData = activeChild.getData(newData);
         }
 
@@ -104,11 +129,11 @@ export class RuleEngine {
             devices.set(parentEntry[0], parentEntry[1]);
         }
         // copy our devices which overwrites parent's
-        for(const entry of this.devices.entries()) {
+        for (const entry of this.devices.entries()) {
             devices.set(entry[0], entry[1]);
         }
         // recurse down on our children and repeat.
-        for(const activeChild of this.getActiveChildren()) {
+        for (const activeChild of this.getActiveChildren()) {
             devices = activeChild.getDevices(devices);
         }
         return devices;
