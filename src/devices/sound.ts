@@ -1,34 +1,32 @@
-const {OutputDevice, OUTPUT_DEVICE_TYPES} = require('./output-device');
+import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
 
 /** A sound */
-class Sound extends OutputDevice {
-    constructor(number, description) {
+export class Sound extends OutputDevice {
+    private state: string;
+    
+    constructor(public number: number, private description: string) {
         super(OUTPUT_DEVICE_TYPES.SOUND);
-        this.number = number;
-        this.description = description;
         // this.playing = false;
         this.state = null;
     }
 
-    play() {
+    play(): void {
         // this.playing = true;
         this.state = 'playing';
         this._markDirty();
     }
 
-    ack() {
+    ack(): void {
         // this.playing = false;
         this.state = 'ack';
         this._markDirty();
     }
 
-    done() {
+    done(): void {
         this.state = 'done';
     }
 
-    dirty() {
-        return this.state;
+    dirty(): boolean {
+        return this.state !== null;
     }
 }
-
-module.exports = Sound;

@@ -1,12 +1,14 @@
-import { PlayfieldLamp2 } from "../../playfieldLamp2";
+import { PlayfieldLamp } from "../../../devices/playfield-lamp";
 import { RuleData } from "../rule-data";
 import { Action } from "./action";
 
-export class DataAction implements Action {
-    constructor(private dataKey: string, private operation: DataOperation, private operand: number) {
+export class DataAction extends Action {
+    constructor(id: string, private dataKey: string, private operation: DataOperation, private operand: number, actions: Map<string, Action>,
+        nextCollection: string[]) {
+        super(id, actions, nextCollection);
     }
     
-    handle(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp2>) {
+    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>) {
         // todo: operate
         if (this.operation === DataOperation.INCREMENT) {
             data.get(this.dataKey).value += this.operand; 

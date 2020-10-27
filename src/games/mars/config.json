@@ -1,0 +1,591 @@
+{
+    "name": "Mars: System Lord",
+    "system": "80",
+    "devices": {
+        "switches": {
+            "PLAY_TEST": {
+                "number": 7,
+                "name": "Play/Test",
+                "qualifiesPlayfield": false
+            },
+            "LEFT_COIN": {
+                "number": 17,
+                "name": "Left Coin",
+                "qualifiesPlayfield": false
+            },
+            "M_ROLLOVER": {
+                "number": 20,
+                "name": "M Rollover"
+            },
+            "NUM1_RIGHT_DROP_TARGET": {
+                "number": 21,
+                "name": "#1 Right Drop Target"
+            },
+            "NUM1_CENTER_DROP_TARGET": {
+                "number": 22,
+                "name": "#1 Center Drop Target"
+            },
+            "LEFT_TOP_POP_BUMPER": {
+                "number": 23,
+                "name": "Left Top Pop Bumper"
+            },
+            "RIGHT_COIN": {
+                "number": 27,
+                "name": "Right Coin",
+                "qualifiesPlayfield": false
+            },
+            "A_ROLLOVERS": {
+                "number": 30,
+                "name": "A Rollovers (2)"
+            },
+            "NUM2_RIGHT_DROP_TARGET": {
+                "number": 31,
+                "name": "#2 Right Drop Target"
+            },
+            "NUM2_CENTER_DROP_TARGET": {
+                "number": 32,
+                "name": "#2 Center Drop Target"
+            },
+            "RIGHT_TOP_POP_BUMPER": {
+                "number": 33,
+                "name": "Right Top Pop Bumper"
+            },
+            "RIGHT_FLIPPER": {
+                "number": 34,
+                "name": "Right Flipper",
+                "qualifiesPlayfield": false
+            },
+            "CENTER_COIN": {
+                "number": 37,
+                "name": "Center Coin",
+                "qualifiesPlayfield": false
+            },
+            "R_ROLLOVER": {
+                "number": 40,
+                "name": "R Rollover"
+            },
+            "NUM3_RIGHT_DROP_TARGET": {
+                "number": 41,
+                "name": "#3 Right Drop Target"
+            },
+            "NUM3_CENTER_DROP_TARGET": {
+                "number": 42,
+                "name": "#3 Center Drop Target"
+            },
+            "LEFT_BOTTOM_POP_BUMPER": {
+                "number": 43,
+                "name": "Left Bottom Pop Bumper"
+            },
+            "TROUGH": {
+                "number": 44,
+                "name": "Trough",
+                "qualifiesPlayfield": false
+            },
+            "REPLAY": {
+                "number": 47,
+                "name": "Replay",
+                "qualifiesPlayfield": false
+            },
+            "S_ROLLOVER": {
+                "number": 50,
+                "name": "S Rollover"
+            },
+            "NUM4_RIGHT_DROP_TARGET": {
+                "number": 51,
+                "name": "#4 Right Drop Target"
+            },
+            "NUM4_CENTER_DROP_TARGET": {
+                "number": 52,
+                "name": "#4 Center Drop Target"
+            },
+            "RIGHT_BOTTOM_POP_BUMPER": {
+                "number": 53,
+                "name": "Right Bottom Pop Bumper"
+            },
+            "SPIN_TARGET": {
+                "number": 54,
+                "name": "Spin Target"
+            },
+            "BOTTOM_R_ROLLOVER": {
+                "number": 55,
+                "name": "Bottom R Rollover"
+            },
+            "TILT": {
+                "number": 57,
+                "name": "Tilt (3)",
+                "qualifiesPlayfield": false
+            },
+            "LEFT_OUTLANE_ROLLOVER": {
+                "number": 60,
+                "name": "Left Outlane Rollover"
+            },
+            "RIGHT_WARBASE_HOLE": {
+                "number": 61,
+                "name": "Right Warbase Hole"
+            },
+            "LEFT_WARBASE_HOLE": {
+                "number": 62,
+                "name": "Left Warbase Hole"
+            },
+            "RIGHT_LAUNCH_LANE": {
+                "number": 63,
+               "name": "Right Launch Lane"
+            },
+            "OUTHOLE": {
+                 "number": 64,
+                "name": "Outhole",
+                "debounceIntervalMs": 500,
+                "qualifiesPlayfield": false
+            },
+            "RIGHT_OUTLANE_ROLLOVER": {
+                "number": 70,
+               "name": "Right Outlane Rollover"
+            },
+            "RIGHT_EXTRABALL_TARGET": {
+                    "number": 71,
+                "name": "Right Extra Ball Target"
+            },
+            "EXTRABALL_ROLLOVER": {
+                "number": 72,
+               "name": "Extra Ball Rollover"
+           },
+           "TEN_POINT_SWITCHES": {
+                "number": 73,
+                "name": "10 Point Switches (11)"
+            }
+        },
+        "lamps": {
+            "GAME_OVER_RELAY": {
+                "number": 0,
+                "role": "coil",
+                "name": "Game Over",
+                "coilType": "relay"
+            },
+            "TILT_RELAY": {
+                "number": 1,
+                "role": "coil",
+                "name": "Tilt",
+                "coilType": "relay"
+            },
+            "COIN_LOCKOUT_RELAY": {
+                "number": 2,
+                "role": "coil",
+                "name": "Coin Lockout",
+                "coilType": "relay"
+            },
+            "SHOOT_AGAIN": {
+                "number": 3,
+                "role": "lamp",
+                "name": "Shoot Again"
+            },
+            "LEFT_EXTRABALL_ROLLOVER": {
+                "number": 4,
+                "role": "lamp",
+                "name": "Left Extra Ball Rollover"
+            },
+            "RIGHT_EXTRABALL_TARGET": {
+                "number": 5,
+                "role": "lamp",
+                "name": "Right Extra Ball Target"
+            },
+            "LEFT_ACTIVATE_WARBASE": {
+                "number": 6,
+                "role": "lamp",
+                "name": "Left Captive (Hole) Activate Warbase"
+            },
+            "RIGHT_ACTIVATE_WARBASE": {
+                "number": 7,
+                "role": "lamp",
+                "name": "Right Captive (Hole) Activate Warbase"
+            },
+            "STARGATE": {
+                "number": 8,
+                "role": "coil",
+                "name": "Stargate",
+                "coilType": "relay"
+            },
+            "SOUND_16": {
+                "number": 9,
+                "role": "sound",
+                "name": "Sound 16"
+            },
+            "HIGH_GAME_TO_DATE": {
+                "number": 10,
+                "role": "lamp",
+                "name": "High Game To Date"
+            },
+            "GAME_OVER": {
+                "number": 11,
+                "role": "lamp",
+                "name": "Game Over"
+            },
+            "LAUNCH": {
+                "number": 12,
+                "role": "coil",
+                "name": "Launch",
+                "coilType": "coil",
+                "durationMs": 100
+            },
+            "TROUGH_RELEASE": {
+                "number": 13,
+                "role": "coil",
+                "name": "Trough Release",
+                "coilType": "coil",
+                "durationMs": 450
+            },
+            "TWO_TIMES_MULTIPLIERS": {
+                "number": 14,
+                "role": "lamp",
+                "name": "2X Multipliers"
+            },
+            "THREE_TIMES_MULTIPLIERS": {
+                "number": 15,
+                "role": "lamp",
+                "name": "3X Multipliers"
+            },
+            "FOUR_TIMES_MULTIPLIERS": {
+                "number": 16,
+                "role": "lamp",
+                "name": "4X Multipliers"
+            },
+            "FIVE_TIMES_MULTIPLIERS": {
+                "number": 17,
+                "role": "lamp",
+                "name": "5X Multipliers"
+            },
+            "LEFT_AND_RIGHT_EXTRABALL": {
+                "number": 18,
+                "role": "lamp",
+                "name": "Left and Right Extra Ball (Hole)"
+            },
+            "LEFT_AND_RIGHT_SPECIAL": {
+                "number": 19,
+                "role": "lamp",
+                "name": "Left and Right Special (Hole)"
+            },
+            "THREE_TIMES_SCORING": {
+                "number": 20,
+                "role": "lamp",
+                "name": "3X Scoring"
+            },
+            "FIVE_TIMES_SCORING": {
+                "number": 21,
+                "role": "lamp",
+                "name": "5X Scoring"
+            },
+            "LAUNCH_RIGHT_SHOOTER": {
+                "number": 22,
+                "role": "lamp",
+                "name": "Launch Right Shooter (3)"
+            },
+            "NUM1_RIGHT_DROPTARGET_AND_NUM1_SPINTARGET": {
+                "number": 23,
+                "role": "lamp",
+                "name": "#1 Right Drop Target and #1 Spin Target"
+            },
+            "NUM2_RIGHT_DROPTARGET_AND_NUM2_SPINTARGET": {
+                "number": 24,
+                "role": "lamp",
+                "name": "#2 Right Drop Target and #2 Spin Target"
+            },
+            "NUM3_RIGHT_DROPTARGET_AND_NUM3_SPINTARGET": {
+                "number": 25,
+                "role": "lamp",
+                "name": "#3 Right Drop Target and #3 Spin Target"
+            },
+            "NUM4_RIGHT_DROPTARGET_AND_NUM4_SPINTARGET": {
+                "number": 26,
+                "role": "lamp",
+                "name": "#4 Right Drop Target and #4 Spin Target"
+            },
+            "NUM1_CENTER_DROPTARGET": {
+                "number": 27,
+                "role": "lamp",
+                "name": "#1 Center Drop Target"
+            },
+            "NUM2_CENTER_DROPTARGET": {
+                "number": 28,
+                "role": "lamp",
+                "name": "#2 Center Drop Target"
+            },
+            "NUM3_CENTER_DROPTARGET": {
+                "number": 29,
+                "role": "lamp",
+                "name": "#3 Center Drop Target"
+            },
+            "NUM4_CENTER_DROPTARGET": {
+                "number": 30,
+                "role": "lamp",
+                "name": "#4 Center Drop Target"
+            },
+            "TWENTY_THOUSAND_BONUS": {
+                "number": 31,
+                "role": "lamp",
+                "name": "20000 Bonus"
+            },
+            "ONE_THOUSAND_BONUS": {
+                "number": 32,
+                "role": "lamp",
+                "name": "1000 Bonus"
+            },
+            "TWO_THOUSAND_BONUS": {
+                "number": 33,
+                "role": "lamp",
+                "name": "2000 Bonus"
+            },
+            "THREE_THOUSAND_BONUS": {
+                "number": 34,
+                "role": "lamp",
+                "name": "3000 Bonus"
+            },
+            "FOUR_THOUSAND_BONUS": {
+                "number": 35,
+                "role": "lamp",
+                "name": "4000 Bonus"
+            },
+            "FIVE_THOUSAND_BONUS": {
+                "number": 36,
+                "role": "lamp",
+                "name": "5000 Bonus"
+            },
+            "SIX_THOUSAND_BONUS": {
+                "number": 37,
+                "role": "lamp",
+                "name": "6000 Bonus"
+            },
+            "SEVEN_THOUSAND_BONUS": {
+                "number": 38,
+                "role": "lamp",
+                "name": "7000 Bonus"
+            },
+            "EIGHT_THOUSAND_BONUS": {
+                "number": 39,
+                "role": "lamp",
+                "name": "8000 Bonus"
+            },
+            "NINE_THOUSAND_BONUS": {
+                "number": 40,
+                "role": "lamp",
+                "name": "9000 Bonus"
+            },
+            "TEN_THOUSAND_BONUS": {
+                "number": 41,
+                "role": "lamp",
+                "name": "10000 Bonus"
+            },
+            "LEFT_SPECIAL_ROLLOVER": {
+                "number": 42,
+                "role": "lamp",
+                "name": "Left Special Rollover"
+            },
+            "RIGHT_SPECIAL_ROLLOVER": {
+                "number": 43,
+                "role": "lamp",
+                "name": "Right Special Rollover"
+            },
+            "LEFT_BOTTOM_POP_BUMPER": {
+                "number": 44,
+                "role": "lamp",
+                "name": "Left Bottom Pop Bumper"
+            },
+            "LEFT_TOP_POP_BUMPER": {
+                "number": 45,
+                "role": "lamp",
+                "name": "Left Top Pop Bumper"
+            },
+            "RIGHT_BOTTOM_POP_BUMPER": {
+                "number": 46,
+                "role": "lamp",
+                "name": "Right Bottom Pop Bumper"
+            },
+            "RIGHT_TOP_POP_BUMPER": {
+                "number": 47,
+                "role": "lamp",
+                "name": "Right Top Pop Bumper"
+            }
+        },
+        "coils": {
+            "LEFT_WARBASE_EJECT": {
+                "number": 1,
+                "name": "Left Warbase Eject",
+                "coilType": "coil",
+                "durationMs": 100
+            },
+            "RIGHT_WARBASE_EJECT": {
+                "number": 2,
+                "name": "Right Warbase Eject",
+                "coilType": "coil",
+                "durationMs": 100
+            },
+            "COIN_COUNTER_3": {
+                "number": 3,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "COIN_COINTER_4": {
+                "number": 4,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "CENTER_TARGET_RESET": {
+                "number": 5,
+                "name": "Center Target Reset",
+                "coilType": "coil",
+                "durationMs": 100
+            },
+            "RIGHT_TARGET_RESET": {
+                "number": 6,
+                "name": "Right Target Reset",
+                "coilType": "coil",
+                "durationMs": 100
+            },
+            "COIN_COUNTER_7": {
+                "number": 7,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "KNOCKER": {
+                "number": 8,
+                "name": "Knocker",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "OUTHOLE": {
+                "number": 9,
+                "name": "Outhole",
+                "coilType": "coil",
+                "durationMs": 100
+            }
+        }
+    },
+    "sounds": {
+       "FOUR_FADING_PULSES": {
+            "number": 1,
+            "description": "4 fading pulses",
+            "background": true
+       },
+       "TWO_PULSES": {
+            "number": 2,
+            "description": "2 pulses"
+        },
+        "TILT": {
+            "number": 3,
+            "description": "'Tilt, tilt, tilt'"
+        },
+        "PREPARE_FOR_BATTLE": {
+            "number": 4,
+            "description": "'Prepare for battle'"
+       },
+       "LASER_SHOT": {
+            "number": 5,
+            "description": "Laser shot"
+        },
+        "LASER_SHOT_LONG": {
+            "number": 6,
+            "description": "Long laser shot"
+        },
+        "PULSE": {
+            "number": 7,
+            "description": "Pulse"
+       },
+       "BACKGROUND_PULSING": {
+            "number": 8,
+            "description": "Background pulsing"
+        },
+        "FALLING": {
+            "number": 9,
+            "description": "Falling"
+        },
+        "HIT_1": {
+            "number": 10,
+            "description": "Hit"
+       },
+       "FOUR_FADING_PULSES_2": {
+            "number": 11,
+            "description": "4 fading pulses"
+        },
+        "TEST12": {
+            "number": 12,
+            "description": "BLANK"
+        },
+        "HIT_SHIELD": {
+            "number": 13,
+            "description": "Hit shield"
+       },
+       "HIT_2": {
+            "number": 14,
+            "description": "Hit2"
+        },
+        "NOOO": {
+            "number": 15,
+            "description": "'Nooooooooo'"
+        },
+        "TEST16": {
+            "number": 16,
+            "description": "BLANK"
+       },
+       "WARBASE_LEFT_DEFENCES_DESTROYED": {
+            "number": 17,
+            "description": "'Warbase left defences destroyed'"
+        },
+        "WARBASE_RIGHT_DEFENCES_DESTROYED": {
+            "number": 18,
+            "description": "'Warbase right defences destroyed'"
+        },
+        "WARBASE_LEFT_SECURED": {
+            "number": 19,
+            "description": "'Warbase left secured'"
+       },
+       "WARBASE_RIGHT_SECURED": {
+            "number": 20,
+            "description": "'Warbase right secured'"
+        },
+        "HYPERFORCE1": {
+            "number": 21,
+            "description": "'Hyperforce one'"
+        },
+        "HYPERFORCE2": {
+            "number": 22,
+            "description": "'Hyperforce two'"
+       },
+       "EARTHLING": {
+            "number": 23,
+            "description": "'Earthling, I am supreme'"
+        },
+        "FORCES_CHALLENGE_YOU": {
+            "number": 24,
+            "description": "'The forces of Mars challenge you'"
+        },
+       "CAN_YOU_SURVIVE": {
+            "number": 25,
+            "description": "'Can you survive battle with Mars?'"
+        },
+        "ROCKET": {
+            "number": 26,
+            "description": "Rocket"
+       },
+        "SHOOT_STARGATE": {
+            "number": 27,
+            "description": "'Shoot Stargate for hyperforce.'"
+        },
+        "ATTACK": {
+            "number": 28,
+            "description": "'Attack'"
+       },
+       "MARS_CONCEDES": {
+            "number": 29,
+            "description": "'Mars concedes, I demand a rematch'"
+        },
+        "BATTLE_OVER": {
+            "number": 30,
+            "description": "'Battle is over, Mars is supreme'"
+        },
+        "ATTACK_ATTACK": {
+            "number": 31,
+            "description": "'Attack, attack'"
+        }
+    }
+}

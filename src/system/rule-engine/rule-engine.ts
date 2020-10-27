@@ -1,16 +1,18 @@
-import { PlayfieldLamp2 } from "../playfieldLamp2";
+import { PlayfieldLamp } from "../../devices/playfield-lamp";
 import { Action } from "./actions/action";
+import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { StateAction } from "./actions/state-action";
 import { RuleData } from "./rule-data";
-import { RuleSchema } from "./schema/rule.schema";
+import { ActionSchema, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
 
 export class RuleEngine {
     active: boolean;
     data: Map<string, RuleData> = new Map();
-    devices: Map<string, PlayfieldLamp2> = new Map();
-    actions: Map<string, Action[]> = new Map();
+    devices: Map<string, PlayfieldLamp> = new Map();
+    switchActions: Map<string, Action[]> = new Map();
+    allActions: Map<string, Action> = new Map();
     children: RuleEngine[] = [];
 
     constructor(public id: string, public autoStart: boolean) {
@@ -24,7 +26,7 @@ export class RuleEngine {
         for (const deviceSchema of schema.devices) {
             switch (deviceSchema.type) {
                 case "lamp":
-                    engine.devices.set(deviceSchema.id, new PlayfieldLamp2(
+                    engine.devices.set(deviceSchema.id, new PlayfieldLamp(
                         deviceSchema.number, deviceSchema.role, deviceSchema.name, deviceSchema.state
                     ));
                     break;
@@ -34,30 +36,7 @@ export class RuleEngine {
         }
 
         for (const action of schema.actions) {
-            switch (action.type) {
-                case 'data':
-                    engine.addAction(
-                        action.switchId,
-                        new DataAction(action.dataId, action.operation, action.operand)
-                    );
-                    break;
-                case 'device':
-                    engine.addAction(
-                        action.switchId,
-                        new DeviceAction(action.deviceId, action.state)
-                    )
-                    break;
-                case 'state':
-                    engine.addAction(action.switchId,
-                        new StateAction(
-                            engine.children.find((c) => c.id === action.childId),
-                            action.state
-                        )
-                    );
-                    break;
-                default:
-                    throw new Error('Not implemented');
-            }
+            RuleEngine.createAction(action, engine, action.next);
         }
 
         for (const data of schema.data) {
@@ -67,11 +46,44 @@ export class RuleEngine {
         return engine;
     }
 
-    addAction(key: string, action: Action): void {
-        if (!this.actions.has(key)) {
-            this.actions.set(key, []);
+    private static createAction(action: DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema, engine: RuleEngine, next: string[]): void {
+        let newAction: Action = null;
+        switch (action.type) {
+            case 'data':
+                newAction = new DataAction(action.id, action.dataId, action.operation, action.operand, engine.allActions, next);
+                break;
+            case 'device':
+                newAction = new DeviceAction(action.id, action.deviceId, action.state, engine.allActions, next);
+                break;
+            case 'state':
+                const target = action.childId ? engine.children.find((c) => c.id === action.childId) : engine;
+                newAction = new StateAction(
+                        action.id, 
+                        target,
+                        action.state, engine.allActions, next
+                    );
+                break;
+            case "condition":
+                newAction = new ConditionalAction(
+                    action.id, action.statement, action.trueResult, action.falseResult, engine.allActions, next
+                );
+                break;
+            default:
+                throw new Error('Not implemented');
         }
-        this.actions.get(key).push(action);
+
+        if (action.switchId) {
+            engine.addAction(action.switchId, newAction);
+        }
+        engine.allActions.set(newAction.id, newAction);
+    }
+
+    addAction(switchId: string, action: Action): Action {
+        if (!this.switchActions.has(switchId)) {
+            this.switchActions.set(switchId, []);
+        }
+        this.switchActions.get(switchId).push(action);
+        return action;
     }
 
     start(): void {
@@ -97,8 +109,8 @@ export class RuleEngine {
 
         if (childHandled) {
             return true;
-        } else if (this.actions.has(id)) {
-            for (const action of this.actions.get(id)) {
+        } else if (this.switchActions.has(id)) {
+            for (const action of this.switchActions.get(id)) {
                 action.handle(this.getData(), this.getDevices());
             }
             return true;
@@ -126,8 +138,8 @@ export class RuleEngine {
         return newData;
     }
 
-    getDevices(parentDevices: Map<string, PlayfieldLamp2> = new Map()): Map<string, PlayfieldLamp2> {
-        let devices: Map<string, PlayfieldLamp2> = new Map();
+    getDevices(parentDevices: Map<string, PlayfieldLamp> = new Map()): Map<string, PlayfieldLamp> {
+        let devices: Map<string, PlayfieldLamp> = new Map();
         // copy parent devices
         for (const parentEntry of Array.from(parentDevices.entries())) {
             devices.set(parentEntry[0], parentEntry[1]);

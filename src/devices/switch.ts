@@ -1,35 +1,34 @@
+import { EventEmitter } from "events";
+
 const {MessageBroker} = require('../system/messages');
-const EventEmitter = require('events');
+// const EventEmitter = require('events');
 // const logger = require('../system/logger');
 
 /**
  * An abstract switch.
- * @abstract
  */
-class Switch extends EventEmitter {
-    constructor(id, activeLow, debounceIntervalMs = 100) {
+export abstract class Switch extends EventEmitter {
+    protected lastActiveTime: number = 0;
+    protected active: boolean;
+    private ack: boolean;
+
+    constructor(public id: string, protected activeLow: boolean, protected debounceIntervalMs: number = 100) {
         super();
         if (!id) {
             throw new Error('Provide an id');
         }
         // TODO: Check the id isnt in messages.EVENTS.
-        this.id = id;
-        this.activeLow = activeLow;
-        this.debounceIntervalMs = debounceIntervalMs;
-        this.lastActiveTime = 0;
 
-        this.active = null;
-        this._ack = null;
     }
 
-    hasChanged() {
-        return this.active !== this._ack;
+    hasChanged(): boolean {
+        return this.active !== this.ack;
     }
 
-    getActive() {
+    getActive(): boolean {
         // todo debounce
-        if (this.active !== this._ack) {
-            this._ack = this.active;
+        if (this.active !== this.ack) {
+            this.ack = this.active;
             return this.active;
         }
         else {
@@ -37,7 +36,7 @@ class Switch extends EventEmitter {
         }
     }
 
-    onChange(value) {
+    onChange(value): void {
         const realValue = this.activeLow ? !value : value;
         // TODO: Maybe only set to true, allow getActive() to reset it.
         this.active = realValue;
@@ -64,7 +63,7 @@ class Switch extends EventEmitter {
         // this.active = realValue;
     }
 
-    _publish(realValue) {
+    _publish(realValue): void {
         this.emit('change', realValue);
         if (realValue) {
             this.emit('active', realValue);
@@ -76,5 +75,3 @@ class Switch extends EventEmitter {
         return new Date().valueOf();
     }
 }
-
-module.exports = Switch;

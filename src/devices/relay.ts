@@ -1,19 +1,19 @@
-const {Coil} = require('./coil');
+import { Coil, DRIVER_TYPES } from "./coil";
 
 /**
  * A toggle relay.
  */
-class Relay extends Coil {
-    constructor(number, name, driverType) {
+export class Relay extends Coil {
+    constructor(number: number, name: string, driverType: DRIVER_TYPES) {
         super(number, name, driverType, null);
     }
 
-    on() {
+    async on() {
         this.isOn = true;
         this._markDirty();
     }
 
-    toggle() {
+    toggle(): void {
         if (this.isOn) {
             this.off();
         }
@@ -22,5 +22,3 @@ class Relay extends Coil {
         }
     }
 }
-
-module.exports = Relay;

@@ -1,11 +1,15 @@
-import { LampState, PlayfieldLamp2 } from "../../playfieldLamp2";
+import { LightState } from "../../../devices/light";
+import { PlayfieldLamp } from "../../../devices/playfield-lamp";
 import { RuleData } from "../rule-data";
 import { Action } from "./action";
 
-export class DeviceAction implements Action {
-    constructor(private key: string, private state: LampState) {}
+export class DeviceAction extends Action {
+    constructor(id: string, private key: string, private state: LightState, actions: Map<string, Action>,
+        nextCollection: string[]) {
+        super(id, actions, nextCollection);
+    }
     
-    handle(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp2>): void {
+    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
         devices.get(this.key).setState(this.state);
     }
 }

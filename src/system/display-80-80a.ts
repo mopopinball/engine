@@ -3,9 +3,17 @@ const _ = require('lodash');
 /**
  * A System 80, 80A style display.
  */
-class Display {
+export class Sys80or80ADisplay {
+    player1: string;
+    player2: string;
+    player3: string;
+    player4: string;
+    _credits: string;
+    _ballNumber: string;
+    status: string;
+    
     constructor() {
-        this.type = '80/80a';
+        // this.type = '80/80a';
         this.player1 = this.leftPad('');
         this.player2 = this.leftPad('');
         this.player3 = this.leftPad('');
@@ -73,5 +81,3 @@ class Display {
         return `${p1Hash}${p2Hash}${p3Hash}${p4Hash}${this.status}`;
     }
 }
-
-module.exports = Display;

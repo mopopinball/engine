@@ -1,4 +1,7 @@
 const gpiop = require('rpi-gpio').promise;
+// import { GPIO } from 'rpi-gpio';
+// import GPIO = require('rpi-gpio');
+// import {} from 'rpi-gpio';
 const logger = require('../system/logger');
 const {MessageBroker, EVENTS} = require('../system/messages');
 
@@ -6,31 +9,32 @@ const {MessageBroker, EVENTS} = require('../system/messages');
  * A GPIO pin.
  * The three static methods are to ensure gpio pins are setup sequentially, not concurrently.
  */
-class GpioPin {
-    constructor(pinNumber, direction, edge = gpiop.EDGE_NONE) {
+export class GpioPin {
+    private state: boolean;
+    static instances: GpioPin[];
+    setupComplete: boolean;
+    
+    constructor(private pinNumber: number, private direction: 'in' | 'out' | 'low' | 'high', private edge: 'none' | 'rising' | 'falling' | 'both' = 'none') {
         if (!pinNumber) {
             throw new Error('Provide a pin number');
         }
-        this.pinNumber = pinNumber;
-        this.direction = direction;
         if (this.direction === gpiop.DIR_LOW) {
             this.state = false;
         }
         else if (this.direction === gpiop.DIR_HIGH) {
             this.state = true;
         }
-        this.edge = edge;
         GpioPin.register(this);
     }
 
-    static staticConstructor() {
+    static staticConstructor(): void {
         if (!GpioPin.instances) {
             GpioPin.instances = [];
             MessageBroker.on(EVENTS.SETUP_GPIO, () => GpioPin.setupSync());
         }
     }
 
-    static register(instance) {
+    static register(instance): void {
         GpioPin.instances.push(instance);
     }
 
@@ -48,21 +52,22 @@ class GpioPin {
         MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE);
     }
 
-    async setup() {
+    async setup(): Promise<boolean> {
         try {
             this.setupComplete = false;
             logger.info(`Setting up GPIO pin ${this.pinNumber} as ${this.direction}.`);
-            await gpiop.setup(this.pinNumber, this.direction, this.edge);
-            this.setupComplete = true;
+            return await gpiop.setup(this.pinNumber, this.direction, this.edge).then(() => {
+                this.setupComplete = true;
+            });
         }
         catch (e) {
-            logger.error(new Error(`Failed to setup pin ${this.pinNumber} as ${this.direction}. Retrying...`, e));
+            logger.error(new Error(`Failed to setup pin ${this.pinNumber} as ${this.direction}. Retrying...`));
             throw e;
         }
     }
 
-    async toggle() {
-        await this.write(!this.state);
+    async toggle(): Promise<unknown> {
+        return await this.write(!this.state);
     }
 
     async writeHigh() {
@@ -93,5 +98,3 @@ class GpioPin {
 
 // Since node doesnt support static constructors, we'll manually call it here.
 GpioPin.staticConstructor();
-
-module.exports = GpioPin;

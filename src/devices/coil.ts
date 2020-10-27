@@ -1,26 +1,30 @@
-const {OutputDevice, OUTPUT_DEVICE_TYPES} = require('./output-device');
+import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+
 const logger = require('../system/logger');
-const ACTUATION_TYPE = {
-    FIRE: 'FIRE',
-    ON: 'ON',
-    OFF: 'OFF'
+export enum ACTUATION_TYPE {
+    FIRE,
+    ON,
+    OFF
 };
 
-const DRIVER_TYPES = {
-    LAMP: 'lamp',
-    COIL: 'coil'
+export enum CoilType {
+    COIL = 'coil',
+    RELAY = 'relay'
+}
+
+export enum DRIVER_TYPES {
+    LAMP,
+    COIL
 };
 
 /**
  * a coil.
  */
-class Coil extends OutputDevice {
-    constructor(number, name, driverType, duration) {
+export class Coil extends OutputDevice {
+    private _autoOffTimeout: NodeJS.Timeout;
+
+    constructor(private number: number, private name: string, private driverType: DRIVER_TYPES, private duration: number) {
         super(OUTPUT_DEVICE_TYPES.COIL);
-        this.number = number;
-        this.name = name;
-        this.driverType = driverType;
-        this.duration = duration;
         this.isOn = false;
         this._autoOffTimeout = null;
 
@@ -54,5 +58,3 @@ class Coil extends OutputDevice {
         logger.debug(`Coil: ${this.name} off`);
     }
 }
-
-module.exports = {Coil, ACTUATION_TYPE, DRIVER_TYPES};

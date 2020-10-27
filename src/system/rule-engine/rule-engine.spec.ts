@@ -1,10 +1,10 @@
-import { LampState } from "../playfieldLamp2";
 import { RuleSchema } from "./schema/rule.schema";
 import { RuleEngine } from "./rule-engine";
 import * as testData from "./test-data.json";
+import { LightState } from "../../devices/light";
 
 describe('Rules', () => {
-    const data: RuleSchema = testData as RuleSchema;
+    const data: RuleSchema = testData as unknown as RuleSchema;
 
     let ruleEngine: RuleEngine = null;
 
@@ -28,8 +28,8 @@ describe('Rules', () => {
 
         // check
         expect(devices.size).toBe(2);
-        expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LampState.OFF);
-        expect(devices.get('L1').getState()).toEqual(LampState.ON);
+        expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
+        expect(devices.get('L1').getState()).toEqual(LightState.ON);
     });
 
     it('modifies data', () => {
@@ -45,7 +45,7 @@ describe('Rules', () => {
         ruleEngine.onSwitch('sw0');
 
         // check
-        expect(ruleEngine.devices.get('L1').getState()).toEqual(LampState.BLINK);
+        expect(ruleEngine.devices.get('L1').getState()).toEqual(LightState.BLINK);
     });
 
     it('modifies state', () => {
@@ -53,6 +53,6 @@ describe('Rules', () => {
         ruleEngine.onSwitch('sw1');
 
         // check
-        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LampState.OFF);
+        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LightState.OFF);
     });
 })

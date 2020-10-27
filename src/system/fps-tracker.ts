@@ -3,7 +3,8 @@ const logger = require('./logger');
 /**
  * Provides FPS tracking.
  */
-class FpsTracker {
+export class FpsTracker {
+    loopTimes: number[];
     constructor() {
         this.loopTimes = [];
 
@@ -28,5 +29,3 @@ class FpsTracker {
         logger.debug(JSON.stringify(this.loopTimes));
     }
 }
-
-module.exports = FpsTracker;
