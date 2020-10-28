@@ -1,7 +1,7 @@
 import { LightState } from "../../devices/light";
 import { RuleEngine } from "./rule-engine";
 import { RuleSchema } from "./schema/rule.schema";
-import * as testData from "./test-data.json";
+import * as testData from "../../../test-data/parent-child.json";
 
 describe('Rule Engine Load()', () => {
     const data: RuleSchema = testData as unknown as RuleSchema;
@@ -38,7 +38,7 @@ describe('Rule Engine Load()', () => {
     it('loads children', () => {
         expect(ruleEngine.children.length).toEqual(1);
         expect(ruleEngine.children[0].devices.size).toEqual(1);
-        expect(ruleEngine.children[0].devices.get('L1').getState()).toEqual(LightState.ON);
+        expect(ruleEngine.children[0].devices.get('L1').getState()).toEqual(LightState.BLINK);
     });
 
     it('loads actions', () => {

@@ -127,7 +127,7 @@ export class Game {
         const devices = this.ruleEngine.getDevices();
         devices.forEach((device) => {
             if (device instanceof PlayfieldLamp) {
-                this.lamps.get(device.number).setState(device.getState);
+                this.lamps.get(device.number).setState(device.getState());
             }
         //     device
         //     // const state = this.gameState.getDeviceState(id);

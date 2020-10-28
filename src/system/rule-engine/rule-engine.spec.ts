@@ -1,6 +1,6 @@
 import { RuleSchema } from "./schema/rule.schema";
 import { RuleEngine } from "./rule-engine";
-import * as testData from "./test-data.json";
+import * as testData from "../../../test-data/parent-child.json";
 import { LightState } from "../../devices/light";
 
 describe('Rules', () => {
@@ -29,7 +29,7 @@ describe('Rules', () => {
         // check
         expect(devices.size).toBe(2);
         expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
-        expect(devices.get('L1').getState()).toEqual(LightState.ON);
+        expect(devices.get('L1').getState()).toEqual(LightState.BLINK);
     });
 
     it('modifies data', () => {

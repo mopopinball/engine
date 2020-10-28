@@ -1,5 +1,4 @@
-import { LampState } from "../../playfieldLamp2";
-import { Action } from "../actions/action";
+import { LAMP_ROLES } from "../../../devices/playfield-lamp";
 
 export interface RuleSchema {
     id: string;
@@ -20,7 +19,7 @@ export interface LampSchema {
     id: string;
     type: 'lamp';
     number: number;
-    role: number;
+    role: LAMP_ROLES;
     name: string;
     state?: number;
 }
