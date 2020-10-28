@@ -8,7 +8,7 @@ const {MessageBroker} = require('../system/messages');
  * An abstract switch.
  */
 export abstract class Switch extends EventEmitter {
-    protected lastActiveTime: number = 0;
+    protected lastActiveTime = 0;
     protected active: boolean;
     private ack: boolean;
 

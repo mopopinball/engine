@@ -5,7 +5,7 @@ export enum ACTUATION_TYPE {
     FIRE,
     ON,
     OFF
-};
+}
 
 export enum CoilType {
     COIL = 'coil',
@@ -15,7 +15,7 @@ export enum CoilType {
 export enum DRIVER_TYPES {
     LAMP,
     COIL
-};
+}
 
 /**
  * a coil.

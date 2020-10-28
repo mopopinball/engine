@@ -330,7 +330,7 @@ export class SwitchesPic extends Pic {
         while (n) {
             parity = parity ? 0 : 1;
             n = n & (n - 1);
-        };
+        }
         return parity;
     }
 

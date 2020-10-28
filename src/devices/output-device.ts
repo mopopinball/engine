@@ -3,7 +3,7 @@ export enum OUTPUT_DEVICE_TYPES {
     LIGHT,
     COIL,
     SOUND
-};
+}
 
 /**
  * An output device which is controled by the driver PIC.

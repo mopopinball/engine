@@ -4,7 +4,7 @@ import { Light, LightState } from "./light";
 export enum LAMP_ROLES {
     LAMP = 'lamp',
     COIL = 'coil'
-};
+}
 
 /**
  * todo
