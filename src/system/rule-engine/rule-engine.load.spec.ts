@@ -32,7 +32,7 @@ describe('Rule Engine Load()', () => {
         // check
         expect(ruleEngine.devices.size).toBe(2);
         expect(ruleEngine.devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
-        expect(ruleEngine.devices.get('L1').getState()).toEqual(LightState.OFF);
+        expect(ruleEngine.devices.get('L1').getState()).toEqual(LightState.ON);
     });
 
     it('loads children', () => {

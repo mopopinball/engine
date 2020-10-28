@@ -1,18 +1,23 @@
-const Pic = require('./pic');
+import { GpioPin } from "./gpio-pin";
+import { Pic } from "./pic";
+
+// const Pic = require('./pic');
 const gpiop = require('rpi-gpio').promise;
 const gpio = require('rpi-gpio');
 const pins = require('../../pins.json');
 const Buffer = require('buffer').Buffer;
 const {MessageBroker, EVENTS} = require('../system/messages');
 const logger = require('../system/logger');
-const GpioPin = require('./gpio-pin');
-const bitwise = require('bitwise');
+// const GpioPin = require('./gpio-pin');
+// const bitwise = require('bitwise');
+import { byte, nibble } from 'bitwise';
+import { UInt4, UInt8 } from "bitwise/types";
 
 const PAYLOAD_SIZE = 2;
 const COMMS_LOGGING = false;
 
 /**
- * The switches PIC.
+ * The switches PIC. NOT i2c.
  * // 2 control inputs from pi
     // 5 outputs via IC4 to pi
     // 5 jumper inputs from K1
@@ -22,9 +27,43 @@ const COMMS_LOGGING = false;
     // 1 led
     // 1 reset
  */
-class SwitchesPic extends Pic {
-    constructor() {
-        super();
+export class SwitchesPic extends Pic {
+    private static instance: SwitchesPic;
+    reading: boolean;
+    version: string;
+    payload: Buffer;
+    nibbleCount: number;
+    errorCount: number;
+    _data0: GpioPin;
+    _data1: GpioPin;
+    _data2: GpioPin;
+    _data3: GpioPin;
+    _outReady: GpioPin;
+    _ack: GpioPin;
+    _retry: GpioPin;
+    _reset: GpioPin;
+    _payloadInProgress: boolean;
+    k1_1: number;
+    k1_2: number;
+    k1_3: number;
+    k1_4: number;
+    k1_5: number;
+    s1_1: number;
+    s1_3: number;
+    s1_4: number;
+    s1_5: number;
+    slam: number;
+    
+    public static getInstance(): SwitchesPic {
+        if (!SwitchesPic.instance) {
+            SwitchesPic.instance = new SwitchesPic();
+        }
+
+        return SwitchesPic.instance;
+    }
+
+    private constructor() {
+        super(null);
         this.reading = false;
         this.version = '0.0.0';
 
@@ -107,10 +146,6 @@ class SwitchesPic extends Pic {
         logger.info('Resetting IC1 complete');
     }
 
-    dec2bin(dec) {
-        return (dec >>> 0).toString(2);
-    }
-
     /**
      * Reads the entire data payload from the PIC one nibble at a time.
      * There are 3 valid payloads (C = checksum):
@@ -131,7 +166,7 @@ class SwitchesPic extends Pic {
 
         // a complete data payload consists of three bytes.
         const nibble = await this._readNibble();
-        const byteIndex = parseInt(this.nibbleCount / 2);
+        const byteIndex = Math.round(this.nibbleCount / 2);
         if (this.nibbleCount === 0 || this.nibbleCount === 2) {
             this.payload[byteIndex] = nibble;
         }
@@ -205,14 +240,14 @@ class SwitchesPic extends Pic {
 
     // [01KKKKKW][WWWLCCCC] K = switch K1, W = switch S1
     _onDipPayload() {
-        const byte0 = bitwise.byte.read(this.payload[0]);
+        const byte0 = byte.read(this.payload[0] as UInt8);
         this.k1_1 = byte0[2];
         this.k1_2 = byte0[3];
         this.k1_3 = byte0[4];
         this.k1_4 = byte0[5];
         this.k1_5 = byte0[6];
         this.s1_1 = byte0[7];
-        const byte1 = bitwise.byte.read(this.payload[1]);
+        const byte1 = byte.read(this.payload[1] as UInt8);
         this.s1_3 = byte1[0];
         this.s1_4 = byte1[1];
         this.s1_5 = byte1[2];
@@ -239,14 +274,14 @@ class SwitchesPic extends Pic {
         MessageBroker.publish('mopo/dips', JSON.stringify(payload));
     }
 
-    async _readNibble() {
+    async _readNibble(): Promise<UInt4> {
         const bits = await Promise.all([
             this._data0.read(),
             this._data1.read(),
             this._data2.read(),
             this._data3.read()
         ]);
-        return bitwise.nibble.write(bits);
+        return nibble.write(bits);
     }
 
     _sendAck() {
@@ -290,10 +325,10 @@ class SwitchesPic extends Pic {
         });
     }
 
-    getParity(n) {
+    getParity(n): number {
         let parity = 0;
         while (n) {
-            parity = !parity;
+            parity = parity ? 0 : 1;
             n = n & (n - 1);
         };
         return parity;
@@ -315,5 +350,3 @@ class SwitchesPic extends Pic {
         MessageBroker.emit(EVENTS.SETUP_GPIO);
     }
 }
-
-module.exports = SwitchesPic;

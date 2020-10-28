@@ -1,5 +1,8 @@
 import { Coil, CoilType, DRIVER_TYPES } from "./devices/coil";
+import { DisplaysPic } from "./devices/displays-pic";
+import { DriverPic } from "./devices/driver-pic";
 import { LightState } from "./devices/light";
+import { OutputDevice } from "./devices/output-device";
 import { LAMP_ROLES, PlayfieldLamp } from "./devices/playfield-lamp";
 import { PlayfieldSwitch } from "./devices/playfield-switch";
 import { Relay } from "./devices/relay";
@@ -9,12 +12,11 @@ import { FpsTracker } from "./system/fps-tracker";
 import { CoilsSchema, HardwareCoilSchema, HardwareConfig, HardwareSwitchSchema } from "./system/hardware-config.schema";
 import { RuleEngine } from "./system/rule-engine/rule-engine";
 import { RuleSchema } from "./system/rule-engine/schema/rule.schema";
+import { SwitchPayload } from "./system/rule-engine/switch-payload";
 
 const logger = require('./system/logger');
 const equal = require('deep-equal');
 const { MessageBroker, EVENTS } = require('./system/messages');
-const DriverPicSingleton = require('./devices/driver-pic');
-const DisplaysPicSingleton = require('./devices/displays-pic');
 // const Maintenance = require('./system/maintenance');
 // const Security = require('./system/security');
 const Setup = require('./system/setup');
@@ -34,7 +36,6 @@ const MS_PER_FRAME = 33; // 30 fps
  */
 export class Game {
     hardwareConfig: HardwareConfig;
-    // gameStateConfig: RuleSchema;
     // maintenance: any;
     // security: any;
     // setup: any;
@@ -52,6 +53,7 @@ export class Game {
     private lamps: Map<number, PlayfieldLamp> = new Map();
     private coils: Map<string, Coil> = new Map();
     private sounds: Map<number, Sound> = new Map();
+    private outputDevices: OutputDevice[] = [];
     setup: any;
 
     constructor(hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
@@ -102,7 +104,7 @@ export class Game {
         this._gameLoop();
     }
 
-    onSwitchMatrixEvent(payload) {
+    onSwitchMatrixEvent(payload: SwitchPayload) {
         const sw = this.switchesByNumber.get(payload.switch);
         if (!sw) {
             logger.warn(`No switch found: ${payload.switch}`);
@@ -110,7 +112,6 @@ export class Game {
         else {
             logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
             try {
-                // this.gameState.onAction(sw.id);
                 this.ruleEngine.onSwitch(sw.id);
             }
             catch (e) {
@@ -119,10 +120,15 @@ export class Game {
         }
     }
 
+    /**
+     * Updates our output device states based on the states in the rule engine.
+     */
     update() {
-        // const allDeviceIds = this.gameState.getAllDeviceStates();
         const devices = this.ruleEngine.getDevices();
-        // devices.forEach((device) => {
+        devices.forEach((device) => {
+            if (device instanceof PlayfieldLamp) {
+                this.lamps.get(device.number).setState(device.getState);
+            }
         //     device
         //     // const state = this.gameState.getDeviceState(id);
         //     const device = this.outputDevices[id];
@@ -130,7 +136,7 @@ export class Game {
         //     if (this._hasCallStateChanged(id, state)) {
         //         this._callDevice(id, device, state);
         //     }
-        // });
+        });
     }
 
     // _hasCallStateChanged(deviceId, state) {
@@ -138,13 +144,13 @@ export class Game {
     //     return !currentState || !equal(currentState, state);
     // }
 
-    _callDevice(id, device, state) {
-        for (const entry of Object.entries(state)) {
-            logger.debug(`Calling ${id}.${entry[0]}(${entry[1]})`);
-            device[entry[0]](entry[1]);
-        }
-        // this.callStates[id] = state;
-    }
+    // _callDevice(id, device, state) {
+    //     for (const entry of Object.entries(state)) {
+    //         logger.debug(`Calling ${id}.${entry[0]}(${entry[1]})`);
+    //         device[entry[0]](entry[1]);
+    //     }
+    //     // this.callStates[id] = state;
+    // }
 
     // setup() {
     //     this._setupPics();
@@ -152,8 +158,8 @@ export class Game {
     // }
 
     _setupPics() {
-        DriverPicSingleton.setup();
-        DisplaysPicSingleton.setup();
+        DriverPic.getInstance().setup();
+        DisplaysPic.getInstance().setup();
     }
 
     _loadConfig() {
@@ -212,8 +218,10 @@ export class Game {
                 this.sounds.set(sound.number, sound);
             });
 
-        // // keep track of all output devices;
-        // this.outputDevices = Object.assign({}, this.lamps, this.coils, this.sounds);
+        // keep track of all output devices;
+        this.outputDevices = this.outputDevices.concat(Array.from(this.lamps.values()));
+        this.outputDevices = this.outputDevices.concat(Array.from(this.coils.values()));
+        this.outputDevices = this.outputDevices.concat(Array.from(this.sounds.values()));
 
         const swCount = this.switches.size;
         const lampCount = this.lamps.size;
@@ -264,23 +272,28 @@ export class Game {
      */
     async _updateDevices() {
         // check if there is at least one dirty device.
-        // const dirtyDevices = Object.values(this.outputDevices).filter((device) => device.dirty());
-        // if (dirtyDevices.length === 0) {
-        //     return;
-        // }
+        // const dirtyDevices = Object.values<OutputDevice>(this.lamps.values()).filter((device) => device.dirty());
+        const dirtyDevices: OutputDevice[] = [];
+        for (const l2 of this.lamps.values()) {
+            dirtyDevices.push(l2);
+        }
+
+        if (dirtyDevices.length === 0) {
+            return;
+        }
         // we track on vs. off devices seperatly so we can ack them seperatly.
         // this handles a case where a device goes off during an update() call, and
         // we wouldnt want to ack the device off when we havnt sent the off state
         // to the pic.
-        // const dirtyOnDevices = dirtyDevices.filter((device) => !device._ackOn);
-        // const dirtyOffDevices = dirtyDevices.filter((device) => !device._ackOff);
+        const dirtyOnDevices = dirtyDevices.filter((device) => !device.ackOn);
+        const dirtyOffDevices = dirtyDevices.filter((device) => !device.ackOff);
 
         // send the update(s) to the pic.
-        // const updateSuccess = await DriverPicSingleton.update(Object.values(this.outputDevices));
-        // if (updateSuccess) {
-        //     dirtyOnDevices.forEach((device) => device.ackDirty(true));
-        //     dirtyOffDevices.forEach((device) => device.ackDirty(false));
-        // }
+        const updateSuccess = await DriverPic.getInstance().update(Object.values(this.outputDevices));
+        if (updateSuccess) {
+            dirtyOnDevices.forEach((device) => device.ackDirty(true));
+            dirtyOffDevices.forEach((device) => device.ackDirty(false));
+        }
 
         // MessageBroker.emit(
         //     EVENTS.OUTPUT_DEVICE_CHANGE,
@@ -293,7 +306,7 @@ export class Game {
     async _updateDisplays() {
         if (this.displays.getHash() !== this.lastPayload) {
             this.lastPayload = this.displays.getHash();
-            await DisplaysPicSingleton.update(this.displays);
+            await DisplaysPic.getInstance().update(this.displays);
         }
     }
 }

@@ -1,8 +1,14 @@
 import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
 
+export enum SoundState {
+    PLAYING,
+    ACK,
+    DONE
+}
+
 /** A sound */
 export class Sound extends OutputDevice {
-    private state: string;
+    public state: SoundState;
     
     constructor(public number: number, private description: string) {
         super(OUTPUT_DEVICE_TYPES.SOUND);
@@ -12,18 +18,18 @@ export class Sound extends OutputDevice {
 
     play(): void {
         // this.playing = true;
-        this.state = 'playing';
+        this.state = SoundState.PLAYING;
         this._markDirty();
     }
 
     ack(): void {
         // this.playing = false;
-        this.state = 'ack';
+        this.state = SoundState.ACK;
         this._markDirty();
     }
 
     done(): void {
-        this.state = 'done';
+        this.state = SoundState.DONE;
     }
 
     dirty(): boolean {

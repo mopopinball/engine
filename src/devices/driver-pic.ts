@@ -1,13 +1,17 @@
-const {OUTPUT_DEVICE_TYPES} = require('./output-device');
+import { Bit } from "bitwise/types";
+import * as i2c from 'i2c-bus';
+import { BytesWritten, PromisifiedBus } from "i2c-bus";
+import { Coil, DRIVER_TYPES } from "./coil";
+import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { Pic } from "./pic";
+import { PlayfieldLamp } from "./playfield-lamp";
+import { Sound, SoundState } from "./sound";
+
 const bufferOperations = require('bitwise/buffer');
 const bitwise = require('bitwise');
-const Pic = require('./pic');
-const i2c = require('i2c-bus');
 const logger = require('../system/logger');
-const {DRIVER_TYPES} = require('./coil');
 
 const PIC_ADDRESS = 0x41;
-
 const DEBUG = false;
 
 /**
@@ -18,9 +22,25 @@ const DEBUG = false;
  * S=Sound (1-4)
  * [LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]
  */
-class DriverPic extends Pic {
-    constructor() {
-        super();
+export class DriverPic extends Pic {
+    private static instance: DriverPic;
+    i2c1: PromisifiedBus;
+
+    public static getInstance(): DriverPic {
+        if (!DriverPic.instance) {
+            DriverPic.instance = new DriverPic();
+        }
+
+        return DriverPic.instance;
+    }
+
+    private lamps: Bit[];
+    private coils: Bit[];
+    private sounds: Bit[];
+    private buffer: Buffer;
+
+    private constructor() {
+        super(PIC_ADDRESS);
         this.lamps = this._initArray(53);
         this.coils = this._initArray(9);
         this.sounds = this._initArray(4);
@@ -33,7 +53,7 @@ class DriverPic extends Pic {
         // });
     }
 
-    _initArray(size) {
+    private _initArray(size): Bit[] {
         const array = [];
         for (let i = 0; i < size; i++) {
             array[i] = 0;
@@ -46,38 +66,37 @@ class DriverPic extends Pic {
      * @param {Array} newDeviceStates Collection of new states.
      * @return {boolean} True if the update was successfull, false otherwise.
      */
-    async update(newDeviceStates) {
+    async update(newDeviceStates: OutputDevice[]): Promise<boolean> {
         if (!newDeviceStates || newDeviceStates.length === 0) {
             return false;
         }
 
         // Update our internal ordered arrays for all outputs.
         newDeviceStates.forEach((device) => {
-            if (device.type === OUTPUT_DEVICE_TYPES.LIGHT) {
+            if (device instanceof PlayfieldLamp) {
                 // Lamps are zero based
-                this.lamps[device.number] = device.isOn;
+                this.lamps[device.number] = device.isOn ? 1 : 0;
             }
-            else if (device.type === OUTPUT_DEVICE_TYPES.COIL) {
+            else if (device instanceof Coil) {
                 if (device.driverType === DRIVER_TYPES.LAMP) {
-                    this.lamps[device.number] = device.isOn;
+                    this.lamps[device.number] = device.isOn ? 1 : 0;
                 }
                 else if (device.driverType === DRIVER_TYPES.COIL) {
-                    this.coils[device.number - 1] = device.isOn;
+                    this.coils[device.number - 1] = device.isOn ? 1 : 0;
                 }
             }
         });
 
+        
         // only 1 sound can play at a time. Find the first sound to play.
-        const sound = newDeviceStates.find((device) => {
-            return device.type === OUTPUT_DEVICE_TYPES.SOUND && device.state;
-        });
+        const sound: Sound = newDeviceStates.find((d) => d instanceof Sound && d.state) as Sound;
 
-        if (sound && sound.state === 'playing') {
+        if (sound && sound.state === SoundState.PLAYING) {
             // logger.debug('state 0');
             this.sounds = [0, 0, 0, 0];
             sound.ack();
         }
-        else if (sound && sound.state === 'ack') {
+        else if (sound && sound.state === SoundState.ACK) {
             sound.done(); // ack the sound so it only plays once.
             const soundBits = bitwise.byte.read(sound.number);
             this.sounds[0] = soundBits[7];
@@ -88,7 +107,7 @@ class DriverPic extends Pic {
             // eslint-disable-next-line max-len
             // logger.debug(`Sound bits: S1=${this.sounds[0]}, S2=${this.sounds[1]}, S4=${this.sounds[2]}, S8=${this.sounds[3]}, S16=${this.lamps[9 - 1]}`);
         }
-        else if (sound && sound.state === 'done') {
+        else if (sound && sound.state === SoundState.DONE) {
             sound.state = null;
             // trigger the interrupt to play the prev loaded sound. Putting all lines high
             // causes sound board A6 chip U17 to have all inputs high, causing a low output.
@@ -109,7 +128,7 @@ class DriverPic extends Pic {
 
         // Perform the I2C write.
         try {
-            await this.write();
+            await this.write(this.buffer);
             return true;
         }
         catch (e) {
@@ -130,14 +149,9 @@ class DriverPic extends Pic {
         }
     }
 
-    dec2bin(dec) {
-        return (dec >>> 0).toString(2);
-    }
-
     async setup() {
-        this.i2c1 = await this.openConnection();
-        const addresses = await this.scan();
-        logger.debug(`Found i2c devices: ${JSON.stringify(addresses)}`);
+        await super.setup();
+     
         // setInterval(() => {
         //     this.test();
         // }, 2000);
@@ -150,15 +164,7 @@ class DriverPic extends Pic {
         if (DEBUG) {
             logger.debug('Sending initial state zeros');
         }
-        this.write();
-    }
-
-    async openConnection() {
-        return i2c.openPromisified(1);
-    }
-
-    async scan() {
-        return this.i2c1.scan();
+        this.write(this.buffer);
     }
 
     // async getVersion() {
@@ -169,16 +175,4 @@ class DriverPic extends Pic {
     //     const minor = 0;
     //     return `${major}.${minor}`;
     // }
-
-    async write() {
-        if (!this.i2c1) {
-            logger.error('I2C not ready to write');
-            return;
-        }
-        return this.i2c1.i2cWrite(PIC_ADDRESS, this.buffer.length, this.buffer);
-    }
 }
-
-const singleton = new DriverPic();
-
-module.exports = singleton;

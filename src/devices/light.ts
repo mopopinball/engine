@@ -21,13 +21,20 @@ export class Light extends OutputDevice {
         this.blinkInterval = null;
     }
     
-    setState(state) {
+    setState(state: LightState) {
         this.clearTimers();
-        if (state) {
+        this.state = state;
+        if (state === LightState.ON) {
             this.on();
         }
-        else {
+        else if (state === LightState.OFF) {
             this.off();
+        }
+        else if (state === LightState.BLINK) {
+            // TODO
+        }
+        else {
+            throw new Error('not impl');
         }
     }
 

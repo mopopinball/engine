@@ -46,7 +46,7 @@
             "type": "state",
             "switchId": "sw1",
             "childId": "attractMode",
-            "state": false,
+            "state": true,
             "next": [
                 "a3"
             ]
@@ -90,7 +90,7 @@
                     "number": 1,
                     "role": "lamp",
                     "name": "lamp 1",
-                    "state": 1
+                    "state": 2
                 }
             ]
         }

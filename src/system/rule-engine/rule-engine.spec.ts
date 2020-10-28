@@ -53,6 +53,6 @@ describe('Rules', () => {
         ruleEngine.onSwitch('sw1');
 
         // check
-        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LightState.OFF);
+        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LightState.BLINK);
     });
 })
