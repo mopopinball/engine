@@ -53,7 +53,7 @@ export class GpioPin {
             }
         }
         logger.info('GPIO setup complete.');
-        MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE);
+        MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE, null);
     }
 
     async setup(): Promise<void> {

@@ -8,7 +8,7 @@ const logger = require('./logger');
  */
 class Messages extends EventEmitter {
     on(WAN_DOWN, arg1) {
-        throw new Error('Method not implemented.');
+        // throw new Error('Method not implemented.');
     }
     // on(evt, callback) {
     //     super.on(evt, callback);
@@ -48,7 +48,7 @@ class Messages extends EventEmitter {
     }
 
     // Publishes to MQTT.
-    publish(topic, message, options) {
+    publish(topic, message, options = null) {
         client.publish(topic, message, options);
     }
 

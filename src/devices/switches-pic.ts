@@ -281,7 +281,7 @@ export class SwitchesPic extends Pic {
 
     sendMessage(topic, payload) {
         MessageBroker.emit(topic, payload);
-        MessageBroker.publish('mopo/dips', JSON.stringify(payload));
+        MessageBroker.publish('mopo/dips', JSON.stringify(payload), null);
     }
 
     async _readNibble(): Promise<UInt4> {
