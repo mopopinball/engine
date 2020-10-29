@@ -1,14 +1,9 @@
-// const Pic = require('./pic');
-
 import { SystemName } from "../game";
+import { Sys80or80ADisplay } from "../system/display-80-80a";
+import { logger } from "../system/logger";
+import font from "../system/sys-80-80a-font";
 import { Pic } from "./pic";
-import * as i2c from 'i2c-bus';
-import { BytesWritten, PromisifiedBus } from "i2c-bus";
 
-
-// const i2c = require('i2c-bus');
-const logger = require('../system/logger');
-const font = require('../system/sys-80-80a-font');
 
 const PIC_ADDRESS = 0x13;
 
@@ -72,7 +67,7 @@ export class DisplaysPic extends Pic {
      * [llllllll][kkkkkkkk][jjjjjjjj][iiiiiiii][hhhhhhhh][gggggggg]
      * @param {any} displayState data
      */
-    async update(displayState) {
+    async update(displayState: Sys80or80ADisplay): Promise<void> {
         if (this.system === SystemName.SYS80 || this.system === SystemName.SYS80A) {
             this.setBuffer(1, displayState.player1);
             this.setBuffer(7, displayState.player2);
@@ -94,7 +89,7 @@ export class DisplaysPic extends Pic {
         }
     }
 
-    setBuffer(offset, message) {
+    setBuffer(offset: number, message: string): void {
         for (let i = 0; i < 6; i++) {
             if (typeof message === 'string') {
                 const asciiCode = message.charCodeAt(i);
@@ -104,19 +99,19 @@ export class DisplaysPic extends Pic {
                 }
                 this.buffer[offset + i] = fontByte;
             }
-            else {
-                if (typeof message.glyphs[i] === 'string') {
-                    const asciiCode = message.glyphs[i].charCodeAt(0);
-                    this.buffer[offset + i] = font[asciiCode];
-                }
-                else {
-                    this.buffer[offset + i] = message.glyphs[i];
-                }
-            }
+            // else {
+            //     if (typeof message.glyphs[i] === 'string') {
+            //         const asciiCode = message.glyphs[i].charCodeAt(0);
+            //         this.buffer[offset + i] = font[asciiCode];
+            //     }
+            //     else {
+            //         this.buffer[offset + i] = message.glyphs[i];
+            //     }
+            // }
         }
     }
 
-    _logBuffer() {
+    _logBuffer(): void {
         if (DEBUG) {
             let log = '';
             this.buffer.forEach((b) => {
@@ -124,10 +119,6 @@ export class DisplaysPic extends Pic {
             });
             logger.debug(log);
         }
-    }
-
-    dec2bin(dec) {
-        return (dec >>> 0).toString(2);
     }
 
     async setup(): Promise<void> {

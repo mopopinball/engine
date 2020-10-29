@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import {padStart, padEnd} from 'lodash';
 
 /**
  * A System 80, 80A style display.
@@ -21,10 +21,10 @@ export class Sys80or80ADisplay {
         this.setStatus('FP', '');
     }
 
-    onPlay() {
-    }
+    // onPlay(): void {
+    // }
 
-    setCredits(credits): void {
+    setCredits(credits: string): void {
         this._credits = credits;
         this._updateStatus();
     }
@@ -40,10 +40,8 @@ export class Sys80or80ADisplay {
         this._updateStatus();
     }
 
-    setPlayerDisplay(playerNumber: number, stringValue): void {
-        const paddedValue = typeof stringValue === 'object' ?
-            stringValue :
-            this.leftPad(stringValue);
+    setPlayerDisplay(playerNumber: number, stringValue: string): void {
+        const paddedValue = this.leftPad(stringValue);
         if (playerNumber === 1) {
             this.player1 = paddedValue;
         }
@@ -66,11 +64,11 @@ export class Sys80or80ADisplay {
 
     // Pads the given string on the left to the desired length.
     leftPad(value = '', desiredLength = 6): string {
-        return _.padStart(value, desiredLength);
+        return padStart(value, desiredLength);
     }
 
     rightPad(value = '', desiredLength = 6): string {
-        return _.padEnd(value, desiredLength);
+        return padEnd(value, desiredLength);
     }
 
     getHash(): string {

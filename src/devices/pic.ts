@@ -1,7 +1,7 @@
 import { BytesWritten, PromisifiedBus } from "i2c-bus";
 import * as i2c from 'i2c-bus';
-const spawnSync = require('child_process').spawnSync;
-const logger = require('../system/logger');
+import { logger } from "../system/logger";
+import { spawnSync, SpawnSyncReturns } from "child_process";
 
 /**
  * An abstract PIC.
@@ -34,18 +34,18 @@ export abstract class Pic {
         return this.i2c1.i2cWrite(this.picAddress, buffer.length, buffer);
     }
 
-    dec2bin(dec) {
+    dec2bin(dec: number): string {
         return (dec >>> 0).toString(2);
     }
 
-    programHex(pathToHexFile) {
+    programHex(pathToHexFile: string): SpawnSyncReturns<string> {
         // todo
         const result = spawnSync('picpgm', ['-p', pathToHexFile], {stdio: 'pipe', encoding: 'utf-8'});
         logger.info(result.stdout);
         return result;
     }
 
-    compareHex(pathToHexFile) {
-        // todo
-    }
+    // compareHex(pathToHexFile: string): void {
+    //     // todo
+    // }
 }

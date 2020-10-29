@@ -1,4 +1,4 @@
-const logger = require('./logger');
+import {logger} from './logger';
 
 /**
  * Provides FPS tracking.

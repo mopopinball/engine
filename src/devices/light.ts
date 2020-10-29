@@ -21,7 +21,7 @@ export class Light extends OutputDevice {
         this.blinkInterval = null;
     }
     
-    setState(state: LightState) {
+    setState(state: LightState): void {
         this.clearTimers();
         this.state = state;
         if (state === LightState.ON) {
@@ -68,7 +68,7 @@ export class Light extends OutputDevice {
         }
     }
 
-    pulse(pulseDurationMs): void {
+    pulse(pulseDurationMs: number): void {
         this.on();
         clearTimeout(this.pulseTimeout);
         this.pulseTimeout = setTimeout(() => this.off(), pulseDurationMs);

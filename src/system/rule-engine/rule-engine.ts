@@ -5,7 +5,7 @@ import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { StateAction } from "./actions/state-action";
 import { RuleData } from "./rule-data";
-import { ActionSchema, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
+import { ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
 
 export class RuleEngine {
     active: boolean;
@@ -55,7 +55,7 @@ export class RuleEngine {
             case 'device':
                 newAction = new DeviceAction(action.id, action.deviceId, action.state, engine.allActions, next);
                 break;
-            case 'state':
+            case 'state': {
                 const target = action.childId ? engine.children.find((c) => c.id === action.childId) : engine;
                 newAction = new StateAction(
                         action.id, 
@@ -63,6 +63,7 @@ export class RuleEngine {
                         action.state, engine.allActions, next
                     );
                 break;
+            }
             case "condition":
                 newAction = new ConditionalAction(
                     action.id, action.statement, action.trueResult, action.falseResult, engine.allActions, next

@@ -8,7 +8,7 @@ export class DataAction extends Action {
         super(id, actions, nextCollection);
     }
     
-    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>) {
+    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
         // todo: operate
         if (this.operation === DataOperation.INCREMENT) {
             data.get(this.dataKey).value += this.operand; 

@@ -1,6 +1,6 @@
+import { logger } from "../system/logger";
 import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
 
-const logger = require('../system/logger');
 export enum ACTUATION_TYPE {
     FIRE,
     ON,
@@ -33,7 +33,7 @@ export class Coil extends OutputDevice {
         // }
     }
 
-    async on() {
+    async on(): Promise<void> {
         if (this.isOn) {
             return;
         }
@@ -43,7 +43,7 @@ export class Coil extends OutputDevice {
         return this._autoOff();
     }
 
-    async _autoOff() {
+    async _autoOff(): Promise<void> {
         return new Promise((resolve) => {
             this._autoOffTimeout = setTimeout(() => {
                 this.off();
@@ -52,7 +52,7 @@ export class Coil extends OutputDevice {
         });
     }
 
-    off() {
+    off(): void {
         super.off();
         clearTimeout(this._autoOffTimeout);
         logger.debug(`Coil: ${this.name} off`);

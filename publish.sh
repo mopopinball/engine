@@ -1,21 +1,26 @@
 #!/bin/bash
 
+set -eou pipefail
+
 rm -rf dist
 mkdir dist
 
 # pushd site
 # ng build
 # popd
-cp -r site/dist/site dist/site
+# cp -r site/dist/site dist/site
 
-mkdir dist/pics
-cp pics/mopo-switches/dist/default/production/mopo-switches.production.hex dist/pics
-cp pics/mopo-driver/dist/default/production/mopo-driver.production.hex dist/pics
-cp pics/mopo-displays/dist/default/production/mopo-displays.production.hex dist/pics
+tsc
+
+# TODO: Get the pics from their latest release on GitHub.
+# mkdir dist/pics
+# cp pics/mopo-switches/dist/default/production/mopo-switches.production.hex dist/pics
+# cp pics/mopo-driver/dist/default/production/mopo-driver.production.hex dist/pics
+# cp pics/mopo-displays/dist/default/production/mopo-displays.production.hex dist/pics
 
 # npm run lint --prefix node
 
-rsync -r --exclude=node_modules --exclude=test --verbose node/ dist/node
+# rsync -r --exclude=node_modules --exclude=test --verbose node/ dist/node
 
 cp -r setup/ dist/setup
 

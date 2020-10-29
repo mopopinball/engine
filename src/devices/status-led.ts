@@ -1,7 +1,8 @@
 import { GpioPin } from "./gpio-pin";
 import { Light, LightState } from "./light";
+import{DIR_OUT} from 'rpi-gpio';
 
-const gpio = require('rpi-gpio').promise;
+// const gpio = require('rpi-gpio').promise;
 
 /**
  * An on-borad status led wired to a GPIO pin.
@@ -14,7 +15,7 @@ export class StatusLed extends Light {
         if (!pin) {
             throw new Error('Provide a pin value');
         }
-        this.gpioPin = new GpioPin(this.pin, gpio.DIR_OUT);
+        this.gpioPin = new GpioPin(this.pin, DIR_OUT);
     }
 
     on(): void {

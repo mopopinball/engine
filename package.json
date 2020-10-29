@@ -8,15 +8,13 @@
   "main": "src/game.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
+    "pretest": "npm run lint",
     "test": "NODE_ENV=test jest --coverage",
     "tsc": "tsc"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/express": "4.17.8",
-    "@types/i2c-bus": "^5.1.0",
-    "@types/node": "14.14.0",
     "bitwise": "2.0.4",
     "deep-equal": "2.0.3",
     "eval": "0.1.4",
@@ -34,6 +32,9 @@
     "winston": "3.3.3"
   },
   "devDependencies": {
+    "@types/express": "4.17.8",
+    "@types/i2c-bus": "^5.1.0",
+    "@types/node": "14.14.0",
     "@types/jest": "^26.0.15",
     "@types/rpi-gpio": "^2.1.1",
     "@typescript-eslint/eslint-plugin": "^4.5.0",

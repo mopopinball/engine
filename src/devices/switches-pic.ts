@@ -1,17 +1,23 @@
+import { byte, nibble } from "bitwise";
+import { Bit, Nibble, UInt4, UInt8 } from "bitwise/types";
+import { logger } from "../system/logger";
+import { EVENTS, MessageBroker } from "../system/messages";
 import { GpioPin } from "./gpio-pin";
 import { Pic } from "./pic";
 
 // const Pic = require('./pic');
-const gpiop = require('rpi-gpio').promise;
-const gpio = require('rpi-gpio');
-const pins = require('../../pins.json');
-const Buffer = require('buffer').Buffer;
-const {MessageBroker, EVENTS} = require('../system/messages');
-const logger = require('../system/logger');
+// const gpiop = require('rpi-gpio').promise;
+import {promise, DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
+import * as pins from '../../pins.json';
+// const gpio = require('rpi-gpio');
+// const pins = require('../../pins.json');
+// const Buffer = require('buffer').Buffer;
+// const {MessageBroker, EVENTS} = require('../system/messages');
+// const logger = require('../system/logger');
 // const GpioPin = require('./gpio-pin');
 // const bitwise = require('bitwise');
-import { byte, nibble } from 'bitwise';
-import { UInt4, UInt8 } from "bitwise/types";
+// import { byte, nibble } from 'bitwise';
+// import { UInt4, UInt8 } from "bitwise/types";
 
 const PAYLOAD_SIZE = 2;
 const COMMS_LOGGING = false;
@@ -71,18 +77,18 @@ export class SwitchesPic extends Pic {
         this.nibbleCount = -1;
         this.errorCount = 0;
 
-        this._data0 = new GpioPin(pins.IC1_Data0, gpiop.DIR_IN);
-        this._data1 = new GpioPin(pins.IC1_Data1, gpiop.DIR_IN);
-        this._data2 = new GpioPin(pins.IC1_Data2, gpiop.DIR_IN);
-        this._data3 = new GpioPin(pins.IC1_Data3, gpiop.DIR_IN);
-        this._outReady = new GpioPin(pins.IC1_OUT_RDY, gpiop.DIR_IN, gpiop.EDGE_RISING);
-        this._ack = new GpioPin(pins.IC1_ACK, gpiop.DIR_LOW);
-        this._retry = new GpioPin(pins.IC1_Resend, gpiop.DIR_LOW);
-        this._reset = new GpioPin(pins.IC1_Reset, gpiop.DIR_LOW);
+        this._data0 = new GpioPin(pins.IC1_Data0, DIR_IN);
+        this._data1 = new GpioPin(pins.IC1_Data1, DIR_IN);
+        this._data2 = new GpioPin(pins.IC1_Data2, DIR_IN);
+        this._data3 = new GpioPin(pins.IC1_Data3, DIR_IN);
+        this._outReady = new GpioPin(pins.IC1_OUT_RDY, DIR_IN, EDGE_RISING);
+        this._ack = new GpioPin(pins.IC1_ACK, DIR_LOW);
+        this._retry = new GpioPin(pins.IC1_Resend, DIR_LOW);
+        this._reset = new GpioPin(pins.IC1_Reset, DIR_LOW);
 
-        MessageBroker.subscribe('mopo/pic/IC1/update', () => this.programHex());
+        // MessageBroker.subscribe('mopo/pic/IC1/update', () => this.programHex());
 
-        gpio.on('change', async (channel) => {
+        on('change', async (channel) => {
             if (channel === pins.IC1_OUT_RDY) {
                 // if (this.reading) {
                 //     logger.error('already reading');
@@ -128,6 +134,10 @@ export class SwitchesPic extends Pic {
         //         this.reset();
         //     }
         // });
+    }
+
+    async setup(): Promise<void> {
+        // TODO: Move that constructor logic in here.
     }
 
     _clearBuffer() {
@@ -275,11 +285,12 @@ export class SwitchesPic extends Pic {
     }
 
     async _readNibble(): Promise<UInt4> {
-        const bits = await Promise.all([
-            this._data0.read(),
-            this._data1.read(),
-            this._data2.read(),
-            this._data3.read()
+        // const bit: Bit = 
+        const bits: Nibble = await Promise.all([
+            this._data0.read() ? 1 : 0,
+            this._data1.read() ? 1 : 0,
+            this._data2.read() ? 1 : 0,
+            this._data3.read() ? 1 : 0
         ]);
         return nibble.write(bits);
     }
@@ -334,19 +345,19 @@ export class SwitchesPic extends Pic {
         return parity;
     }
 
-    async programHex() {
-        logger.debug('program ic1');
-        await gpiop.destroy();
-        const hexFile = '../../../pics/mopo-switches.production.hex';
-        MessageBroker.publish('mopo/pic/IC1/update/updating', 'updating');
-        const result = super.programHex(hexFile);
-        if (result.status) {
-            MessageBroker.publish('mopo/pic/IC1/update/fail', 'fail');
-        }
-        else {
-            MessageBroker.publish('mopo/pic/IC1/update/pass', 'pass');
-        }
-        logger.info('Resetting GPIO pins');
-        MessageBroker.emit(EVENTS.SETUP_GPIO);
-    }
+    // programHex(pathToHex: string): SpawnSyncReturns<string> {
+    //     logger.debug('program ic1');
+    //     // await gpiop.destroy();
+    //     const hexFile = '../../../pics/mopo-switches.production.hex';
+    //     MessageBroker.publish('mopo/pic/IC1/update/updating', 'updating');
+    //     const result = super.programHex(hexFile);
+    //     if (result.status) {
+    //         MessageBroker.publish('mopo/pic/IC1/update/fail', 'fail');
+    //     }
+    //     else {
+    //         MessageBroker.publish('mopo/pic/IC1/update/pass', 'pass');
+    //     }
+    //     logger.info('Resetting GPIO pins');
+    //     MessageBroker.emit(EVENTS.SETUP_GPIO);
+    // }
 }

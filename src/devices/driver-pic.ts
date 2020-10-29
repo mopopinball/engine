@@ -1,15 +1,17 @@
-import { Bit } from "bitwise/types";
-import * as i2c from 'i2c-bus';
-import { BytesWritten, PromisifiedBus } from "i2c-bus";
+// import bitwise from "bitwise";
+import { byte } from "bitwise";
+import { Bit, UInt8 } from "bitwise/types";
+import { PromisifiedBus } from "i2c-bus";
 import { Coil, DRIVER_TYPES } from "./coil";
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { OutputDevice } from "./output-device";
 import { Pic } from "./pic";
 import { PlayfieldLamp } from "./playfield-lamp";
 import { Sound, SoundState } from "./sound";
-
-const bufferOperations = require('bitwise/buffer');
-const bitwise = require('bitwise');
-const logger = require('../system/logger');
+import {modify} from 'bitwise/buffer';
+import { logger } from "../system/logger";
+// const bufferOperations = require('bitwise/buffer');
+// const bitwise = require('bitwise');
+// const logger = require('../system/logger');
 
 const PIC_ADDRESS = 0x41;
 const DEBUG = false;
@@ -98,7 +100,7 @@ export class DriverPic extends Pic {
         }
         else if (sound && sound.state === SoundState.ACK) {
             sound.done(); // ack the sound so it only plays once.
-            const soundBits = bitwise.byte.read(sound.number);
+            const soundBits = byte.read(sound.number as UInt8);
             this.sounds[0] = soundBits[7];
             this.sounds[1] = soundBits[6];
             this.sounds[2] = soundBits[5];
@@ -118,7 +120,7 @@ export class DriverPic extends Pic {
         }
 
         // Update our bit state with the values from the arrays.
-        bufferOperations.modify(
+        modify(
             this.buffer,
             this.lamps.concat(this.coils).concat(this.sounds),
             0
@@ -139,7 +141,7 @@ export class DriverPic extends Pic {
         }
     }
 
-    _logBuffer() {
+    _logBuffer(): void {
         if (DEBUG) {
             let log = '';
             this.buffer.forEach((b) => {

@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
+import { MessageBroker } from "../system/messages";
 
-const {MessageBroker} = require('../system/messages');
+// const {MessageBroker} = require('../system/messages');
 // const EventEmitter = require('events');
 // const logger = require('../system/logger');
 
@@ -36,7 +37,7 @@ export abstract class Switch extends EventEmitter {
         }
     }
 
-    onChange(value): void {
+    onChange(value: boolean): void {
         const realValue = this.activeLow ? !value : value;
         // TODO: Maybe only set to true, allow getActive() to reset it.
         this.active = realValue;
@@ -63,7 +64,7 @@ export abstract class Switch extends EventEmitter {
         // this.active = realValue;
     }
 
-    _publish(realValue): void {
+    _publish(realValue: boolean): void {
         this.emit('change', realValue);
         if (realValue) {
             this.emit('active', realValue);
@@ -71,7 +72,7 @@ export abstract class Switch extends EventEmitter {
         MessageBroker.publish(`mopo/devices/${this.id}/state`, realValue.toString());
     }
 
-    _getNow() {
+    _getNow(): number {
         return new Date().valueOf();
     }
 }

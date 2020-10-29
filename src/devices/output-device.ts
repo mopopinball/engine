@@ -8,17 +8,14 @@ export enum OUTPUT_DEVICE_TYPES {
 /**
  * An output device which is controled by the driver PIC.
  */
-export class OutputDevice {
+export abstract class OutputDevice {
     public isOn: boolean;
-    public ackOn: boolean;
-    public ackOff: boolean;
+    // the two ack flags. They start ack'd.
+    public ackOn = true;
+    public ackOff = true;
     dirtyFlag: boolean;
 
-    constructor(public readonly type: OUTPUT_DEVICE_TYPES) {
-        // if (Object.keys(OUTPUT_DEVICE_TYPES).indexOf(type) < 0) {
-        //     throw new Error('Invalid output object type.');
-        // }
-    }
+    constructor(public readonly type: OUTPUT_DEVICE_TYPES) {}
 
     on(): void {
         this.isOn = true;
@@ -40,7 +37,7 @@ export class OutputDevice {
         return !this.ackOn || !this.ackOff;
     }
 
-    ackDirty(ackOn): void {
+    ackDirty(ackOn: boolean): void {
         // todo used by sound, cleanup
         this.dirtyFlag = false;
         if (ackOn) {

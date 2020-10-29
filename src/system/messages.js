@@ -7,13 +7,16 @@ const logger = require('./logger');
  * Message broker.
  */
 class Messages extends EventEmitter {
+    on(WAN_DOWN, arg1) {
+        throw new Error('Method not implemented.');
+    }
     // on(evt, callback) {
     //     super.on(evt, callback);
     // }
 
-    // emit(evt, data) {
-    //     super.emit(evt, data);
-    // }
+    emit(evt, data) {
+        super.emit(evt, data);
+    }
 
     constructor() {
         super();

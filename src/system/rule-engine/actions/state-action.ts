@@ -9,7 +9,7 @@ export class StateAction extends Action {
         super(id, actions, nextCollection);
     }
     
-    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
+    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
         if (this.state) {
             this.child.start();
         }

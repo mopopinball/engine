@@ -1,11 +1,9 @@
-const winston = require('winston');
-const format = winston.format;
+import {createLogger, format, transports} from 'winston';
 
 /**
  * Logging.
  */
-
-const logger = winston.createLogger({
+export const logger = createLogger({
     level: 'debug',
     format: format.combine(
         format.timestamp({
@@ -17,8 +15,7 @@ const logger = winston.createLogger({
 });
 
 if (process.env.NODE_ENV === 'production') {
-    logger.add(new winston.transports.File({
-        name: 'filelogger',
+    logger.add(new transports.File({
         filename: '/home/pi/mopo/mopo.log',
         maxsize: 4194304,
         maxFiles: 5,
@@ -26,7 +23,5 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 else {
-    logger.add(new winston.transports.Console());
+    logger.add(new transports.Console());
 }
-
-module.exports = logger;

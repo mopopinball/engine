@@ -1,4 +1,3 @@
-import { dir } from "console";
 import { Coil, CoilType, DRIVER_TYPES } from "./devices/coil";
 import { DisplaysPic } from "./devices/displays-pic";
 import { DriverPic } from "./devices/driver-pic";
@@ -10,17 +9,17 @@ import { Relay } from "./devices/relay";
 import { Sound } from "./devices/sound";
 import { Sys80or80ADisplay } from "./system/display-80-80a";
 import { FpsTracker } from "./system/fps-tracker";
-import { CoilsSchema, HardwareCoilSchema, HardwareConfig, HardwareSwitchSchema } from "./system/hardware-config.schema";
+import { HardwareCoilSchema, HardwareConfig } from "./system/hardware-config.schema";
 import { RuleEngine } from "./system/rule-engine/rule-engine";
 import { RuleSchema } from "./system/rule-engine/schema/rule.schema";
 import { SwitchPayload } from "./system/rule-engine/switch-payload";
 
-const logger = require('./system/logger');
-const equal = require('deep-equal');
-const { MessageBroker, EVENTS } = require('./system/messages');
+import {MessageBroker, EVENTS} from './system/messages';
 // const Maintenance = require('./system/maintenance');
 // const Security = require('./system/security');
-const Setup = require('./system/setup');
+import {Setup} from './system/setup';
+import { SwitchesPic } from "./devices/switches-pic";
+import { logger } from "./system/logger";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -41,19 +40,19 @@ export class Game {
     // security: any;
     // setup: any;
     // server: any;
-    displays: any;
-    name: any;
-    fpsTracker: any;
+    displays: Sys80or80ADisplay;
+    name: string;
+    fpsTracker: FpsTracker;
     // callStates: {};
     ruleEngine: RuleEngine;
-    lastPayload: any;
+    lastPayload: string;
     private switches: Map<string, PlayfieldSwitch> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
     private lamps: Map<number, PlayfieldLamp> = new Map();
     private coils: Map<string, Coil> = new Map();
     private sounds: Map<number, Sound> = new Map();
     private outputDevices: OutputDevice[] = [];
-    setup: any;
+    setup: Setup;
 
     constructor(hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
         if (!hardwareConfig || !gameStateConfig) {
@@ -102,7 +101,7 @@ export class Game {
         this._setupPics().then(() => this._gameLoop());
     }
 
-    onSwitchMatrixEvent(payload: SwitchPayload) {
+    onSwitchMatrixEvent(payload: SwitchPayload): void {
         const sw = this.switchesByNumber.get(payload.switch);
         if (!sw) {
             logger.warn(`No switch found: ${payload.switch}`);
@@ -121,7 +120,7 @@ export class Game {
     /**
      * Updates our output device states based on the states in the rule engine.
      */
-    update() {
+    update(): void {
         const devices = this.ruleEngine.getDevices();
         devices.forEach((device) => {
             if (device instanceof PlayfieldLamp) {
@@ -156,6 +155,7 @@ export class Game {
     // }
 
     async _setupPics(): Promise<void> {
+        await SwitchesPic.getInstance().setup();
         await DriverPic.getInstance().setup();
         await DisplaysPic.getInstance().setup();
     }
@@ -228,7 +228,7 @@ export class Game {
         logger.info(`Loaded ${swCount} switches, ${lampCount} lamps, ${coilCount} coils and ${soundCount} sounds.`);
     }
 
-    async _gameLoop() {
+    async _gameLoop(): Promise<void> {
         const start = this._getCurrentTime();
         try {
             this.update();
@@ -261,29 +261,26 @@ export class Game {
         setTimeout(() => this._gameLoop(), loopDelay);
     }
 
-    _getCurrentTime() {
+    _getCurrentTime(): number {
         return new Date().valueOf();
     }
 
     /**
      * Updates all output devices defined for this game. This includes lights, coils and sounds.
      */
-    async _updateDevices() {
+    async _updateDevices(): Promise<void> {
         // check if there is at least one dirty device.
-        // const dirtyDevices = Object.values<OutputDevice>(this.lamps.values()).filter((device) => device.dirty());
         const dirtyDevices: OutputDevice[] = [];
-        for (const l2 of this.lamps.values()) {
-            if (l2.isDirty()) {
-                dirtyDevices.push(l2);
-            }
-        }
-
+        this.addDirtyToCollection(this.lamps.values(), dirtyDevices);
+        this.addDirtyToCollection(this.coils.values(), dirtyDevices);
+        this.addDirtyToCollection(this.sounds.values(), dirtyDevices);
         if (dirtyDevices.length === 0) {
             return;
         }
+
         // we track on vs. off devices seperatly so we can ack them seperatly.
-        // this handles a case where a device goes off during an update() call, and
-        // we wouldnt want to ack the device off when we havnt sent the off state
+        // this handles a case where a device goes off during an async update() call, and
+        // we wouldnt want to ack the device off when we havnt sent that off state
         // to the pic.
         const dirtyOnDevices = dirtyDevices.filter((device) => !device.ackOn);
         const dirtyOffDevices = dirtyDevices.filter((device) => !device.ackOff);
@@ -303,7 +300,15 @@ export class Game {
         // MessageBroker.publish('mopo/devices/all/state', JSON.stringify(payload));
     }
 
-    async _updateDisplays() {
+    private addDirtyToCollection(candidates: IterableIterator<OutputDevice>, dirty: OutputDevice[]): void {
+        for (const l2 of candidates) {
+            if (l2.isDirty()) {
+                dirty.push(l2);
+            }
+        }
+    }
+
+    async _updateDisplays(): Promise<void> {
         if (this.displays.getHash() !== this.lastPayload) {
             this.lastPayload = this.displays.getHash();
             await DisplaysPic.getInstance().update(this.displays);

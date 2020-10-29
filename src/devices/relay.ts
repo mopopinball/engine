@@ -8,7 +8,7 @@ export class Relay extends Coil {
         super(number, name, driverType, null);
     }
 
-    async on() {
+    async on(): Promise<void> {
         this.isOn = true;
         this._markDirty();
     }

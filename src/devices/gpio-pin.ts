@@ -1,9 +1,13 @@
-const gpiop = require('rpi-gpio').promise;
+import { logger } from "../system/logger";
+import { EVENTS, MessageBroker } from "../system/messages";
+
+// const gpiop = require('rpi-gpio').promise;
 // import { GPIO } from 'rpi-gpio';
 // import GPIO = require('rpi-gpio');
 // import {} from 'rpi-gpio';
-const logger = require('../system/logger');
-const {MessageBroker, EVENTS} = require('../system/messages');
+// const logger = require('../system/logger');
+// const {MessageBroker, EVENTS} = require('../system/messages');
+import {promise as gpiop} from 'rpi-gpio';
 
 /**
  * A GPIO pin.
@@ -34,11 +38,11 @@ export class GpioPin {
         }
     }
 
-    static register(instance): void {
+    static register(instance: GpioPin): void {
         GpioPin.instances.push(instance);
     }
 
-    static async setupSync() {
+    static async setupSync(): Promise<void> {
         logger.info('Setting up all gpio pins.');
         for (let i = 0; i < GpioPin.instances.length; i++) {
             try {
@@ -52,13 +56,14 @@ export class GpioPin {
         MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE);
     }
 
-    async setup(): Promise<boolean> {
+    async setup(): Promise<void> {
         try {
             this.setupComplete = false;
             logger.info(`Setting up GPIO pin ${this.pinNumber} as ${this.direction}.`);
-            return await gpiop.setup(this.pinNumber, this.direction, this.edge).then(() => {
-                this.setupComplete = true;
-            });
+            return await gpiop.setup(this.pinNumber, this.direction, this.edge)
+                .then(() => {
+                    this.setupComplete = true;
+                });
         }
         catch (e) {
             logger.error(new Error(`Failed to setup pin ${this.pinNumber} as ${this.direction}. Retrying...`));
@@ -70,15 +75,15 @@ export class GpioPin {
         return await this.write(!this.state);
     }
 
-    async writeHigh() {
+    async writeHigh(): Promise<void> {
         await this.write(true);
     }
 
-    async writeLow() {
+    async writeLow(): Promise<void> {
         await this.write(false);
     }
 
-    async write(state) {
+    async write(state: boolean): Promise<void> {
         if (!this.setupComplete) {
             logger.warn(`GPIO pin ${this.pinNumber} is not setup.`);
             return;
@@ -87,7 +92,7 @@ export class GpioPin {
         this.state = state;
     }
 
-    async read() {
+    async read(): Promise<boolean> {
         if (!this.setupComplete) {
             logger.warn(`GPIO pin ${this.pinNumber} is not setup.`);
             return undefined;

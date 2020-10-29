@@ -17,19 +17,19 @@ export class PlayfieldLamp extends Light {
         this.name = name;
     }
 
-    on() {
+    on(): void {
         super.on();
         // this._markDirty();
         // this._publish();
     }
 
-    off() {
+    off(): void {
         super.off();
         // this._markDirty();
         // this._publish();
     }
 
-    _publish() {
+    _publish(): void {
         MessageBroker.publish(`mopo/devices/lamps/${this.number}/state`, this.isOn.toString(), null);
     }
 }
