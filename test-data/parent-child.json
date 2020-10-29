@@ -11,17 +11,17 @@
         {
             "id": "SHOOT_AGAIN",
             "type": "lamp",
-            "number": 13,
+            "number": 3,
             "role": "lamp",
             "name": "SHOOT_AGAIN",
             "state": 0
         },
         {
-            "id": "L1",
+            "id": "L4",
             "type": "lamp",
-            "number": 1,
+            "number": 4,
             "role": "lamp",
-            "name": "lamp 1",
+            "name": "extra ball",
             "state": 1
         }
     ],
@@ -38,7 +38,7 @@
             "id": "a1",
             "type": "device",
             "switchId": "sw0",
-            "deviceId": "L1",
+            "deviceId": "L4",
             "state": 2
         },
         {
@@ -58,11 +58,11 @@
             "children": [],
             "devices": [
                 {
-                    "id": "L1",
+                    "id": "L4",
                     "type": "lamp",
-                    "number": 1,
+                    "number": 4,
                     "role": "lamp",
-                    "name": "lamp 1",
+                    "name": "extra ball",
                     "state": 2
                 }
             ]

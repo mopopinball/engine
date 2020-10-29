@@ -149,7 +149,7 @@ export class DriverPic extends Pic {
         }
     }
 
-    async setup() {
+    async setup(): Promise<void> {
         await super.setup();
      
         // setInterval(() => {
@@ -164,7 +164,7 @@ export class DriverPic extends Pic {
         if (DEBUG) {
             logger.debug('Sending initial state zeros');
         }
-        this.write(this.buffer);
+        await this.write(this.buffer);
     }
 
     // async getVersion() {

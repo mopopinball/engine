@@ -4,22 +4,20 @@ const logger = require('./logger');
  * Provides FPS tracking.
  */
 export class FpsTracker {
-    loopTimes: number[];
+    loopTimes: number[] = [];
     constructor() {
-        this.loopTimes = [];
-
         // sample the loop time. Lower is better.
         setInterval(() => this.printLoopTime(), 60 * 1000);
     }
 
-    sampleLoopTime(loopTime) {
+    sampleLoopTime(loopTime: number): void {
         this.loopTimes.push(loopTime);
         if (this.loopTimes.length > 100) {
             this.loopTimes.shift();
         }
     }
 
-    printLoopTime() {
+    printLoopTime(): void {
         if (this.loopTimes.length === 0) {
             return;
         }

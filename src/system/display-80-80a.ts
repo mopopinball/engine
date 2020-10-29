@@ -24,23 +24,23 @@ export class Sys80or80ADisplay {
     onPlay() {
     }
 
-    setCredits(credits) {
+    setCredits(credits): void {
         this._credits = credits;
         this._updateStatus();
     }
 
-    setBall(ballNumber) {
+    setBall(ballNumber: string): void {
         this._ballNumber = ballNumber;
         this._updateStatus();
     }
 
-    setStatus(creditsText, ballText) {
+    setStatus(creditsText: string, ballText: string): void {
         this._credits = creditsText;
         this._ballNumber = ballText;
         this._updateStatus();
     }
 
-    setPlayerDisplay(playerNumber, stringValue) {
+    setPlayerDisplay(playerNumber: number, stringValue): void {
         const paddedValue = typeof stringValue === 'object' ?
             stringValue :
             this.leftPad(stringValue);
@@ -58,22 +58,22 @@ export class Sys80or80ADisplay {
         }
     }
 
-    _updateStatus() {
+    _updateStatus(): void {
         const credits = this.leftPad(this._credits, 2);
         const ball = this.leftPad(this._ballNumber, 2);
         this.status = `${credits}${ball}`;
     }
 
     // Pads the given string on the left to the desired length.
-    leftPad(value = '', desiredLength = 6) {
+    leftPad(value = '', desiredLength = 6): string {
         return _.padStart(value, desiredLength);
     }
 
-    rightPad(value = '', desiredLength = 6) {
+    rightPad(value = '', desiredLength = 6): string {
         return _.padEnd(value, desiredLength);
     }
 
-    getHash() {
+    getHash(): string {
         const p1Hash = typeof this.player1 === 'string' ? this.player1 : JSON.stringify(this.player1);
         const p2Hash = typeof this.player2 === 'string' ? this.player2 : JSON.stringify(this.player2);
         const p3Hash = typeof this.player3 === 'string' ? this.player3 : JSON.stringify(this.player3);

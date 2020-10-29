@@ -32,13 +32,13 @@ describe('Rule Engine Load()', () => {
         // check
         expect(ruleEngine.devices.size).toBe(2);
         expect(ruleEngine.devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
-        expect(ruleEngine.devices.get('L1').getState()).toEqual(LightState.ON);
+        expect(ruleEngine.devices.get('L4').getState()).toEqual(LightState.ON);
     });
 
     it('loads children', () => {
         expect(ruleEngine.children.length).toEqual(1);
         expect(ruleEngine.children[0].devices.size).toEqual(1);
-        expect(ruleEngine.children[0].devices.get('L1').getState()).toEqual(LightState.BLINK);
+        expect(ruleEngine.children[0].devices.get('L4').getState()).toEqual(LightState.BLINK);
     });
 
     it('loads actions', () => {

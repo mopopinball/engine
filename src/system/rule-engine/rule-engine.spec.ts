@@ -29,7 +29,7 @@ describe('Rules', () => {
         // check
         expect(devices.size).toBe(2);
         expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
-        expect(devices.get('L1').getState()).toEqual(LightState.BLINK);
+        expect(devices.get('L4').getState()).toEqual(LightState.BLINK);
     });
 
     it('modifies data', () => {
@@ -45,7 +45,7 @@ describe('Rules', () => {
         ruleEngine.onSwitch('sw0');
 
         // check
-        expect(ruleEngine.devices.get('L1').getState()).toEqual(LightState.BLINK);
+        expect(ruleEngine.devices.get('L4').getState()).toEqual(LightState.BLINK);
     });
 
     it('modifies state', () => {
@@ -53,6 +53,6 @@ describe('Rules', () => {
         ruleEngine.onSwitch('sw1');
 
         // check
-        expect(ruleEngine.getDevices().get("L1").getState()).toEqual(LightState.BLINK);
+        expect(ruleEngine.getDevices().get("L4").getState()).toEqual(LightState.BLINK);
     });
 })

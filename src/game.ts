@@ -1,3 +1,4 @@
+import { dir } from "console";
 import { Coil, CoilType, DRIVER_TYPES } from "./devices/coil";
 import { DisplaysPic } from "./devices/displays-pic";
 import { DriverPic } from "./devices/driver-pic";
@@ -45,8 +46,6 @@ export class Game {
     fpsTracker: any;
     // callStates: {};
     ruleEngine: RuleEngine;
-    // _switchNumbersLookup: any;
-    // outputDevices: any;
     lastPayload: any;
     private switches: Map<string, PlayfieldSwitch> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
@@ -72,7 +71,7 @@ export class Game {
         this.setup.setup();
     }
 
-    onSetupComplete() {
+    onSetupComplete(): void {
         // this.server = new Server();
         // this.server.start();
 
@@ -100,8 +99,7 @@ export class Game {
         MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), { retain: true });
         MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
 
-        this._setupPics();
-        this._gameLoop();
+        this._setupPics().then(() => this._gameLoop());
     }
 
     onSwitchMatrixEvent(payload: SwitchPayload) {
@@ -157,12 +155,12 @@ export class Game {
     //     this._gameLoop();
     // }
 
-    _setupPics() {
-        DriverPic.getInstance().setup();
-        DisplaysPic.getInstance().setup();
+    async _setupPics(): Promise<void> {
+        await DriverPic.getInstance().setup();
+        await DisplaysPic.getInstance().setup();
     }
 
-    _loadConfig() {
+    _loadConfig(): void {
         // Map switches to obj/dict for direct lookup.
         // Additionally, the switch PIC broadcasts switch activations by switch number.
         // Create a private mapping to facalitate direct lookup for those events.
@@ -275,7 +273,9 @@ export class Game {
         // const dirtyDevices = Object.values<OutputDevice>(this.lamps.values()).filter((device) => device.dirty());
         const dirtyDevices: OutputDevice[] = [];
         for (const l2 of this.lamps.values()) {
-            dirtyDevices.push(l2);
+            if (l2.isDirty()) {
+                dirtyDevices.push(l2);
+            }
         }
 
         if (dirtyDevices.length === 0) {

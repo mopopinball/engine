@@ -12,7 +12,7 @@ export abstract class Pic {
     constructor(private readonly picAddress: number) {
     }
 
-    async setup() {
+    async setup(): Promise<void> {
         this.i2c1 = await this.openConnection();
         const addresses = await this.scan();
         logger.debug(`Found i2c devices: ${JSON.stringify(addresses)}`);
