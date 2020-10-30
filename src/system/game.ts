@@ -1,25 +1,25 @@
-import { Coil, CoilType, DRIVER_TYPES } from "./devices/coil";
-import { DisplaysPic } from "./devices/displays-pic";
-import { DriverPic } from "./devices/driver-pic";
-import { LightState } from "./devices/light";
-import { OutputDevice } from "./devices/output-device";
-import { LAMP_ROLES, PlayfieldLamp } from "./devices/playfield-lamp";
-import { PlayfieldSwitch } from "./devices/playfield-switch";
-import { Relay } from "./devices/relay";
-import { Sound } from "./devices/sound";
-import { Sys80or80ADisplay } from "./system/display-80-80a";
-import { FpsTracker } from "./system/fps-tracker";
-import { HardwareCoilSchema, HardwareConfig } from "./system/hardware-config.schema";
-import { RuleEngine } from "./system/rule-engine/rule-engine";
-import { RuleSchema } from "./system/rule-engine/schema/rule.schema";
-import { SwitchPayload } from "./system/rule-engine/switch-payload";
+import { Coil, CoilType, DRIVER_TYPES } from "../devices/coil";
+import { DisplaysPic } from "../devices/displays-pic";
+import { DriverPic } from "../devices/driver-pic";
+import { LightState } from "../devices/light";
+import { OutputDevice } from "../devices/output-device";
+import { LAMP_ROLES, PlayfieldLamp } from "../devices/playfield-lamp";
+import { PlayfieldSwitch } from "../devices/playfield-switch";
+import { Relay } from "../devices/relay";
+import { Sound } from "../devices/sound";
+import { Sys80or80ADisplay } from "./display-80-80a";
+import { FpsTracker } from "./fps-tracker";
+import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
+import { RuleEngine } from "./rule-engine/rule-engine";
+import { RuleSchema } from "./rule-engine/schema/rule.schema";
+import { SwitchPayload } from "./rule-engine/switch-payload";
 
-import {MessageBroker, EVENTS} from './system/messages';
+import {MessageBroker, EVENTS} from './messages';
 // const Maintenance = require('./system/maintenance');
 // const Security = require('./system/security');
-import {Setup} from './system/setup';
-import { SwitchesPic } from "./devices/switches-pic";
-import { logger } from "./system/logger";
+import {Setup} from './setup';
+import { SwitchesPic } from "../devices/switches-pic";
+import { logger } from "./logger";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {

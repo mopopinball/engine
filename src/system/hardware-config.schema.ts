@@ -1,6 +1,6 @@
 import { CoilType } from "../devices/coil";
 import { LAMP_ROLES } from "../devices/playfield-lamp";
-import { SystemName } from "../game";
+import { SystemName } from "./game";
 
 export interface HardwareConfig {
     name: string;

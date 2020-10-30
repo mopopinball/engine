@@ -2,12 +2,18 @@ import { LAMP_ROLES } from "../../../devices/playfield-lamp";
 
 export interface RuleSchema {
     id: string;
+    metadata?: RuleMetadata;
     autostart: boolean;
     // switches: string[];
     data: DataSchema[];
     devices: [LampSchema | SolenoidSchema],
     actions: [DataActionSchema | DeviceActionSchema | StateActionSchema],
     children: RuleSchema[]
+}
+
+export interface RuleMetadata {
+    name: string;
+    description: string;
 }
 
 export interface DataSchema {

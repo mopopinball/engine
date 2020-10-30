@@ -11,12 +11,12 @@ ARM_V6=$(cat /proc/cpuinfo | grep ARMv6)
 ARM_V7=$(cat /proc/cpuinfo | grep ARMv7)
 if [ ${#ARM_V6} -gt 0 ]
 then
-    nvm install 10.19.0
-    nvm alias default 10.19.0
+    nvm install 10.23.0
+    nvm alias default 10.23.0
 elif [ ${#ARM_V7} -gt 0 ]
 then
-    nvm install 12.16.1
-    nvm alias default 12.16.1
+    nvm install 12.19.0
+    nvm alias default 12.19.0
 else
     echo Invalid ARM version
     exit 1
@@ -33,5 +33,4 @@ cp pgmifcfg.xml ~
 rm -rf picpgm_install
 cd ~
 
-npm install --production
-node select-game.js
+# TODO: Download mopo, npm install it and setup the game.

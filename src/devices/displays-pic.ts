@@ -1,4 +1,4 @@
-import { SystemName } from "../game";
+import { SystemName } from "../system/game";
 import { Sys80or80ADisplay } from "../system/display-80-80a";
 import { logger } from "../system/logger";
 import font from "../system/sys-80-80a-font";

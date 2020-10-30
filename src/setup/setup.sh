@@ -16,6 +16,7 @@ raspi-config nonint do_hostname $hostname
 raspi-config nonint do_ssh 1
 rsapi-config nonint do_i2c 1
 
+# Run the following script as the "pi" user.
 sudo -H -u pi ./pi.sh
 
 export NVM_DIR="/home/pi/.nvm"

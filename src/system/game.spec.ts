@@ -1,8 +1,8 @@
 import { Game } from "./game";
-import * as hardwareConfig from "./games/mars/config.json";
-import * as gameConfig from '../test-data/parent-child.json'
-import { HardwareConfig } from "./system/hardware-config.schema";
-import { RuleSchema } from "./system/rule-engine/schema/rule.schema";
+import * as hardwareConfig from "../games/mars/hardware-config.json";
+import * as gameConfig from '../../test-data/parent-child.json'
+import { HardwareConfig } from "../system/hardware-config.schema";
+import { RuleSchema } from "../system/rule-engine/schema/rule.schema";
 
 
 describe('game', () => {
