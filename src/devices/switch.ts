@@ -69,7 +69,7 @@ export abstract class Switch extends EventEmitter {
         if (realValue) {
             this.emit('active', realValue);
         }
-        MessageBroker.publish(`mopo/devices/${this.id}/state`, realValue.toString());
+        MessageBroker.getInstance().publish(`mopo/devices/${this.id}/state`, realValue.toString());
     }
 
     _getNow(): number {

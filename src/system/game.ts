@@ -91,7 +91,6 @@ export class Game {
         this.fpsTracker = new FpsTracker();
 
         this.board = new Board();
-        this.board.start();
 
         this.ruleEngine = RuleEngine.load(this.gameStateConfig);
         this.ruleEngine.onDirty(() => this.engineDirty = true);
@@ -99,21 +98,22 @@ export class Game {
         this.engineDirty = true;
 
         // Setup all message bindings.
-        MessageBroker.publish('mopo/devices/lamps/all/state', JSON.stringify(this.lamps), { retain: true });
-        MessageBroker.publish('mopo/devices/coils/all/state', JSON.stringify(this.coils), { retain: true });
-        MessageBroker.publish('mopo/devices/sounds/all/state', JSON.stringify(this.sounds), { retain: true });
-        MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), { retain: true });
-        MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
+        MessageBroker.getInstance().publishRetain('mopo/devices/lamps/all/state', JSON.stringify(this.lamps));
+        MessageBroker.getInstance().publishRetain('mopo/devices/coils/all/state', JSON.stringify(this.coils));
+        MessageBroker.getInstance().publishRetain('mopo/devices/sounds/all/state', JSON.stringify(this.sounds));
+        MessageBroker.getInstance().publishRetain('mopo/devices/switches/all/state', JSON.stringify(this.switches));
+        MessageBroker.getInstance().on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
 
         this.setupHardware().then(() => {
             SwitchesPic.getInstance().reset();
+            this.board.start();
             logger.debug('Starting game loop.');
             this.gameLoop();
         });
     }
 
     private async setupHardware(): Promise<void> {
-        MessageBroker.on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
+        MessageBroker.getInstance().on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
         await SwitchesPic.getInstance().setup();
         await DriverPic.getInstance().setup();
         await DisplaysPic.getInstance().setup();
@@ -340,8 +340,9 @@ export class Game {
     }
 
     onPicVersion(versionMessage: PicVersionMessage): void {
-        logger.debug(`Pic version: ${versionMessage.version}`);
-        MessageBroker.publishRetain(`mopo/pic/${versionMessage.pic}/version`, versionMessage.version);
+        logger.debug(`Pic ${versionMessage.pic} version: ${versionMessage.version}`);
+        MessageBroker.getInstance()
+            .publishRetain(`mopo/pic/${versionMessage.pic}/version`, versionMessage.version);
         // const config = Config.read();
         // const expectedVersion = config.pics[versionMessage.pic].version;
         // if (semver.lt(versionMessage.version, expectedVersion)) {

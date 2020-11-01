@@ -117,7 +117,7 @@ export class SwitchesPic extends Pic {
             }
         });
 
-        MessageBroker.on(EVENTS.SETUP_GPIO_COMPLETE, () => this.reset());
+        // MessageBroker.on(EVENTS.SETUP_GPIO_COMPLETE, () => this.reset());
 
         // MessageBroker.on('S3', (value) => {
         //     if (value) {
@@ -294,9 +294,9 @@ export class SwitchesPic extends Pic {
         });
     }
 
-    sendMessage(topic, payload) {
-        MessageBroker.emit(topic, payload);
-        MessageBroker.publish('mopo/dips', JSON.stringify(payload), null);
+    sendMessage(topic: EVENTS, payload) {
+        MessageBroker.getInstance().emit(topic, payload);
+        MessageBroker.getInstance().publish('mopo/dips', JSON.stringify(payload), null);
     }
 
     async _readNibble(): Promise<Bit[]> {

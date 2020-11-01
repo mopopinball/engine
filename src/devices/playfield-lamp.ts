@@ -29,7 +29,7 @@ export class PlayfieldLamp extends Light {
         // this._publish();
     }
 
-    _publish(): void {
-        MessageBroker.publish(`mopo/devices/lamps/${this.number}/state`, this.isOn.toString(), null);
-    }
+    // _publish(): void {
+    //     MessageBroker.publish(`mopo/devices/lamps/${this.number}/state`, this.isOn.toString(), null);
+    // }
 }

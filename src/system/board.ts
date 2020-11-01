@@ -24,13 +24,13 @@ export class Board {
     ledCollection: OutputDeviceCollection;
     shutdownInterval: NodeJS.Timeout;
     constructor() {
-        this.errorLed = new StatusLed(pins.D2_Error_Led, LightState.OFF);
-        this.piLed = new StatusLed(pins.D3_Pi_Led, LightState.ON);
-        this.nodeLed = new StatusLed(pins.D4_Node_Led, LightState.BLINK);
+        this.errorLed = new StatusLed(pins.D2_Error_Led);
+        this.piLed = new StatusLed(pins.D3_Pi_Led);
+        this.nodeLed = new StatusLed(pins.D4_Node_Led);
         // this.ledCollection = new OutputDeviceCollection([this.piLed, this.nodeLed]);
         this.shutdownInterval = null;
 
-        MessageBroker.on(EVENTS.WAN_DOWN, () => this.onWanDown());
+        MessageBroker.getInstance().on(EVENTS.WAN_DOWN, () => this.onWanDown());
 
         const resetSwitch = new BoardSwitch('S3', pins.S3_Shutdown, true);
         resetSwitch.on('change', (value) => {
@@ -44,15 +44,15 @@ export class Board {
         });
 
         const wpsSwitch = new BoardSwitch('S1_8', pins.S1_8_Wps, true);
-        MessageBroker.on(wpsSwitch.id, (value) => {
-            logger.debug(`WPS: ${value}`);
+        MessageBroker.getInstance().on(wpsSwitch.id, (value) => {
+            logger.debug(`WPS: ${value[0]}`);
             // todo, poll for new ip
         });
-        MessageBroker.on(EVENTS.IC1_DIPS, (value) => {
+        MessageBroker.getInstance().on(EVENTS.IC1_DIPS, (value) => {
             logger.debug(JSON.stringify(value));
         });
 
-        MessageBroker.on(EVENTS.SETUP_GPIO_COMPLETE, () => this.onGpioReady());
+        MessageBroker.getInstance().on(EVENTS.SETUP_GPIO_COMPLETE, () => this.onGpioReady());
     }
 
     onGpioReady(): void {
@@ -65,6 +65,8 @@ export class Board {
         // todo: only start this after setup is complete. remove check in status-led
         // this.ledCollection.set();
         // this.ledCollection.blink(10000);
+        this.piLed.on();
+        this.nodeLed.setState(LightState.BLINK);
     }
 
     onWanDown(): void {
