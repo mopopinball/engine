@@ -1,5 +1,6 @@
 import { PlayfieldLamp } from "../../../devices/playfield-lamp";
 import { RuleData } from "../rule-data";
+import { RuleEngine } from "../rule-engine";
 import { Action } from "./action";
 
 export class ConditionalAction extends Action {
@@ -9,7 +10,7 @@ export class ConditionalAction extends Action {
         super(id, actions, nextCollection);
     }
     
-    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
+    onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
         let result: boolean;
         switch(this.condition[0]) {
             case 'data':
@@ -18,9 +19,9 @@ export class ConditionalAction extends Action {
         }
 
         if (result) {
-            this.actions.get(this.trueResult).handle(data, devices);
+            this.actions.get(this.trueResult).handle(engines, data, devices);
         } else {
-            this.actions.get(this.falseResult).handle(data, devices);
+            this.actions.get(this.falseResult).handle(engines, data, devices);
         }
     }
 

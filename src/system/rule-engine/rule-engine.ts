@@ -6,10 +6,11 @@ import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { StateAction } from "./actions/state-action";
 import { RuleData } from "./rule-data";
-import { ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
+import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
-    active: boolean;
+    static root: RuleEngine;
+    active = false;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, PlayfieldLamp> = new Map();
     switchActions: Map<string, Action[]> = new Map();
@@ -18,6 +19,9 @@ export class RuleEngine extends DirtyNotifier {
 
     constructor(public id: string, public autoStart: boolean) {
         super();
+        if (this.id === 'root') {
+            RuleEngine.root = this;
+        }
     }
 
     static load(schema: RuleSchema): RuleEngine {
@@ -28,7 +32,7 @@ export class RuleEngine extends DirtyNotifier {
             child.onDirty(() => engine.emitDirty());
         }
 
-        for (const deviceSchema of schema.devices) {
+        for (const deviceSchema of schema.devices ?? []) {
             switch (deviceSchema.type) {
                 case "lamp":
                     engine.devices.set(deviceSchema.id, new PlayfieldLamp(
@@ -58,22 +62,23 @@ export class RuleEngine extends DirtyNotifier {
     private static createAction(action: DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema, engine: RuleEngine, next: string[]): void {
         let newAction: Action = null;
         switch (action.type) {
-            case 'data':
+            case ActionType.DATA:
                 newAction = new DataAction(action.id, action.dataId, action.operation, action.operand, engine.allActions, next);
                 break;
-            case 'device':
+            case ActionType.DEVICE:
                 newAction = new DeviceAction(action.id, action.deviceId, action.state, engine.allActions, next);
                 break;
-            case 'state': {
-                const target = action.childId ? engine.children.find((c) => c.id === action.childId) : engine;
+            case ActionType.STATE: {
                 newAction = new StateAction(
                         action.id, 
-                        target,
-                        action.state, engine.allActions, next
+                        action.startTargetId,
+                        action.stopTargetId,
+                        engine.allActions,
+                        next
                     );
                 break;
             }
-            case "condition":
+            case ActionType.CONDITION:
                 newAction = new ConditionalAction(
                     action.id, action.statement, action.trueResult, action.falseResult, engine.allActions, next
                 );
@@ -124,7 +129,7 @@ export class RuleEngine extends DirtyNotifier {
             return true;
         } else if (this.switchActions.has(id)) {
             for (const action of this.switchActions.get(id)) {
-                action.handle(this.getData(), this.getDevices());
+                action.handle(RuleEngine.root.getAllEngines(), this.getData(), this.getDevices());
             }
             return true;
         } else {
@@ -167,6 +172,16 @@ export class RuleEngine extends DirtyNotifier {
             devices = activeChild.getDevices(devices);
         }
         return devices;
+    }
+
+    getAllEngines(parentMap: Map<string, RuleEngine> = new Map()): Map<string, RuleEngine> {
+        parentMap.set(this.id, this);
+
+        for(const child of this.children) {
+            child.getAllEngines(parentMap);
+        }
+
+        return parentMap;
     }
 
     private getActiveChildren(): RuleEngine[] {

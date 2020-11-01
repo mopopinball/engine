@@ -1,6 +1,7 @@
 import { PlayfieldLamp } from "../../../devices/playfield-lamp";
 import { DirtyNotifier } from "../../dirty-notifier";
 import { RuleData } from "../rule-data";
+import { RuleEngine } from "../rule-engine";
 
 export abstract class Action extends DirtyNotifier {
     constructor(
@@ -9,14 +10,14 @@ export abstract class Action extends DirtyNotifier {
         super();
     }
 
-    abstract onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void;
+    abstract onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void;
     
-    handle(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
-        this.onAction(data, devices);
+    handle(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
+        this.onAction(engines, data, devices);
         this.emitDirty();
         
         for (const a of this.nextCollection) {
-            this.actions.get(a).handle(data, devices);
+            this.actions.get(a).handle(engines, data, devices);
         }
     }
 }

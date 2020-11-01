@@ -4,7 +4,6 @@ export interface RuleSchema {
     id: string;
     metadata?: RuleMetadata;
     autostart: boolean;
-    // switches: string[];
     data: DataSchema[];
     devices: [LampSchema | SolenoidSchema],
     actions: [DataActionSchema | DeviceActionSchema | StateActionSchema],
@@ -41,27 +40,34 @@ export interface ActionSchema {
     next: string[];
 }
 
+export enum ActionType {
+    DATA = 'data',
+    DEVICE = 'device',
+    STATE = 'state',
+    CONDITION = 'condition'
+}
+
 export interface DataActionSchema extends ActionSchema {
-    type: 'data';
+    type: ActionType.DATA;
     dataId: string;
     operation: number;
     operand: number;
 }
 
 export interface DeviceActionSchema extends ActionSchema {
-    type: 'device';
+    type: ActionType.DEVICE;
     deviceId: string;
     state: number;
 }
 
 export interface StateActionSchema extends ActionSchema {
-    type: 'state';
-    childId?: string;
-    state: boolean;
+    type: ActionType.STATE;
+    startTargetId: string;
+    stopTargetId: string;
 }
 
 export interface ConditionalActionSchema extends ActionSchema {
-    type: 'condition';
+    type: ActionType.CONDITION;
     statement: string[];
     trueResult: string;
     falseResult: string;

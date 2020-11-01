@@ -1,0 +1,18 @@
+{
+    "id": "root",
+    "autostart": true,
+    "children": [{
+        "id": "a",
+        "autostart": true,
+        "actions": [{
+            "id": "goto b",
+            "switchId": "sw0",
+            "type": "state",
+            "startTargetId": "b",
+            "stopTargetId": "a"
+        }]
+    }, {
+        "id": "b",
+        "autostart": false
+    }]
+}

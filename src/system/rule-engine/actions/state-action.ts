@@ -4,17 +4,17 @@ import { RuleEngine } from "../rule-engine";
 import { Action } from "./action";
 
 export class StateAction extends Action {
-    constructor(id: string, private child: RuleEngine, private state: boolean, actions: Map<string, Action>,
+    constructor(id: string, private startTargetId: string, private stopTargetId: string, actions: Map<string, Action>,
         nextCollection: string[]) {
         super(id, actions, nextCollection);
     }
     
-    onAction(data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
-        if (this.state) {
-            this.child.start();
+    onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+        if (this.startTargetId) {
+            engines.get(this.startTargetId).start();
         }
-        else {
-            this.child.stop();
+        if (this.stopTargetId) {
+            engines.get(this.stopTargetId).stop();
         }
     }
 

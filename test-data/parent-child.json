@@ -45,8 +45,7 @@
             "id": "a2",
             "type": "state",
             "switchId": "sw1",
-            "childId": "attractMode",
-            "state": true
+            "startTargetId": "attractMode"
         }
     ],
     "children": [

@@ -5,20 +5,65 @@
     },
     "id": "root",
     "autostart": true,
+    "children": [{
+        "id": "attract",
+        "autostart": true,
+        "devices": [{
+            "id": "GAME_OVER",
+            "type": "lamp",
+            "number": 11,
+            "role": "lamp",
+            "name": "",
+            "state": 1
+        },
+        {
+            "id": "HIGH_GAME_TO_DATE",
+            "type": "lamp",
+            "number": 10,
+            "role": "lamp",
+            "name": "",
+            "state": 2
+        }],
+        "actions": [{
+            "id": "start",
+            "switchId": "REPLAY",
+            "type": "state",
+            "startTargetId": "play",
+            "stopTargetId": "attract"
+        }]
+    }, {
+        "id": "play",
+        "autostart": false,
+        "devices": [{
+            "id": "SHOOT_AGAIN",
+            "type": "lamp",
+            "number": 3,
+            "role": "lamp",
+            "name": "",
+            "state": 2
+        }]
+    }],
     "devices": [{
         "id": "GAME_OVER",
         "type": "lamp",
         "number": 11,
         "role": "lamp",
-        "name": "game over",
-        "state": 1
+        "name": "",
+        "state": 0
     },
     {
         "id": "HIGH_GAME_TO_DATE",
         "type": "lamp",
         "number": 10,
         "role": "lamp",
-        "name": "hiscore",
-        "state": 2
+        "name": "",
+        "state": 0
+    }, {
+        "id": "SHOOT_AGAIN",
+        "type": "lamp",
+        "number": 3,
+        "role": "lamp",
+        "name": "",
+        "state": 0
     }]
 }
