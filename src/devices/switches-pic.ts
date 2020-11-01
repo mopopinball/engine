@@ -49,7 +49,7 @@ export class SwitchesPic extends Pic {
     s1_4: number;
     s1_5: number;
     slam: number;
-    ready: boolean = false;
+    ready = false;
     
     public static getInstance(): SwitchesPic {
         if (!SwitchesPic.instance) {

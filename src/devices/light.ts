@@ -71,7 +71,7 @@ export class Light extends OutputDevice {
     //     this.pulseTimeout = setTimeout(() => this.off(), pulseDurationMs);
     // }
 
-    blink(intervalMs: number = 1000): void {
+    blink(intervalMs = 1000): void {
         this.blinkStop();
         this.blinkInterval = setInterval(() => {
             this.toggle();
