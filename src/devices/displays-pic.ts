@@ -35,7 +35,7 @@ export class DisplaysPic extends Pic {
     }
 
     private constructor(private system: SystemName = SystemName.SYS80) {
-        super(PIC_ADDRESS);
+        super(PIC_ADDRESS, 'Displays');
 
         this.setSystemBuffer = Buffer.alloc(2);
         this.setSystemBuffer[0] = COMMAND_SET_SYSTEM;

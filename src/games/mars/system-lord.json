@@ -2,5 +2,23 @@
     "metadata": {
         "name": "Mars: System Lord",
         "description": "Build your fleet and battle against Mars across multiple modes."
-    }
+    },
+    "id": "root",
+    "autostart": true,
+    "devices": [{
+        "id": "GAME_OVER",
+        "type": "lamp",
+        "number": 11,
+        "role": "lamp",
+        "name": "game over",
+        "state": 1
+    },
+    {
+        "id": "HIGH_GAME_TO_DATE",
+        "type": "lamp",
+        "number": 10,
+        "role": "lamp",
+        "name": "hiscore",
+        "state": 2
+    }]
 }

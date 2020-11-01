@@ -8,7 +8,7 @@ import { Pic } from "./pic";
 // const Pic = require('./pic');
 // const gpiop = require('rpi-gpio').promise;
 import {promise, DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
-import * as pins from '../../pins.json';
+import * as pins from '../pins.json';
 // const gpio = require('rpi-gpio');
 // const pins = require('../../pins.json');
 // const Buffer = require('buffer').Buffer;
@@ -69,7 +69,7 @@ export class SwitchesPic extends Pic {
     }
 
     private constructor() {
-        super(null);
+        super(null, 'Switches');
         this.reading = false;
         this.version = '0.0.0';
 
@@ -134,6 +134,7 @@ export class SwitchesPic extends Pic {
         //         this.reset();
         //     }
         // });
+        logger.debug('Switches PIC setup complete.');
     }
 
     async setup(): Promise<void> {

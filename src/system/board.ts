@@ -1,5 +1,5 @@
 // const pins = require('../../pins.json');
-import * as pins from '../../pins.json';
+import * as pins from '../pins.json';
 // const StatusLed = require('../devices/status-led');
 // const BoardSwitch = require('../devices/board-switch');
 // const {MessageBroker, EVENTS} = require('./messages');

@@ -20,7 +20,7 @@ export class GameSelector {
         terminal.bold('Select a game:');
 
         // find all game configs.
-        const gamesDir = './src/games';
+        const gamesDir = '/home/pi/mopo/src/games';
         const gameConfigs: GameOption[] = [];
         const gameDirs = readdirSync(gamesDir);
         for(const gameDir of gameDirs) {
@@ -36,23 +36,28 @@ export class GameSelector {
                 }
             }
         }
+        if (gameConfigs.length === 0) {
+            terminal('\n\nNo games found.');
+            process.exit();
+        }
+
         terminal.singleColumnMenu(gameConfigs.map((gc) => gc.label), {cancelable: true}, (err, response) => {
             if (response.canceled) {
                 process.exit();
                 return;
             }
 
-            const gamestateDest = './src/gamestate-config.json';
+            const gamestateDest = './gamestate-config.json';
             if (existsSync(gamestateDest)){
                 unlinkSync(gamestateDest);
             }
             symlinkSync(resolve(gameConfigs[response.selectedIndex].gamestatePath), gamestateDest);
 
-            const hardwareDest = './src/hardware-config.json';
+            const hardwareDest = './hardware-config.json';
             if (existsSync(hardwareDest)) {
                 unlinkSync(hardwareDest);
             }
-            symlinkSync(resolve(gameConfigs[response.selectedIndex].gamestatePath), hardwareDest);
+            symlinkSync(resolve(gameConfigs[response.selectedIndex].hardwarePath), hardwareDest);
             
             process.exit();
         });

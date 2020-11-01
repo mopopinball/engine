@@ -9,13 +9,13 @@ import { spawnSync, SpawnSyncReturns } from "child_process";
 export abstract class Pic {
     protected i2c1: PromisifiedBus;
 
-    constructor(private readonly picAddress: number) {
+    constructor(private readonly picAddress: number, private name: string) {
     }
 
     async setup(): Promise<void> {
         this.i2c1 = await this.openConnection();
         const addresses = await this.scan();
-        logger.debug(`Found i2c devices: ${JSON.stringify(addresses)}`);
+        logger.debug(`${this.name}: Found i2c devices: ${JSON.stringify(addresses)}`);
     }
 
     async openConnection(): Promise<PromisifiedBus> {

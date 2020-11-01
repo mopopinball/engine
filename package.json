@@ -15,7 +15,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/terminal-kit": "^1.28.2",
     "bitwise": "2.0.4",
     "deep-equal": "2.0.3",
     "eval": "0.1.4",
@@ -29,11 +28,11 @@
     "rpi-gpio": "2.1.5",
     "semver": "^7.1.1",
     "terminal-kit": "^1.44.0",
-    "typescript": "^4.0.3",
     "uuid": "3.3.3",
     "winston": "3.3.3"
   },
   "devDependencies": {
+    "@types/terminal-kit": "^1.28.2",
     "@types/express": "4.17.8",
     "@types/i2c-bus": "^5.1.0",
     "@types/node": "14.14.0",
@@ -44,6 +43,7 @@
     "chai": "4.2.0",
     "eslint": "^7.12.0",
     "jest": "^26.6.0",
+    "typescript": "^4.0.3",
     "ts-jest": "^26.4.1"
   }
 }

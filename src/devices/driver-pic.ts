@@ -42,7 +42,7 @@ export class DriverPic extends Pic {
     private buffer: Buffer;
 
     private constructor() {
-        super(PIC_ADDRESS);
+        super(PIC_ADDRESS, 'Coils');
         this.lamps = this._initArray(53);
         this.coils = this._initArray(9);
         this.sounds = this._initArray(4);

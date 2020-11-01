@@ -42,6 +42,7 @@ export class Setup {
     }
 
     onPicVersion(versionMessage: PicVersionMessage): void {
+        logger.debug(`Pic version: ${versionMessage.version}`);
         MessageBroker.publishRetain(`mopo/pic/${versionMessage.pic}/version`, versionMessage.version);
         // const config = Config.read();
         // const expectedVersion = config.pics[versionMessage.pic].version;

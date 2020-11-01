@@ -22,10 +22,13 @@ tsc
 
 # rsync -r --exclude=node_modules --exclude=test --verbose node/ dist/node
 
-cp -r setup/ dist/setup
+# cp -r setup/ dist/setup
 
 cp flash_sw.sh dist
 cp flash_dr.sh dist
 cp flash_disp.sh dist
+cp package.json dist
+cp package-lock.json dist
+rsync -r --verbose src/games/ dist/src/games
 
-rsync -r --delete --exclude=node_modules --exclude=mopo.log --verbose dist/ pi@192.168.1.29:~/mopo
+rsync -r --delete --exclude=hardware-config.json --exclude=gamestate-config.json --exclude=node_modules --exclude=mopo.log --verbose dist/ pi@192.168.1.29:~/mopo

@@ -20,6 +20,7 @@ import {MessageBroker, EVENTS} from './messages';
 import {Setup} from './setup';
 import { SwitchesPic } from "../devices/switches-pic";
 import { logger } from "./logger";
+import { GpioPin } from "../devices/gpio-pin";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -65,12 +66,14 @@ export class Game {
         }
         // this.security = new Security(this.hardwareConfig.system);
 
-        MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
-        this.setup = new Setup();
-        this.setup.setup();
+        // MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
+        // this.setup = new Setup();
+        // this.setup.setup();
+        this.onSetupComplete();
     }
 
     onSetupComplete(): void {
+        logger.debug('Loading config');
         // this.server = new Server();
         // this.server.start();
 
@@ -98,7 +101,13 @@ export class Game {
         MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), { retain: true });
         MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
 
-        this._setupPics().then(() => this._gameLoop());
+        
+        this._setupPics().then(() => {
+            GpioPin.setupSync();
+            // MessageBroker.emit(EVENTS.SETUP_GPIO, 'setup');
+            logger.debug('Starting game loop.');
+            this._gameLoop();
+        });
     }
 
     onSwitchMatrixEvent(payload: SwitchPayload): void {
@@ -117,14 +126,17 @@ export class Game {
         }
     }
 
-    /**
+    /**s
      * Updates our output device states based on the states in the rule engine.
      */
     update(): void {
         const devices = this.ruleEngine.getDevices();
         devices.forEach((device) => {
             if (device instanceof PlayfieldLamp) {
-                this.lamps.get(device.number).setState(device.getState());
+                const lamp = this.lamps.get(device.number);
+                if (lamp.getState() != device.getState()) {
+                    lamp.setState(device.getState());
+                }
             }
         //     device
         //     // const state = this.gameState.getDeviceState(id);

@@ -21,7 +21,7 @@ export class RuleEngine {
     static load(schema: RuleSchema): RuleEngine {
         const engine = new RuleEngine(schema.id, schema.autostart);
 
-        engine.children = schema.children.map((c) => RuleEngine.load(c));
+        engine.children = schema.children?.map((c) => RuleEngine.load(c)) ?? [];
 
         for (const deviceSchema of schema.devices) {
             switch (deviceSchema.type) {
@@ -35,12 +35,16 @@ export class RuleEngine {
             }
         }
 
-        for (const action of schema.actions) {
-            RuleEngine.createAction(action, engine, action.next);
+        if (schema.actions) {
+            for (const action of schema.actions) {
+                RuleEngine.createAction(action, engine, action.next);
+            }
         }
 
-        for (const data of schema.data) {
-            engine.data.set(data.id, { value: data.value });
+        if (schema.data) {
+            for (const data of schema.data) {
+                engine.data.set(data.id, { value: data.value });
+            }
         }
 
         return engine;
