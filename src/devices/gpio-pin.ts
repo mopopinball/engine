@@ -34,7 +34,7 @@ export class GpioPin {
     static staticConstructor(): void {
         if (!GpioPin.instances) {
             GpioPin.instances = [];
-            MessageBroker.on(EVENTS.SETUP_GPIO, () => GpioPin.setupSync());
+            // MessageBroker.on(EVENTS.SETUP_GPIO, () => GpioPin.setupSync());
         }
     }
 
@@ -53,7 +53,7 @@ export class GpioPin {
             }
         }
         logger.info('GPIO setup complete.');
-        MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE, null);
+        // MessageBroker.emit(EVENTS.SETUP_GPIO_COMPLETE, null);
     }
 
     async setup(): Promise<void> {

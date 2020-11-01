@@ -76,7 +76,7 @@ export class DisplaysPic extends Pic {
             this.setBuffer(25, displayState.status);
         }
 
-        this._logBuffer();
+        this.logBuffer(this.buffer);
 
         // Perform the I2C write.
         try {
@@ -108,16 +108,6 @@ export class DisplaysPic extends Pic {
             //         this.buffer[offset + i] = message.glyphs[i];
             //     }
             // }
-        }
-    }
-
-    _logBuffer(): void {
-        if (DEBUG) {
-            let log = '';
-            this.buffer.forEach((b) => {
-                log += `[${this.dec2bin(b)}]`;
-            });
-            logger.debug(log);
         }
     }
 

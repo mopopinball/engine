@@ -17,10 +17,12 @@ import { SwitchPayload } from "./rule-engine/switch-payload";
 import {MessageBroker, EVENTS} from './messages';
 // const Maintenance = require('./system/maintenance');
 // const Security = require('./system/security');
-import {Setup} from './setup';
 import { SwitchesPic } from "../devices/switches-pic";
 import { logger } from "./logger";
 import { GpioPin } from "../devices/gpio-pin";
+import { Board } from "./board";
+import { PicVersionMessage } from "../devices/pic-version-message";
+import { threadId } from "worker_threads";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -36,15 +38,12 @@ const MS_PER_FRAME = 33; // 30 fps
  * The Mopo Pinball engine.
  */
 export class Game {
-    hardwareConfig: HardwareConfig;
     // maintenance: any;
     // security: any;
-    // setup: any;
     // server: any;
     displays: Sys80or80ADisplay;
     name: string;
     fpsTracker: FpsTracker;
-    // callStates: {};
     ruleEngine: RuleEngine;
     lastPayload: string;
     private switches: Map<string, PlayfieldSwitch> = new Map();
@@ -53,26 +52,27 @@ export class Game {
     private coils: Map<string, Coil> = new Map();
     private sounds: Map<number, Sound> = new Map();
     private outputDevices: OutputDevice[] = [];
-    setup: Setup;
+    private dirtyDevices: OutputDevice[] = [];
+    board: Board;
+    engineDirty: boolean;
 
-    constructor(hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
+    constructor(private hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
         if (!hardwareConfig || !gameStateConfig) {
             throw new Error('Required config not provided');
         }
-        this.hardwareConfig = hardwareConfig;
-        // this.maintenance = new Maintenance();
         if (!hardwareConfig.system) {
             throw new Error('No system defined');
         }
+
+        // this.maintenance = new Maintenance();
+
         // this.security = new Security(this.hardwareConfig.system);
 
         // MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
-        // this.setup = new Setup();
-        // this.setup.setup();
-        this.onSetupComplete();
+        this.setup();
     }
 
-    onSetupComplete(): void {
+    setup(): void {
         logger.debug('Loading config');
         // this.server = new Server();
         // this.server.start();
@@ -90,9 +90,13 @@ export class Game {
         this.name = this.hardwareConfig.name;
         this.fpsTracker = new FpsTracker();
 
-        // this.callStates = {};
+        this.board = new Board();
+        this.board.start();
+
         this.ruleEngine = RuleEngine.load(this.gameStateConfig);
+        this.ruleEngine.onDirty(() => this.engineDirty = true);
         this.ruleEngine.start();
+        this.engineDirty = true;
 
         // Setup all message bindings.
         MessageBroker.publish('mopo/devices/lamps/all/state', JSON.stringify(this.lamps), { retain: true });
@@ -101,13 +105,19 @@ export class Game {
         MessageBroker.publish('mopo/devices/switches/all/state', JSON.stringify(this.switches), { retain: true });
         MessageBroker.on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
 
-        
-        this._setupPics().then(() => {
-            GpioPin.setupSync();
-            // MessageBroker.emit(EVENTS.SETUP_GPIO, 'setup');
+        this.setupHardware().then(() => {
+            SwitchesPic.getInstance().reset();
             logger.debug('Starting game loop.');
-            this._gameLoop();
+            this.gameLoop();
         });
+    }
+
+    private async setupHardware(): Promise<void> {
+        MessageBroker.on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
+        await SwitchesPic.getInstance().setup();
+        await DriverPic.getInstance().setup();
+        await DisplaysPic.getInstance().setup();
+        await GpioPin.setupSync();
     }
 
     onSwitchMatrixEvent(payload: SwitchPayload): void {
@@ -130,6 +140,10 @@ export class Game {
      * Updates our output device states based on the states in the rule engine.
      */
     update(): void {
+        if (!this.engineDirty) {
+            return;
+        }
+
         const devices = this.ruleEngine.getDevices();
         devices.forEach((device) => {
             if (device instanceof PlayfieldLamp) {
@@ -146,6 +160,7 @@ export class Game {
         //         this._callDevice(id, device, state);
         //     }
         });
+        this.engineDirty = false;
     }
 
     // _hasCallStateChanged(deviceId, state) {
@@ -160,17 +175,6 @@ export class Game {
     //     }
     //     // this.callStates[id] = state;
     // }
-
-    // setup() {
-    //     this._setupPics();
-    //     this._gameLoop();
-    // }
-
-    async _setupPics(): Promise<void> {
-        await SwitchesPic.getInstance().setup();
-        await DriverPic.getInstance().setup();
-        await DisplaysPic.getInstance().setup();
-    }
 
     _loadConfig(): void {
         // Map switches to obj/dict for direct lookup.
@@ -232,6 +236,11 @@ export class Game {
         this.outputDevices = this.outputDevices.concat(Array.from(this.lamps.values()));
         this.outputDevices = this.outputDevices.concat(Array.from(this.coils.values()));
         this.outputDevices = this.outputDevices.concat(Array.from(this.sounds.values()));
+        for(const od of this.outputDevices) {
+            od.onDirty((device) => {
+                this.dirtyDevices.push(device);
+            });
+        }
 
         const swCount = this.switches.size;
         const lampCount = this.lamps.size;
@@ -240,8 +249,8 @@ export class Game {
         logger.info(`Loaded ${swCount} switches, ${lampCount} lamps, ${coilCount} coils and ${soundCount} sounds.`);
     }
 
-    async _gameLoop(): Promise<void> {
-        const start = this._getCurrentTime();
+    private async gameLoop(): Promise<void> {
+        const start = this.getCurrentTime();
         try {
             this.update();
         }
@@ -249,7 +258,7 @@ export class Game {
             logger.error(`${e.message} ${e.stack}`);
         }
         try {
-            await this._updateDevices();
+            await this.updateDevices();
         }
         catch (e) {
             logger.error(`${e.message} ${e.stack}`);
@@ -261,32 +270,32 @@ export class Game {
             logger.error(`${e.message} ${e.stack}`);
         }
 
-        // determine how long to wait before executing next loop iteration in order to meet
+        // Determine how long to wait before executing next loop iteration in order to meet
         // our desired FPS.
-        const end = this._getCurrentTime();
+        const end = this.getCurrentTime();
         this.fpsTracker.sampleLoopTime(end - start);
 
         let loopDelay = start + MS_PER_FRAME - end;
         if (loopDelay < 0) {
             loopDelay = 0;
         }
-        setTimeout(() => this._gameLoop(), loopDelay);
+        setTimeout(() => this.gameLoop(), loopDelay);
     }
 
-    _getCurrentTime(): number {
+    private getCurrentTime(): number {
         return new Date().valueOf();
     }
 
     /**
      * Updates all output devices defined for this game. This includes lights, coils and sounds.
      */
-    async _updateDevices(): Promise<void> {
+    private async updateDevices(): Promise<void> {
         // check if there is at least one dirty device.
-        const dirtyDevices: OutputDevice[] = [];
-        this.addDirtyToCollection(this.lamps.values(), dirtyDevices);
-        this.addDirtyToCollection(this.coils.values(), dirtyDevices);
-        this.addDirtyToCollection(this.sounds.values(), dirtyDevices);
-        if (dirtyDevices.length === 0) {
+        // const dirtyDevices: OutputDevice[] = [];
+        // this.addDirtyToCollection(this.lamps.values(), dirtyDevices);
+        // this.addDirtyToCollection(this.coils.values(), dirtyDevices);
+        // this.addDirtyToCollection(this.sounds.values(), dirtyDevices);
+        if (this.dirtyDevices.length === 0) {
             return;
         }
 
@@ -294,8 +303,8 @@ export class Game {
         // this handles a case where a device goes off during an async update() call, and
         // we wouldnt want to ack the device off when we havnt sent that off state
         // to the pic.
-        const dirtyOnDevices = dirtyDevices.filter((device) => !device.ackOn);
-        const dirtyOffDevices = dirtyDevices.filter((device) => !device.ackOff);
+        const dirtyOnDevices = this.dirtyDevices.filter((device) => !device.ackOn);
+        const dirtyOffDevices = this.dirtyDevices.filter((device) => !device.ackOff);
 
         // send the update(s) to the pic.
         const updateSuccess = await DriverPic.getInstance().update(Object.values(this.outputDevices));
@@ -310,21 +319,38 @@ export class Game {
         // );
         // todo: emit this here? what if no game is loaded and we want to see device states.
         // MessageBroker.publish('mopo/devices/all/state', JSON.stringify(payload));
+        
+        // clear the array
+        this.dirtyDevices.splice(0, this.dirtyDevices.length);
     }
 
-    private addDirtyToCollection(candidates: IterableIterator<OutputDevice>, dirty: OutputDevice[]): void {
-        for (const l2 of candidates) {
-            if (l2.isDirty()) {
-                dirty.push(l2);
-            }
-        }
-    }
+    // private addDirtyToCollection(candidates: IterableIterator<OutputDevice>, dirty: OutputDevice[]): void {
+    //     for (const l2 of candidates) {
+    //         if (l2.isDirty()) {
+    //             dirty.push(l2);
+    //         }
+    //     }
+    // }
 
     async _updateDisplays(): Promise<void> {
         if (this.displays.getHash() !== this.lastPayload) {
             this.lastPayload = this.displays.getHash();
             await DisplaysPic.getInstance().update(this.displays);
         }
+    }
+
+    onPicVersion(versionMessage: PicVersionMessage): void {
+        logger.debug(`Pic version: ${versionMessage.version}`);
+        MessageBroker.publishRetain(`mopo/pic/${versionMessage.pic}/version`, versionMessage.version);
+        // const config = Config.read();
+        // const expectedVersion = config.pics[versionMessage.pic].version;
+        // if (semver.lt(versionMessage.version, expectedVersion)) {
+        // eslint-disable-next-line max-len
+        //     logger.warn(`Pic ${versionMessage.pic} is not running the current version ${expectedVersion}. Its running ${versionMessage.version} Please flash ${versionMessage.pic}.`);
+        // }
+        // else {
+        //     logger.info(`Pic ${versionMessage.pic} is running version ${versionMessage.version}`);
+        // }
     }
 }
 

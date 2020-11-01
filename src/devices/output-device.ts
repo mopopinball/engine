@@ -1,3 +1,5 @@
+import { DirtyNotifier } from "../system/dirty-notifier";
+
 // const logger = require('../util/logger');
 export enum OUTPUT_DEVICE_TYPES {
     LIGHT,
@@ -8,23 +10,27 @@ export enum OUTPUT_DEVICE_TYPES {
 /**
  * An output device which is controled by the driver PIC.
  */
-export abstract class OutputDevice {
+export abstract class OutputDevice extends DirtyNotifier {
     public isOn: boolean;
     // the two ack flags. They start ack'd.
     public ackOn = true;
     public ackOff = true;
     dirtyFlag: boolean;
 
-    constructor(public readonly type: OUTPUT_DEVICE_TYPES) {}
+    constructor(public readonly type: OUTPUT_DEVICE_TYPES) {
+        super();
+    }
 
     on(): void {
         this.isOn = true;
         this.ackOn = null;
+        this.emitDirty();
     }
 
     off(): void {
         this.isOn = false;
         this.ackOff = null;
+        this.emitDirty();
     }
 
     _markDirty(): void {

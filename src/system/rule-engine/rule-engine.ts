@@ -1,4 +1,5 @@
 import { PlayfieldLamp } from "../../devices/playfield-lamp";
+import { DirtyNotifier } from "../dirty-notifier";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
@@ -7,7 +8,7 @@ import { StateAction } from "./actions/state-action";
 import { RuleData } from "./rule-data";
 import { ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
 
-export class RuleEngine {
+export class RuleEngine extends DirtyNotifier {
     active: boolean;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, PlayfieldLamp> = new Map();
@@ -16,12 +17,16 @@ export class RuleEngine {
     children: RuleEngine[] = [];
 
     constructor(public id: string, public autoStart: boolean) {
+        super();
     }
 
     static load(schema: RuleSchema): RuleEngine {
         const engine = new RuleEngine(schema.id, schema.autostart);
 
         engine.children = schema.children?.map((c) => RuleEngine.load(c)) ?? [];
+        for (const child of engine.children) {
+            child.onDirty(() => engine.emitDirty());
+        }
 
         for (const deviceSchema of schema.devices) {
             switch (deviceSchema.type) {
@@ -81,6 +86,9 @@ export class RuleEngine {
             engine.addAction(action.switchId, newAction);
         }
         engine.allActions.set(newAction.id, newAction);
+        newAction.onDirty(() => {
+            engine.emitDirty();
+        });
     }
 
     addAction(switchId: string, action: Action): Action {
@@ -143,6 +151,7 @@ export class RuleEngine {
         return newData;
     }
 
+    // compressed devices
     getDevices(parentDevices: Map<string, PlayfieldLamp> = new Map()): Map<string, PlayfieldLamp> {
         let devices: Map<string, PlayfieldLamp> = new Map();
         // copy parent devices

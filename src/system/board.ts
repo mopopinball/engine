@@ -12,6 +12,7 @@ import OutputDeviceCollection from '../devices/output-device-collection';
 import { StatusLed } from "../devices/status-led";
 import { logger } from './logger';
 import { EVENTS, MessageBroker } from "./messages";
+import { LightState } from '../devices/light';
 
 /**
  * Manages board IO including status LEDs and dip switch settings.
@@ -23,10 +24,10 @@ export class Board {
     ledCollection: OutputDeviceCollection;
     shutdownInterval: NodeJS.Timeout;
     constructor() {
-        this.errorLed = new StatusLed(pins.D2_Error_Led, false);
-        this.piLed = new StatusLed(pins.D3_Pi_Led, true);
-        this.nodeLed = new StatusLed(pins.D4_Node_Led, false);
-        this.ledCollection = new OutputDeviceCollection([this.piLed, this.nodeLed]);
+        this.errorLed = new StatusLed(pins.D2_Error_Led, LightState.OFF);
+        this.piLed = new StatusLed(pins.D3_Pi_Led, LightState.ON);
+        this.nodeLed = new StatusLed(pins.D4_Node_Led, LightState.BLINK);
+        // this.ledCollection = new OutputDeviceCollection([this.piLed, this.nodeLed]);
         this.shutdownInterval = null;
 
         MessageBroker.on(EVENTS.WAN_DOWN, () => this.onWanDown());

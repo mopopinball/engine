@@ -10,11 +10,8 @@ import{DIR_OUT} from 'rpi-gpio';
 export class StatusLed extends Light {
     private gpioPin: GpioPin;
 
-    constructor(private pin: number, initiallyOn: boolean) {
-        super(initiallyOn ? LightState.ON : LightState.OFF);
-        if (!pin) {
-            throw new Error('Provide a pin value');
-        }
+    constructor(private pin: number, state: LightState) {
+        super(state);
         this.gpioPin = new GpioPin(this.pin, DIR_OUT);
     }
 

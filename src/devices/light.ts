@@ -10,18 +10,15 @@ export enum LightState {
  * An abstract light.
  */
 export class Light extends OutputDevice {
-    blinkInterval: NodeJS.Timeout;
-    pulseTimeout: NodeJS.Timeout;
+    private blinkInterval: NodeJS.Timeout = null;
+    private pulseTimeout: NodeJS.Timeout = null;
 
     constructor(protected state: LightState) {
         super(OUTPUT_DEVICE_TYPES.LIGHT);
-        if (state === LightState.ON) {
-            this.on();
-        }
-        this.blinkInterval = null;
+        this.setState(state);
     }
     
-    setState(state: LightState): void {
+    setState(state: LightState, stateParam?: number): void {
         this.clearTimers();
         this.state = state;
         if (state === LightState.ON) {
@@ -31,7 +28,7 @@ export class Light extends OutputDevice {
             this.off();
         }
         else if (state === LightState.BLINK) {
-            // TODO
+            this.blink(stateParam);
         }
         else {
             throw new Error('not impl');
@@ -68,18 +65,22 @@ export class Light extends OutputDevice {
         }
     }
 
-    pulse(pulseDurationMs: number): void {
-        this.on();
-        clearTimeout(this.pulseTimeout);
-        this.pulseTimeout = setTimeout(() => this.off(), pulseDurationMs);
+    // pulse(pulseDurationMs: number): void {
+    //     this.on();
+    //     clearTimeout(this.pulseTimeout);
+    //     this.pulseTimeout = setTimeout(() => this.off(), pulseDurationMs);
+    // }
+
+    blink(intervalMs: number = 1000): void {
+        this.blinkStop();
+        this.blinkInterval = setInterval(() => {
+            this.toggle();
+        }, intervalMs);
     }
 
-    // blink(intervalMs): void {
-    //     this.blinkStop();
-    //     this.blinkInterval = setInterval(() => {
-    //         this.toggle();
-    //     }, intervalMs);
-    // }
+    blinkStop() {
+        clearInterval(this.blinkInterval);
+    }
 
     clearTimers(): void {
         clearInterval(this.blinkInterval);

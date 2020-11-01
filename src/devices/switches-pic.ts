@@ -1,26 +1,16 @@
-import { byte, nibble } from "bitwise";
+import { buffer, byte, nibble } from "bitwise";
 import { Bit, Nibble, UInt4, UInt8 } from "bitwise/types";
 import { logger } from "../system/logger";
 import { EVENTS, MessageBroker } from "../system/messages";
 import { GpioPin } from "./gpio-pin";
 import { Pic } from "./pic";
 
-// const Pic = require('./pic');
-// const gpiop = require('rpi-gpio').promise;
 import {promise, DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
 import * as pins from '../pins.json';
-// const gpio = require('rpi-gpio');
-// const pins = require('../../pins.json');
-// const Buffer = require('buffer').Buffer;
-// const {MessageBroker, EVENTS} = require('../system/messages');
-// const logger = require('../system/logger');
-// const GpioPin = require('./gpio-pin');
-// const bitwise = require('bitwise');
-// import { byte, nibble } from 'bitwise';
-// import { UInt4, UInt8 } from "bitwise/types";
 
-const PAYLOAD_SIZE = 2;
-const COMMS_LOGGING = false;
+const PAYLOAD_SIZE_BYTES = 2;
+const LAST_NIBBLE_INDEX = (PAYLOAD_SIZE_BYTES * 2) - 1;
+const COMMS_LOGGING = true;
 
 /**
  * The switches PIC. NOT i2c.
@@ -59,6 +49,7 @@ export class SwitchesPic extends Pic {
     s1_4: number;
     s1_5: number;
     slam: number;
+    ready: boolean = false;
     
     public static getInstance(): SwitchesPic {
         if (!SwitchesPic.instance) {
@@ -73,7 +64,7 @@ export class SwitchesPic extends Pic {
         this.reading = false;
         this.version = '0.0.0';
 
-        this.payload = Buffer.alloc(PAYLOAD_SIZE);
+        this.payload = Buffer.alloc(PAYLOAD_SIZE_BYTES);
         this.nibbleCount = -1;
         this.errorCount = 0;
 
@@ -89,6 +80,9 @@ export class SwitchesPic extends Pic {
         // MessageBroker.subscribe('mopo/pic/IC1/update', () => this.programHex());
 
         on('change', async (channel) => {
+            if (!this.ready) {
+                return;
+            }
             if (channel === pins.IC1_OUT_RDY) {
                 // if (this.reading) {
                 //     logger.error('already reading');
@@ -151,7 +145,7 @@ export class SwitchesPic extends Pic {
         await this._reset.writeLow(); // reset (active low)
         this.nibbleCount = -1;
         this._clearBuffer();
-        // this.picReady = false;
+        this.ready = true;
         await this._reset.writeHigh();
         // this._sendAck();
         logger.info('Resetting IC1 complete');
@@ -170,38 +164,49 @@ export class SwitchesPic extends Pic {
     async _readData() {
         this.nibbleCount++;
 
-        if (this.nibbleCount > 3) {
+        // if we're past the end of our payload, start a new payload.
+        if (this.nibbleCount > LAST_NIBBLE_INDEX) {
             this.nibbleCount = 0;
             this._clearBuffer();
         }
 
-        // a complete data payload consists of three bytes.
+        // read the incoming nibble and apply it to the full payload.
         const nibble = await this._readNibble();
-        const byteIndex = Math.round(this.nibbleCount / 2);
-        if (this.nibbleCount === 0 || this.nibbleCount === 2) {
-            this.payload[byteIndex] = nibble;
-        }
-        else {
-            this.payload[byteIndex] = (this.payload[byteIndex] << 4) | nibble;
-        }
+        buffer.modify(this.payload, nibble, this.nibbleCount * 4);
 
         if (COMMS_LOGGING) {
             // eslint-disable-next-line max-len
-            logger.debug(`Nibble ${this.nibbleCount} = ${nibble}. Buffer = ${this.dec2bin(this.payload[0])} ${this.dec2bin(this.payload[1])}`);
+            logger.debug(`Nibble ${this.nibbleCount} = ${nibble}.`);
+            this.logBuffer(this.payload);
         }
-        if (this.nibbleCount === (PAYLOAD_SIZE * 2) - 1) {
-            this._payloadInProgress = false;
 
-            const crcOk = this.isParityOk();
-            if (!crcOk) {
-                logger.debug('bad data. resend.');
-                return false;
-            }
+        if (this.nibbleCount === LAST_NIBBLE_INDEX) {
+            this._payloadInProgress = false;
 
             const opCode = this.payload[0] >>> 6;
             if (COMMS_LOGGING) {
-                logger.debug(`GOT PAYLOAD. Op Code is: ${opCode}`);
+                if (opCode === 0) {
+                    logger.debug('[00VVVVVV][VVVVCCCC]');
+                }
+                else if (opCode === 1) {
+                    logger.debug('[01KKKKKW][WWWLCCCC]');
+                }
+                else {
+                    logger.debug('[10SSSRRR][T000CCCC]');
+                }
+                const p = [];
+                for (let i = 0; i < this.payload.length; i++) {
+                    p.push(this.dec2bin(this.payload[i], 8));
+                }
+                logger.debug(`[${p.join('][')}]`);
             }
+
+            const crcOk = this.isParityOk();
+            if (!crcOk) {
+                logger.debug('Bad switch data, CRC failed. Resend.');
+                return false;
+            }
+            
             switch (opCode) {
             case 0:
                 this._onVersionPayload();
@@ -243,6 +248,9 @@ export class SwitchesPic extends Pic {
     }
 
     _onVersionPayload() {
+        if (this.DEBUG) {
+            logger.debug('Got a Version payload');
+        }
         const major = this.payload[0] & 0x3F;
         const minor = this.payload[1] >>> 4;
         this.version = `${major}.${minor}.0`;
@@ -251,6 +259,9 @@ export class SwitchesPic extends Pic {
 
     // [01KKKKKW][WWWLCCCC] K = switch K1, W = switch S1
     _onDipPayload() {
+        if (this.DEBUG) {
+            logger.debug('Got a DIP payload');
+        }
         const byte0 = byte.read(this.payload[0] as UInt8);
         this.k1_1 = byte0[2];
         this.k1_2 = byte0[3];
@@ -268,6 +279,9 @@ export class SwitchesPic extends Pic {
 
     // [10SSSRRR][T000CCCC] S=strobe, R=return, T=activated
     _onSwitchMatrixPayload() {
+        if (this.DEBUG) {
+            logger.debug('Got a switch matrix payload');
+        }
         const strobe = (this.payload[0] & 0x38) >>> 3;
         const ret = this.payload[0] & 0x07;
         const switchState = this.payload[1] >>> 7;
@@ -285,15 +299,21 @@ export class SwitchesPic extends Pic {
         MessageBroker.publish('mopo/dips', JSON.stringify(payload), null);
     }
 
-    async _readNibble(): Promise<UInt4> {
-        // const bit: Bit = 
-        const bits: Nibble = await Promise.all([
-            this._data0.read() ? 1 : 0,
-            this._data1.read() ? 1 : 0,
-            this._data2.read() ? 1 : 0,
-            this._data3.read() ? 1 : 0
+    async _readNibble(): Promise<Bit[]> {
+        const bools = await Promise.all([
+            this._data0.read(),
+            this._data1.read(),
+            this._data2.read(),
+            this._data3.read()
         ]);
-        return nibble.write(bits);
+        return [
+            this.boolToBit(bools[0]), this.boolToBit(bools[1]),
+            this.boolToBit(bools[2]), this.boolToBit(bools[3])
+        ];
+    }
+
+    private boolToBit(bool: boolean): Bit {
+        return bool ? 1 : 0;
     }
 
     _sendAck() {

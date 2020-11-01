@@ -2,12 +2,14 @@ import { BytesWritten, PromisifiedBus } from "i2c-bus";
 import * as i2c from 'i2c-bus';
 import { logger } from "../system/logger";
 import { spawnSync, SpawnSyncReturns } from "child_process";
+import {padStart} from 'lodash';
 
 /**
  * An abstract PIC.
  */
 export abstract class Pic {
     protected i2c1: PromisifiedBus;
+    protected readonly DEBUG = true;
 
     constructor(private readonly picAddress: number, private name: string) {
     }
@@ -34,8 +36,8 @@ export abstract class Pic {
         return this.i2c1.i2cWrite(this.picAddress, buffer.length, buffer);
     }
 
-    dec2bin(dec: number): string {
-        return (dec >>> 0).toString(2);
+    dec2bin(dec: number, size: number): string {
+        return padStart((dec >>> 0).toString(2), size, '0');
     }
 
     programHex(pathToHexFile: string): SpawnSyncReturns<string> {
@@ -43,6 +45,16 @@ export abstract class Pic {
         const result = spawnSync('picpgm', ['-p', pathToHexFile], {stdio: 'pipe', encoding: 'utf-8'});
         logger.info(result.stdout);
         return result;
+    }
+
+    protected logBuffer(buffer: Buffer): void {
+        if (this.DEBUG) {
+            let log = '';
+            buffer.forEach((b) => {
+                log += `[${this.dec2bin(b, 8)}]`;
+            });
+            logger.debug(log);
+        }
     }
 
     // compareHex(pathToHexFile: string): void {

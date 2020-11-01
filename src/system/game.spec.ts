@@ -11,6 +11,6 @@ describe('game', () => {
         const game = new Game(
             hardwareConfig as unknown as HardwareConfig, gameConfig as unknown as RuleSchema
         );
-        game.onSetupComplete();
+        game.setup();
     });
 });

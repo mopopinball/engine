@@ -1,4 +1,3 @@
-// import bitwise from "bitwise";
 import { byte } from "bitwise";
 import { Bit, UInt8 } from "bitwise/types";
 import { PromisifiedBus } from "i2c-bus";
@@ -14,7 +13,6 @@ import { logger } from "../system/logger";
 // const logger = require('../system/logger');
 
 const PIC_ADDRESS = 0x41;
-const DEBUG = false;
 
 /**
  * Communication with the driver board.
@@ -126,7 +124,7 @@ export class DriverPic extends Pic {
             0
         );
 
-        this._logBuffer();
+        // this.logBuffer(this.buffer);
 
         // Perform the I2C write.
         try {
@@ -134,20 +132,10 @@ export class DriverPic extends Pic {
             return true;
         }
         catch (e) {
-            if (DEBUG) {
+            if (this.DEBUG) {
                 logger.error(e);
             }
             return false;
-        }
-    }
-
-    _logBuffer(): void {
-        if (DEBUG) {
-            let log = '';
-            this.buffer.forEach((b) => {
-                log += `[${this.dec2bin(b)}]`;
-            });
-            logger.debug(log);
         }
     }
 
@@ -163,7 +151,7 @@ export class DriverPic extends Pic {
         // this.i2c1.close();
 
         // init all low
-        if (DEBUG) {
+        if (this.DEBUG) {
             logger.debug('Sending initial state zeros');
         }
         await this.write(this.buffer);
