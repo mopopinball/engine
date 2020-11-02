@@ -78,7 +78,7 @@ export class Light extends OutputDevice {
         }, intervalMs);
     }
 
-    blinkStop() {
+    blinkStop(): void {
         clearInterval(this.blinkInterval);
     }
 

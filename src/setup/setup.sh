@@ -2,6 +2,8 @@
 
 set -eou pipefail
 
+# MAIN SETUP SCRIPT FOR MOPO PINBALL
+
 apt update
 apt install -y wiringpi mosquitto uuid figlet
 

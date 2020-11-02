@@ -1,5 +1,5 @@
-import { buffer, byte, nibble } from "bitwise";
-import { Bit, Nibble, UInt4, UInt8 } from "bitwise/types";
+import { buffer, byte } from "bitwise";
+import { Bit, UInt8 } from "bitwise/types";
 import { logger } from "../system/logger";
 import { EVENTS, MessageBroker } from "../system/messages";
 import { GpioPin } from "./gpio-pin";
@@ -30,15 +30,15 @@ export class SwitchesPic extends Pic {
     payload: Buffer;
     nibbleCount: number;
     errorCount: number;
-    _data0: GpioPin;
-    _data1: GpioPin;
-    _data2: GpioPin;
-    _data3: GpioPin;
-    _outReady: GpioPin;
-    _ack: GpioPin;
-    _retry: GpioPin;
-    _reset: GpioPin;
-    _payloadInProgress: boolean;
+    private readonly _data0: GpioPin;
+    private readonly _data1: GpioPin;
+    private readonly _data2: GpioPin;
+    private readonly _data3: GpioPin;
+    private readonly _outReady: GpioPin;
+    private readonly _ack: GpioPin;
+    private readonly _retry: GpioPin;
+    private readonly _reset: GpioPin;
+    private _payloadInProgress: boolean;
     k1_1: number;
     k1_2: number;
     k1_3: number;
@@ -135,12 +135,12 @@ export class SwitchesPic extends Pic {
         // TODO: Move that constructor logic in here.
     }
 
-    _clearBuffer() {
+    private _clearBuffer(): void {
         this.payload[0] = 0;
         this.payload[1] = 0;
     }
 
-    async reset() {
+    async reset(): Promise<void> {
         logger.info('Resetting IC1');
         await this._reset.writeLow(); // reset (active low)
         this.nibbleCount = -1;
@@ -161,7 +161,7 @@ export class SwitchesPic extends Pic {
      *      Op Code 2 - Switch matrix state
      *      [10SSSRRR][T000CCCC] S=strobe, R=return, T=activated
      */
-    async _readData() {
+    private async _readData(): Promise<boolean> {
         this.nibbleCount++;
 
         // if we're past the end of our payload, start a new payload.
@@ -226,7 +226,7 @@ export class SwitchesPic extends Pic {
         return true;
     }
 
-    isParityOk() {
+    isParityOk(): boolean {
         const nib3 = (this.payload[1] & 0x0F);
 
         const nib0 = (this.payload[0] & 0xF0) >>> 4;
@@ -247,7 +247,7 @@ export class SwitchesPic extends Pic {
             nib2Actual == nib2Expected;
     }
 
-    _onVersionPayload() {
+    _onVersionPayload(): void {
         if (this.DEBUG) {
             logger.debug('Got a Version payload');
         }
@@ -258,7 +258,7 @@ export class SwitchesPic extends Pic {
     }
 
     // [01KKKKKW][WWWLCCCC] K = switch K1, W = switch S1
-    _onDipPayload() {
+    _onDipPayload(): void {
         if (this.DEBUG) {
             logger.debug('Got a DIP payload');
         }
@@ -278,7 +278,7 @@ export class SwitchesPic extends Pic {
     }
 
     // [10SSSRRR][T000CCCC] S=strobe, R=return, T=activated
-    _onSwitchMatrixPayload() {
+    _onSwitchMatrixPayload(): void {
         if (this.DEBUG) {
             logger.debug('Got a switch matrix payload');
         }
@@ -294,7 +294,7 @@ export class SwitchesPic extends Pic {
         });
     }
 
-    sendMessage(topic: EVENTS, payload) {
+    sendMessage(topic: EVENTS, payload): void {
         MessageBroker.getInstance().emit(topic, payload);
         MessageBroker.getInstance().publish('mopo/dips', JSON.stringify(payload), null);
     }
@@ -316,14 +316,14 @@ export class SwitchesPic extends Pic {
         return bool ? 1 : 0;
     }
 
-    _sendAck() {
+    private _sendAck() {
         if (COMMS_LOGGING) {
             logger.info('Sending ACK');
         }
         this._ack.toggle();
     }
 
-    async _sendRetry() {
+    private async _sendRetry() {
         if (COMMS_LOGGING) {
             logger.info('Sending retry');
         }
@@ -331,14 +331,14 @@ export class SwitchesPic extends Pic {
         this._retry.writeLow();
     }
 
-    reportVersion() {
+    private reportVersion() {
         this.sendMessage(EVENTS.PIC_VERSION, {
             pic: 'IC1',
             version: this.version
         });
     }
 
-    reportDips() {
+    private reportDips(): void {
         this.sendMessage(EVENTS.IC1_DIPS, {
             K1: {
                 1: this.k1_1,
@@ -357,7 +357,7 @@ export class SwitchesPic extends Pic {
         });
     }
 
-    getParity(n): number {
+    getParity(n: number): number {
         let parity = 0;
         while (n) {
             parity = parity ? 0 : 1;

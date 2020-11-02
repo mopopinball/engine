@@ -1,12 +1,4 @@
 import { logger } from "../system/logger";
-import { EVENTS, MessageBroker } from "../system/messages";
-
-// const gpiop = require('rpi-gpio').promise;
-// import { GPIO } from 'rpi-gpio';
-// import GPIO = require('rpi-gpio');
-// import {} from 'rpi-gpio';
-// const logger = require('../system/logger');
-// const {MessageBroker, EVENTS} = require('../system/messages');
 import {promise as gpiop} from 'rpi-gpio';
 
 /**

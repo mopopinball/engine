@@ -22,7 +22,6 @@ import { logger } from "./logger";
 import { GpioPin } from "../devices/gpio-pin";
 import { Board } from "./board";
 import { PicVersionMessage } from "../devices/pic-version-message";
-import { threadId } from "worker_threads";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -291,10 +290,6 @@ export class Game {
      */
     private async updateDevices(): Promise<void> {
         // check if there is at least one dirty device.
-        // const dirtyDevices: OutputDevice[] = [];
-        // this.addDirtyToCollection(this.lamps.values(), dirtyDevices);
-        // this.addDirtyToCollection(this.coils.values(), dirtyDevices);
-        // this.addDirtyToCollection(this.sounds.values(), dirtyDevices);
         if (this.dirtyDevices.length === 0) {
             return;
         }
@@ -323,14 +318,6 @@ export class Game {
         // clear the array
         this.dirtyDevices.splice(0, this.dirtyDevices.length);
     }
-
-    // private addDirtyToCollection(candidates: IterableIterator<OutputDevice>, dirty: OutputDevice[]): void {
-    //     for (const l2 of candidates) {
-    //         if (l2.isDirty()) {
-    //             dirty.push(l2);
-    //         }
-    //     }
-    // }
 
     async _updateDisplays(): Promise<void> {
         if (this.displays.getHash() !== this.lastPayload) {

@@ -35,7 +35,7 @@ export class MessageBroker extends EventEmitter {
     //     return super.emit(event, args);
     // }
 
-    _onMqttMessage(messageTopic, message) {
+    _onMqttMessage(messageTopic: string, message): void {
         // try to find a direct match
         let match = this.topicToCallbacks.get(messageTopic);
         if (!match) {
@@ -54,7 +54,7 @@ export class MessageBroker extends EventEmitter {
         }
     }
 
-    publishRetain(topic, message): void {
+    publishRetain(topic: string, message): void {
         const options = {
             retain: true
         } as IClientPublishOptions;
@@ -62,12 +62,12 @@ export class MessageBroker extends EventEmitter {
     }
 
     // Publishes to MQTT.
-    publish(topic, message, options: IClientPublishOptions = null): void {
+    publish(topic: string, message, options: IClientPublishOptions = null): void {
         this.client.publish(topic, message, options);
     }
 
     // Subscribe to MQTT.
-    subscribe(topic, cb: () => void) {
+    subscribe(topic: string, cb: () => void): void {
         let callbackCollection = this._findCallbackCollection(topic);
         if (!callbackCollection) {
             callbackCollection = {
@@ -84,7 +84,7 @@ export class MessageBroker extends EventEmitter {
         });
     }
 
-    _findCallbackCollection(messageTopic) {
+    _findCallbackCollection(messageTopic: string): CallbackCollection {
         const matchingKey = Array.from(this.topicToCallbacks.keys()).find((entry) => {
             const regex = new RegExp(entry.replace(/\+/g, '[\\w\\d]+'));
             return regex.test(messageTopic);
@@ -93,8 +93,6 @@ export class MessageBroker extends EventEmitter {
         return matchingKey ? this.topicToCallbacks.get(matchingKey) : null;
     }
 }
-
-const singleton = MessageBroker.getInstance();
 
 interface CallbackCollection {
     callbacks: unknown[];

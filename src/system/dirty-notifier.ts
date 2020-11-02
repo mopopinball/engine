@@ -5,7 +5,7 @@ export abstract class DirtyNotifier {
         this.callback = callback;  
     }
 
-    protected emitDirty() {
+    protected emitDirty(): void {
         if (this.callback) {
             this.callback(this);
         }

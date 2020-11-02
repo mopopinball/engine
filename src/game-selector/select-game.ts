@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, symlinkSync, unlink, unlinkSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, symlinkSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 import {terminal} from 'terminal-kit';
 import { RuleSchema } from '../system/rule-engine/schema/rule.schema';
@@ -10,7 +10,7 @@ interface GameOption {
 }
 
 export class GameSelector {
-    async run() {
+    async run(): Promise<void> {
         terminal.bold('\n\nMopo Pinball Game Selector\n\n');
         terminal('Visit https://github.com/mopopinball/engine/tree/master/src/games for detailed game information.\n\n');
         

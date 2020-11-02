@@ -1,4 +1,3 @@
-import { MessageBroker } from "../system/messages";
 import { Light, LightState } from "./light";
 
 export enum LAMP_ROLES {
