@@ -2,11 +2,11 @@ import { Coil, CoilType, DRIVER_TYPES } from "../devices/coil";
 import { DisplaysPic } from "../devices/displays-pic";
 import { DriverPic } from "../devices/driver-pic";
 import { LightState } from "../devices/light";
-import { OutputDevice } from "../devices/output-device";
+import { OutputDevice, OUTPUT_DEVICE_TYPES } from "../devices/output-device";
 import { LAMP_ROLES, PlayfieldLamp } from "../devices/playfield-lamp";
 import { PlayfieldSwitch } from "../devices/playfield-switch";
 import { Relay } from "../devices/relay";
-import { Sound } from "../devices/sound";
+import { Sound, SoundState } from "../devices/sound";
 import { Sys80or80ADisplay } from "./display-80-80a";
 import { FpsTracker } from "./fps-tracker";
 import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
@@ -47,9 +47,9 @@ export class Game {
     lastPayload: string;
     private switches: Map<string, PlayfieldSwitch> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
-    private lamps: Map<number, PlayfieldLamp> = new Map();
+    private lamps: Map<string, PlayfieldLamp> = new Map();
     private coils: Map<string, Coil> = new Map();
-    private sounds: Map<number, Sound> = new Map();
+    private sounds: Map<string, Sound> = new Map();
     private outputDevices: OutputDevice[] = [];
     private dirtyDevices: OutputDevice[] = [];
     board: Board;
@@ -143,37 +143,37 @@ export class Game {
             return;
         }
 
-        const devices = this.ruleEngine.getDevices();
-        devices.forEach((device) => {
-            if (device instanceof PlayfieldLamp) {
-                const lamp = this.lamps.get(device.number);
-                if (lamp.getState() != device.getState()) {
-                    lamp.setState(device.getState());
+        const devices = this.ruleEngine.getDevices().values();
+        for (const desiredState of devices) {
+            if (desiredState.type === OUTPUT_DEVICE_TYPES.LIGHT) {
+                const lamp = this.lamps.get(desiredState.id);
+                if (lamp.getState() !== desiredState.getState()) {
+                    lamp.setState(desiredState.getState() as LightState);
                 }
             }
-        //     device
-        //     // const state = this.gameState.getDeviceState(id);
-        //     const device = this.outputDevices[id];
-        //     // only call device if the calling state has changed
-        //     if (this._hasCallStateChanged(id, state)) {
-        //         this._callDevice(id, device, state);
-        //     }
-        });
+            else if (desiredState.type === OUTPUT_DEVICE_TYPES.COIL) {
+                const coil = this.coils.get(desiredState.id);
+                if (coil instanceof Relay && coil.isRelayOn() && desiredState.getState() === false) {
+                    coil.off();
+                }
+                else if (coil instanceof Relay && !coil.isRelayOn() && desiredState.getState() === true) {
+                    coil.on();
+                }
+                else if (coil instanceof Relay === false && desiredState.getState() === true) {
+                    coil.on();
+                    desiredState.setState(false); // makes the coil fire once
+                }
+            }
+            else if (desiredState.type === OUTPUT_DEVICE_TYPES.SOUND) {
+                const sound = this.sounds.get(desiredState.id);
+                if (desiredState.getState() as boolean === true) {
+                    sound.play();
+                    desiredState.setState(false); // makes the sound play once
+                }
+            }
+        }
         this.engineDirty = false;
     }
-
-    // _hasCallStateChanged(deviceId, state) {
-    //     const currentState = this.callStates[deviceId];
-    //     return !currentState || !equal(currentState, state);
-    // }
-
-    // _callDevice(id, device, state) {
-    //     for (const entry of Object.entries(state)) {
-    //         logger.debug(`Calling ${id}.${entry[0]}(${entry[1]})`);
-    //         device[entry[0]](entry[1]);
-    //     }
-    //     // this.callStates[id] = state;
-    // }
 
     _loadConfig(): void {
         // Map switches to obj/dict for direct lookup.
@@ -197,7 +197,7 @@ export class Game {
             .filter((lampEntry) => lampEntry[1].role === LAMP_ROLES.LAMP)
             .forEach((lampEntry) => {
                 const lamp = new PlayfieldLamp(lampEntry[1].number, lampEntry[1].role, lampEntry[1].name, LightState.OFF);
-                this.lamps.set(lamp.number, lamp);
+                this.lamps.set(lampEntry[0], lamp);
             });
 
         // Get all lamps designated as coils and all coils and map for direct lookup.
@@ -210,12 +210,14 @@ export class Game {
                 const coil: HardwareCoilSchema = coilEntry[1];
                 if (coil.coilType === CoilType.RELAY) {
                     this.coils.set(coilId, new Relay(
+                        coilId,
                         coil.number, coil.name, DRIVER_TYPES.LAMP
                     ));
                 }
                 else if (coil.coilType === CoilType.COIL) {
                     const driverType = coil.role === LAMP_ROLES.COIL ? DRIVER_TYPES.LAMP : DRIVER_TYPES.COIL;
                     this.coils.set(coilId, new Coil(
+                        coilId,
                         coil.number, coil.name, driverType, coil.durationMs || 100
                     ));
                 }
@@ -228,7 +230,7 @@ export class Game {
         Object.entries(this.hardwareConfig.sounds)
             .forEach((soundEntry) => {
                 const sound = new Sound(soundEntry[1].number, soundEntry[1].description);
-                this.sounds.set(sound.number, sound);
+                this.sounds.set(soundEntry[0], sound);
             });
 
         // keep track of all output devices;
@@ -302,7 +304,7 @@ export class Game {
         const dirtyOffDevices = this.dirtyDevices.filter((device) => !device.ackOff);
 
         // send the update(s) to the pic.
-        const updateSuccess = await DriverPic.getInstance().update(Object.values(this.outputDevices));
+        const updateSuccess = await DriverPic.getInstance().update(dirtyOnDevices.concat(dirtyOffDevices));
         if (updateSuccess) {
             dirtyOnDevices.forEach((device) => device.ackDirty(true));
             dirtyOffDevices.forEach((device) => device.ackDirty(false));
@@ -316,7 +318,12 @@ export class Game {
         // MessageBroker.publish('mopo/devices/all/state', JSON.stringify(payload));
         
         // clear the array
-        this.dirtyDevices.splice(0, this.dirtyDevices.length);
+        for(const don of dirtyOnDevices) {
+            this.dirtyDevices.splice(this.dirtyDevices.indexOf(don), 1);    
+        }
+        for(const doff of dirtyOffDevices) {
+            this.dirtyDevices.splice(this.dirtyDevices.indexOf(doff), 1);    
+        }
     }
 
     async _updateDisplays(): Promise<void> {

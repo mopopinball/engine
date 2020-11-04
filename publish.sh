@@ -30,5 +30,6 @@ cp flash_disp.sh dist
 cp package.json dist
 cp package-lock.json dist
 rsync -r --verbose src/games/ dist/src/games
+rsync -r --verbose setup/ dist/setup
 
 rsync -r --delete --exclude=hardware-config.json --exclude=gamestate-config.json --exclude=node_modules --exclude=mopo.log --verbose dist/ pi@192.168.1.29:~/mopo

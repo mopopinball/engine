@@ -89,7 +89,9 @@ export class DriverPic extends Pic {
 
         
         // only 1 sound can play at a time. Find the first sound to play.
-        const sound: Sound = newDeviceStates.find((d) => d instanceof Sound && d.state) as Sound;
+        const sound: Sound = newDeviceStates.find((d) =>
+            d instanceof Sound && (d.state === SoundState.PLAYING || d.state === SoundState.ACK || d.state === SoundState.DONE)
+        ) as Sound;
 
         if (sound && sound.state === SoundState.PLAYING) {
             // logger.debug('state 0');
@@ -124,7 +126,8 @@ export class DriverPic extends Pic {
             0
         );
 
-        // this.logBuffer(this.buffer);
+        logger.debug('[LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]')
+        this.logBuffer(this.buffer);
 
         // Perform the I2C write.
         try {

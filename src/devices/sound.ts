@@ -6,7 +6,9 @@ export enum SoundState {
     DONE
 }
 
-/** A sound */
+/**
+ * Sounds work by setting the sound data on the sound lines, then triggering and inerrupt.
+ */
 export class Sound extends OutputDevice {
     public state: SoundState;
     
@@ -30,9 +32,22 @@ export class Sound extends OutputDevice {
 
     done(): void {
         this.state = SoundState.DONE;
+        this._markDirty();
+        // super.ackOn = true;
+        // super.ackOff = true;
+
+        setTimeout(() => {this.play()}, 5000);
+    }
+
+    ackDirty(ackOn: boolean): void {
+        return;
     }
 
     dirty(): boolean {
         return this.state !== null;
+    }
+
+    getState(): SoundState {
+        return this.state;
     }
 }

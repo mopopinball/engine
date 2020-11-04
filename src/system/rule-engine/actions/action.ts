@@ -1,5 +1,8 @@
+import { Coil } from "../../../devices/coil";
 import { PlayfieldLamp } from "../../../devices/playfield-lamp";
+import { Sound } from "../../../devices/sound";
 import { DirtyNotifier } from "../../dirty-notifier";
+import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
 
@@ -10,9 +13,9 @@ export abstract class Action extends DirtyNotifier {
         super();
     }
 
-    abstract onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void;
+    abstract onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void;
     
-    handle(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, PlayfieldLamp>): void {
+    handle(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void {
         this.onAction(engines, data, devices);
         this.emitDirty();
         

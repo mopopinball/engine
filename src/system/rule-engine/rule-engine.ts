@@ -1,10 +1,16 @@
+import { Coil, CoilType } from "../../devices/coil";
+import { LightState } from "../../devices/light";
+import { OUTPUT_DEVICE_TYPES } from "../../devices/output-device";
 import { PlayfieldLamp } from "../../devices/playfield-lamp";
+import { Relay } from "../../devices/relay";
+import { Sound } from "../../devices/sound";
 import { DirtyNotifier } from "../dirty-notifier";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { StateAction } from "./actions/state-action";
+import { DesiredOutputState } from "./desired-output-state";
 import { RuleData } from "./rule-data";
 import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
 
@@ -12,7 +18,7 @@ export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
     active = false;
     data: Map<string, RuleData> = new Map();
-    devices: Map<string, PlayfieldLamp> = new Map();
+    devices: Map<string, DesiredOutputState> = new Map();
     switchActions: Map<string, Action[]> = new Map();
     allActions: Map<string, Action> = new Map();
     children: RuleEngine[] = [];
@@ -34,10 +40,39 @@ export class RuleEngine extends DirtyNotifier {
 
         for (const deviceSchema of schema.devices ?? []) {
             switch (deviceSchema.type) {
-                case "lamp":
-                    engine.devices.set(deviceSchema.id, new PlayfieldLamp(
-                        deviceSchema.number, deviceSchema.role, deviceSchema.name, deviceSchema.state
+                case OUTPUT_DEVICE_TYPES.LIGHT:
+                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
+                        deviceSchema.id, OUTPUT_DEVICE_TYPES.LIGHT, deviceSchema.state
+                    ))
+                    // engine.devices.set(deviceSchema.id, new PlayfieldLamp(
+                    //     deviceSchema.number, deviceSchema.role, deviceSchema.name, deviceSchema.state
+                    // ));
+                    break;
+                case OUTPUT_DEVICE_TYPES.COIL:
+                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
+                        deviceSchema.id, OUTPUT_DEVICE_TYPES.COIL, deviceSchema.state
                     ));
+                    // switch(deviceSchema.coilType) {
+                    //     case CoilType.COIL:
+                    //         engine.devices.set(deviceSchema.id, new Coil(
+                    //             deviceSchema.id, deviceSchema.number, deviceSchema.name,
+                    //             null, null
+                    //         ));
+                    //         break;
+                    //     case CoilType.RELAY:
+                    //         engine.devices.set(deviceSchema.id, new Relay(
+                    //             deviceSchema.id, deviceSchema.number, deviceSchema.name, null
+                    //         ));
+                    //         break;
+                    // }
+                break;
+                case OUTPUT_DEVICE_TYPES.SOUND:
+                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
+                        deviceSchema.id, OUTPUT_DEVICE_TYPES.SOUND, deviceSchema.play
+                    ));
+                    // engine.devices.set(deviceSchema.id, new Sound(
+                    //     deviceSchema.number, null
+                    // ));
                     break;
                 default:
                     throw new Error('Not implemented');
@@ -107,6 +142,7 @@ export class RuleEngine extends DirtyNotifier {
     start(): void {
         // when starting, need to reset any state, or clone it to reset on end?
         this.active = true;
+        this.devices.forEach((d) => d.reset());
         this.children
             .filter((child) => child.autoStart)
             .map((c) => c.start());
@@ -157,8 +193,8 @@ export class RuleEngine extends DirtyNotifier {
     }
 
     // compressed devices
-    getDevices(parentDevices: Map<string, PlayfieldLamp> = new Map()): Map<string, PlayfieldLamp> {
-        let devices: Map<string, PlayfieldLamp> = new Map();
+    getDevices(parentDevices: Map<string, DesiredOutputState> = new Map()): Map<string, DesiredOutputState> {
+        let devices: Map<string, DesiredOutputState> = new Map();
         // copy parent devices
         for (const parentEntry of Array.from(parentDevices.entries())) {
             devices.set(parentEntry[0], parentEntry[1]);

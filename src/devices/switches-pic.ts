@@ -10,7 +10,7 @@ import * as pins from '../pins.json';
 
 const PAYLOAD_SIZE_BYTES = 2;
 const LAST_NIBBLE_INDEX = (PAYLOAD_SIZE_BYTES * 2) - 1;
-const COMMS_LOGGING = true;
+const COMMS_LOGGING = false;
 
 /**
  * The switches PIC. NOT i2c.

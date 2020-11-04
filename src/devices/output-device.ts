@@ -2,9 +2,9 @@ import { DirtyNotifier } from "../system/dirty-notifier";
 
 // const logger = require('../util/logger');
 export enum OUTPUT_DEVICE_TYPES {
-    LIGHT,
-    COIL,
-    SOUND
+    LIGHT = 'light',
+    COIL = 'coil',
+    SOUND = 'sound'
 }
 
 /**
@@ -36,6 +36,8 @@ export abstract class OutputDevice extends DirtyNotifier {
     _markDirty(): void {
         // todo used by sound, cleanup
         this.dirtyFlag = true;
+        this.ackOn = null;
+        this.emitDirty();
         // MessageBroker.emit(EVENTS.OUTPUT_DEVICE_DIRTY, this);
     }
 
