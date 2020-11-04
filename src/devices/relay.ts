@@ -9,8 +9,7 @@ export class Relay extends Coil {
     }
 
     async on(): Promise<void> {
-        this.isOn = true;
-        this._markDirty();
+        super.superOn();
     }
 
     toggle(): void {

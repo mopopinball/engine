@@ -10,18 +10,12 @@
     "devices": [
         {
             "id": "SHOOT_AGAIN",
-            "type": "lamp",
-            "number": 3,
-            "role": "lamp",
-            "name": "SHOOT_AGAIN",
+            "type": "light",
             "state": 0
         },
         {
             "id": "L4",
-            "type": "lamp",
-            "number": 4,
-            "role": "lamp",
-            "name": "extra ball",
+            "type": "light",
             "state": 1
         }
     ],
@@ -58,10 +52,7 @@
             "devices": [
                 {
                     "id": "L4",
-                    "type": "lamp",
-                    "number": 4,
-                    "role": "lamp",
-                    "name": "extra ball",
+                    "type": "light",
                     "state": 2
                 }
             ]

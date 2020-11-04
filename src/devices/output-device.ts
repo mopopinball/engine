@@ -1,6 +1,5 @@
 import { DirtyNotifier } from "../system/dirty-notifier";
 
-// const logger = require('../util/logger');
 export enum OUTPUT_DEVICE_TYPES {
     LIGHT = 'light',
     COIL = 'coil',
@@ -13,46 +12,47 @@ export enum OUTPUT_DEVICE_TYPES {
 export abstract class OutputDevice extends DirtyNotifier {
     public isOn: boolean;
     // the two ack flags. They start ack'd.
-    public ackOn = true;
-    public ackOff = true;
-    dirtyFlag: boolean;
+    private onAckd = true;
+    private offAckd = true;
 
     constructor(public readonly type: OUTPUT_DEVICE_TYPES) {
         super();
     }
 
     on(): void {
+        this.onWorker();
+    }
+
+    private onWorker(): void {
         this.isOn = true;
-        this.ackOn = null;
+        this.onAckd = false;
         this.emitDirty();
     }
 
     off(): void {
         this.isOn = false;
-        this.ackOff = null;
+        this.offAckd = false;
         this.emitDirty();
     }
 
-    _markDirty(): void {
-        // todo used by sound, cleanup
-        this.dirtyFlag = true;
-        this.ackOn = null;
-        this.emitDirty();
-        // MessageBroker.emit(EVENTS.OUTPUT_DEVICE_DIRTY, this);
+    protected superOn(): void {
+        this.onWorker();
     }
 
-    isDirty(): boolean {
-        return !this.ackOn || !this.ackOff;
+    isOnAckd(): boolean {
+        return this.onAckd;
+    }
+
+    isOffAckd(): boolean {
+        return this.offAckd;
     }
 
     ackDirty(ackOn: boolean): void {
-        // todo used by sound, cleanup
-        this.dirtyFlag = false;
         if (ackOn) {
-            this.ackOn = true;
+            this.onAckd = true;
         }
         else {
-            this.ackOff = true;
+            this.offAckd = true;
         }
     }
 }

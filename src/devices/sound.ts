@@ -7,47 +7,20 @@ export enum SoundState {
 }
 
 /**
- * Sounds work by setting the sound data on the sound lines, then triggering and inerrupt.
+ * Sounds work by setting the sound data on the sound lines, then triggering and inerrupt by going low.
+ * When this sound goes on(), we'll emit our dirty flag, which is processed and sent to the pic. Then,
+ * on the later in the clock tick that on() call will be ack'd. While ack'ing that, immediatly turn
+ * ourselves off, which will emit dirty for the next clock tick, thus sending the sound interrupt.
  */
 export class Sound extends OutputDevice {
-    public state: SoundState;
-    
-    constructor(public number: number, private description: string) {
+    constructor(public readonly number: number, public readonly description: string) {
         super(OUTPUT_DEVICE_TYPES.SOUND);
-        // this.playing = false;
-        this.state = null;
-    }
-
-    play(): void {
-        // this.playing = true;
-        this.state = SoundState.PLAYING;
-        this._markDirty();
-    }
-
-    ack(): void {
-        // this.playing = false;
-        this.state = SoundState.ACK;
-        this._markDirty();
-    }
-
-    done(): void {
-        this.state = SoundState.DONE;
-        this._markDirty();
-        // super.ackOn = true;
-        // super.ackOff = true;
-
-        setTimeout(() => {this.play()}, 5000);
     }
 
     ackDirty(ackOn: boolean): void {
-        return;
-    }
-
-    dirty(): boolean {
-        return this.state !== null;
-    }
-
-    getState(): SoundState {
-        return this.state;
+        super.ackDirty(ackOn);
+        if(ackOn) {
+            this.off();
+        }
     }
 }

@@ -10,19 +10,12 @@
         "autostart": true,
         "devices": [{
             "id": "GAME_OVER",
-            "type": "lamp",
-            "number": 11,
-            "role": "lamp",
-            "name": "",
+            "type": "light",
             "state": 1
-        },
-        {
-            "id": "HIGH_GAME_TO_DATE",
-            "type": "lamp",
-            "number": 10,
-            "role": "lamp",
-            "name": "",
-            "state": 2
+        }, {
+            "id": "HIT_1",
+            "type": "sound",
+            "play": true
         }],
         "actions": [{
             "id": "start",
@@ -34,36 +27,54 @@
     }, {
         "id": "play",
         "autostart": false,
-        "devices": [{
-            "id": "SHOOT_AGAIN",
-            "type": "lamp",
-            "number": 3,
-            "role": "lamp",
-            "name": "",
-            "state": 2
+        "devices": [
+            {
+                "id": "GAME_OVER_RELAY",
+                "type": "coil",
+                "state": true
+            },
+        {
+            "id": "CAN_YOU_SURVIVE",
+            "type": "sound",
+            "play": true
+        }],
+        "actions": [{
+            "id": "end",
+            "switchId": "PLAY_TEST",
+            "type": "state",
+            "startTargetId": "attract",
+            "stopTargetId": "play"
         }]
     }],
     "devices": [{
         "id": "GAME_OVER",
-        "type": "lamp",
-        "number": 11,
-        "role": "lamp",
-        "name": "",
+        "type": "light",
         "state": 0
     },
     {
+        "id": "GAME_OVER_RELAY",
+        "type": "coil",
+        "state": false
+    },
+    {
         "id": "HIGH_GAME_TO_DATE",
-        "type": "lamp",
-        "number": 10,
-        "role": "lamp",
-        "name": "",
+        "type": "light",
         "state": 0
     }, {
         "id": "SHOOT_AGAIN",
-        "type": "lamp",
-        "number": 3,
-        "role": "lamp",
-        "name": "",
+        "type": "light",
         "state": 0
+    }, {
+        "id": "CAN_YOU_SURVIVE",
+        "type": "sound",
+        "play": false
+    }, {
+        "id": "HIT_1",
+        "type": "sound",
+        "play": false
+    }, {
+        "id": "TILT_RELAY",
+        "type": "coil",
+        "state": false
     }]
 }

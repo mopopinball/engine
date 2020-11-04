@@ -13,7 +13,10 @@ export abstract class Switch extends EventEmitter {
     protected active: boolean;
     private ack: boolean;
 
-    constructor(public id: string, protected activeLow: boolean, protected debounceIntervalMs: number = 100) {
+    constructor(
+        public readonly id: string, protected readonly activeLow: boolean,
+        protected readonly debounceIntervalMs: number = 100
+    ) {
         super();
         if (!id) {
             throw new Error('Provide an id');

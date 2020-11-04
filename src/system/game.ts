@@ -167,7 +167,7 @@ export class Game {
             else if (desiredState.type === OUTPUT_DEVICE_TYPES.SOUND) {
                 const sound = this.sounds.get(desiredState.id);
                 if (desiredState.getState() as boolean === true) {
-                    sound.play();
+                    sound.on();
                     desiredState.setState(false); // makes the sound play once
                 }
             }
@@ -300,8 +300,8 @@ export class Game {
         // this handles a case where a device goes off during an async update() call, and
         // we wouldnt want to ack the device off when we havnt sent that off state
         // to the pic.
-        const dirtyOnDevices = this.dirtyDevices.filter((device) => !device.ackOn);
-        const dirtyOffDevices = this.dirtyDevices.filter((device) => !device.ackOff);
+        const dirtyOnDevices = this.dirtyDevices.filter((device) => !device.isOnAckd());
+        const dirtyOffDevices = this.dirtyDevices.filter((device) => !device.isOffAckd());
 
         // send the update(s) to the pic.
         const updateSuccess = await DriverPic.getInstance().update(dirtyOnDevices.concat(dirtyOffDevices));
