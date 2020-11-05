@@ -29,6 +29,10 @@ export class MessageBroker extends EventEmitter {
         super();
         this.client = connect('mqtt://127.0.0.1:1883');
         this.client.on('message', (messageTopic, message) => this._onMqttMessage(messageTopic, message));
+        this.publishRetain('mopo/info', JSON.stringify({
+            name: 'Mopo Pinball',
+            gameName: 'sebbb'
+        }));
     }
 
     // emit(event: EVENTS | symbol, ...args: any[]): boolean {
@@ -54,7 +58,7 @@ export class MessageBroker extends EventEmitter {
         }
     }
 
-    publishRetain(topic: string, message): void {
+    publishRetain(topic: string, message: string): void {
         const options = {
             retain: true
         } as IClientPublishOptions;
@@ -116,4 +120,9 @@ export enum EVENTS {
     BALL_LOCKED = 'BALL_LOCKED',
     MULTIBALL_START = 'MULTIBALL_START',
     ALL_BALLS_PRESENT = 'ALL_BALLS_PRESENT'
+}
+
+export interface InfoMqttMessage {
+    name: string;
+    gameName: string;   
 }
