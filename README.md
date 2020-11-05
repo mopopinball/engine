@@ -14,6 +14,10 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 4. Boot the Raspberry Pi
 5. On the Pi run the following command
 
+## Developing
+
+[Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+
 ```
 sudo curl -o- https://todo/setup.sh | bash
 ```
