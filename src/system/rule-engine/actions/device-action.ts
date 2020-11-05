@@ -1,7 +1,4 @@
-import { Coil } from "../../../devices/coil";
 import { LightState } from "../../../devices/light";
-import { PlayfieldLamp } from "../../../devices/playfield-lamp";
-import { Sound } from "../../../devices/sound";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";

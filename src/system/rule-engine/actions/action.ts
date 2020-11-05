@@ -1,6 +1,3 @@
-import { Coil } from "../../../devices/coil";
-import { PlayfieldLamp } from "../../../devices/playfield-lamp";
-import { Sound } from "../../../devices/sound";
 import { DirtyNotifier } from "../../dirty-notifier";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";

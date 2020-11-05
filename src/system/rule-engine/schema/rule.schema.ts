@@ -1,7 +1,5 @@
-import { CoilType } from "../../../devices/coil";
 import { LightState } from "../../../devices/light";
 import { OUTPUT_DEVICE_TYPES } from "../../../devices/output-device";
-import { LAMP_ROLES } from "../../../devices/playfield-lamp";
 
 export interface RuleSchema {
     id: string;

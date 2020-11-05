@@ -5,7 +5,7 @@ import { EVENTS, MessageBroker } from "../system/messages";
 import { GpioPin } from "./gpio-pin";
 import { Pic } from "./pic";
 
-import {promise, DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
+import {DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
 import * as pins from '../pins.json';
 
 const PAYLOAD_SIZE_BYTES = 2;

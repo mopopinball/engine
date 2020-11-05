@@ -5,12 +5,9 @@ import { Coil, DRIVER_TYPES } from "./coil";
 import { OutputDevice } from "./output-device";
 import { Pic } from "./pic";
 import { PlayfieldLamp } from "./playfield-lamp";
-import { Sound, SoundState } from "./sound";
+import { Sound } from "./sound";
 import {modify} from 'bitwise/buffer';
 import { logger } from "../system/logger";
-// const bufferOperations = require('bitwise/buffer');
-// const bitwise = require('bitwise');
-// const logger = require('../system/logger');
 
 const PIC_ADDRESS = 0x41;
 
@@ -89,17 +86,8 @@ export class DriverPic extends Pic {
 
         
         // only 1 sound can play at a time. Find the first sound to play.
-        // const sound: Sound = newDeviceStates.find((d) =>
-        //     d instanceof Sound && (d.state === SoundState.PLAYING || d.state === SoundState.ACK || d.state === SoundState.DONE)
-        // ) as Sound;
         const sound: Sound = newDeviceStates.find((device) => device instanceof Sound) as Sound;
-        // if (sound && sound.state === SoundState.PLAYING) {
-        //     // logger.debug('state 0');
-        //     this.sounds = [0, 0, 0, 0];
-        //     sound.ack();
-        // }
         if (sound && sound.isOn) {
-            // sound.done(); // ack the sound so it only plays once.
             const soundBits = byte.read(sound.number as UInt8);
             this.sounds[0] = soundBits[7];
             this.sounds[1] = soundBits[6];
@@ -110,11 +98,9 @@ export class DriverPic extends Pic {
             // logger.debug(`Sound bits: S1=${this.sounds[0]}, S2=${this.sounds[1]}, S4=${this.sounds[2]}, S8=${this.sounds[3]}, S16=${this.lamps[9 - 1]}`);
         }
         else if (sound && !sound.isOn) {
-            // sound.state = null;
             // trigger the interrupt to play the prev loaded sound. Putting all lines high
             // causes sound board A6 chip U17 to have all inputs high, causing a low output.
             // The low output triggers an interrupt on U15.
-            // logger.debug('acking sound');
             this.sounds = [0, 0, 0, 0];
             this.lamps[10 - 1] = 0;
         }

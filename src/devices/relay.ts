@@ -4,7 +4,7 @@ import { Coil, DRIVER_TYPES } from "./coil";
  * A toggle relay.
  */
 export class Relay extends Coil {
-    constructor(readonly id, number: number, name: string, driverType: DRIVER_TYPES) {
+    constructor(readonly id: string, number: number, name: string, driverType: DRIVER_TYPES) {
         super(id, number, name, driverType, null);
     }
 

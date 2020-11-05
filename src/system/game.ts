@@ -6,7 +6,7 @@ import { OutputDevice, OUTPUT_DEVICE_TYPES } from "../devices/output-device";
 import { LAMP_ROLES, PlayfieldLamp } from "../devices/playfield-lamp";
 import { PlayfieldSwitch } from "../devices/playfield-switch";
 import { Relay } from "../devices/relay";
-import { Sound, SoundState } from "../devices/sound";
+import { Sound } from "../devices/sound";
 import { Sys80or80ADisplay } from "./display-80-80a";
 import { FpsTracker } from "./fps-tracker";
 import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";

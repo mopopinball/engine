@@ -24,7 +24,7 @@ export class Coil extends OutputDevice {
     private _autoOffTimeout: NodeJS.Timeout;
 
     constructor(
-        public readonly id, public readonly number: number, private readonly name: string, public readonly driverType: DRIVER_TYPES, private readonly duration: number) {
+        public readonly id: string, public readonly number: number, private readonly name: string, public readonly driverType: DRIVER_TYPES, private readonly duration: number) {
         super(OUTPUT_DEVICE_TYPES.COIL);
         this.isOn = false;
         this._autoOffTimeout = null;

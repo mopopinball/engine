@@ -1,4 +1,3 @@
-import { PlayfieldLamp } from "../../../devices/playfield-lamp";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
