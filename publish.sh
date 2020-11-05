@@ -11,6 +11,9 @@ mkdir dist
 # cp -r site/dist/site dist/site
 
 tsc
+pushd src/admin
+ng build
+popd
 
 # TODO: Get the pics from their latest release on GitHub.
 # mkdir dist/pics

@@ -7,12 +7,12 @@ import * as pins from '../pins.json';
 // const logger = require('../system/logger');
 // const spawn = require('child_process').spawnSync;
 
-import { BoardSwitch } from "../devices/board-switch";
-import OutputDeviceCollection from '../devices/output-device-collection';
-import { StatusLed } from "../devices/status-led";
+import { BoardSwitch } from "./devices/board-switch";
+import OutputDeviceCollection from './devices/output-device-collection';
+import { StatusLed } from "./devices/status-led";
 import { logger } from './logger';
 import { EVENTS, MessageBroker } from "./messages";
-import { LightState } from '../devices/light';
+import { LightState } from './devices/light';
 
 /**
  * Manages board IO including status LEDs and dip switch settings.

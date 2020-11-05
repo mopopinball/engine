@@ -1,5 +1,5 @@
-import { LightState } from "../../devices/light";
-import { OUTPUT_DEVICE_TYPES } from "../../devices/output-device";
+import { LightState } from "../devices/light";
+import { OUTPUT_DEVICE_TYPES } from "../devices/output-device";
 
 export declare type DesiredOutputStateType = LightState | boolean;
 

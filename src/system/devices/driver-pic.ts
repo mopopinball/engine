@@ -7,7 +7,7 @@ import { Pic } from "./pic";
 import { PlayfieldLamp } from "./playfield-lamp";
 import { Sound } from "./sound";
 import {modify} from 'bitwise/buffer';
-import { logger } from "../system/logger";
+import { logger } from "../logger";
 
 const PIC_ADDRESS = 0x41;
 

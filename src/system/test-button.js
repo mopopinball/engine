@@ -1,10 +1,10 @@
-const _ = require('lodash');
+const _ = require('./devices/node_modules/lodash');
 const Wlan = require('./wlan');
 const Security = require('./security');
 const {MessageBroker} = require('./messages');
 const FrameBasedOperation = require('./frame-based-operation');
 const logger = require('./logger');
-const Relay = require('../devices/relay');
+const Relay = require('./devices/relay');
 
 /**
  * Manages the Test button.

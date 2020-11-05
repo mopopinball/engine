@@ -1,4 +1,4 @@
-import { logger } from "../system/logger";
+import { logger } from "../logger";
 import {promise as gpiop} from 'rpi-gpio';
 
 /**

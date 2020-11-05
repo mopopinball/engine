@@ -2,7 +2,7 @@ import { RuleSchema } from "./schema/rule.schema";
 import { RuleEngine } from "./rule-engine";
 import * as testData from "../../../test-data/parent-child.json";
 import * as actionSiblingData from "../../../test-data/action-sibling.json";
-import { LightState } from "../../devices/light";
+import { LightState } from "../devices/light";
 
 describe('Rules', () => {
     let ruleEngine: RuleEngine = null;

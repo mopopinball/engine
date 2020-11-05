@@ -1,4 +1,4 @@
-import { logger } from "../system/logger";
+import { logger } from "../logger";
 import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
 
 export enum ACTUATION_TYPE {

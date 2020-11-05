@@ -1,12 +1,12 @@
 import { buffer, byte } from "bitwise";
 import { Bit, UInt8 } from "bitwise/types";
-import { logger } from "../system/logger";
-import { EVENTS, MessageBroker } from "../system/messages";
+import { logger } from "../logger";
+import { EVENTS, MessageBroker } from "../messages";
 import { GpioPin } from "./gpio-pin";
 import { Pic } from "./pic";
 
 import {DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
-import * as pins from '../pins.json';
+import * as pins from '../../pins.json';
 
 const PAYLOAD_SIZE_BYTES = 2;
 const LAST_NIBBLE_INDEX = (PAYLOAD_SIZE_BYTES * 2) - 1;

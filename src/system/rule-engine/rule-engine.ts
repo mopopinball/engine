@@ -1,9 +1,9 @@
-import { Coil, CoilType } from "../../devices/coil";
-import { LightState } from "../../devices/light";
-import { OUTPUT_DEVICE_TYPES } from "../../devices/output-device";
-import { PlayfieldLamp } from "../../devices/playfield-lamp";
-import { Relay } from "../../devices/relay";
-import { Sound } from "../../devices/sound";
+import { Coil, CoilType } from "../devices/coil";
+import { LightState } from "../devices/light";
+import { OUTPUT_DEVICE_TYPES } from "../devices/output-device";
+import { PlayfieldLamp } from "../devices/playfield-lamp";
+import { Relay } from "../devices/relay";
+import { Sound } from "../devices/sound";
 import { DirtyNotifier } from "../dirty-notifier";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";

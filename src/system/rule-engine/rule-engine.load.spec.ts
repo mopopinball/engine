@@ -1,4 +1,4 @@
-import { LightState } from "../../devices/light";
+import { LightState } from "../devices/light";
 import { RuleEngine } from "./rule-engine";
 import { RuleSchema } from "./schema/rule.schema";
 import * as testData from "../../../test-data/parent-child.json";

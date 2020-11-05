@@ -1,7 +1,7 @@
-import { SystemName } from "../system/game";
-import { Sys80or80ADisplay } from "../system/display-80-80a";
-import { logger } from "../system/logger";
-import font from "../system/sys-80-80a-font";
+import { SystemName } from "../game";
+import { Sys80or80ADisplay } from "../display-80-80a";
+import { logger } from "../logger";
+import font from "../sys-80-80a-font";
 import { Pic } from "./pic";
 
 

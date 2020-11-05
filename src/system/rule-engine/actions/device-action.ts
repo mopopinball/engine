@@ -1,4 +1,4 @@
-import { LightState } from "../../../devices/light";
+import { LightState } from "../../devices/light";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";

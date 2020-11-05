@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { MessageBroker } from "../system/messages";
+import { MessageBroker } from "../messages";
 
 // const {MessageBroker} = require('../system/messages');
 // const EventEmitter = require('events');

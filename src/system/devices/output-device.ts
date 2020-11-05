@@ -1,4 +1,4 @@
-import { DirtyNotifier } from "../system/dirty-notifier";
+import { DirtyNotifier } from "../dirty-notifier";
 
 export enum OUTPUT_DEVICE_TYPES {
     LIGHT = 'light',
