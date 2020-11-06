@@ -1,2 +1,32 @@
-<h1>{{info.name}} - Admin</h1>
-<h2>{{info.gameName}}</h2>
+<header>
+  <h1>{{info?.name}} <span>{{info?.version}}</span></h1>
+  <h2>{{info?.gameName}}</h2>
+  <h3 *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</h3>
+</header>
+<h3>Lamps</h3>
+<div class="device-list">
+  <div *ngFor="let lamp of lamps" class="lamp" [class.on]="lamp.isOn">
+    {{lamp.name}} <span class="number">{{lamp.number}}</span>
+  </div>
+</div>
+
+<h3>Coils</h3>
+<div class="device-list">
+  <div *ngFor="let lamp of coils" class="lamp">
+    {{lamp.name}} <span class="number">{{lamp.number}}</span>
+  </div>
+</div>
+
+<h3>Sounds</h3>
+<div class="device-list">
+  <div *ngFor="let lamp of sounds" class="lamp">
+    {{lamp.description}} <span class="number">{{lamp.number}}</span>
+  </div>
+</div>
+
+<h3>Switches</h3>
+<div class="device-list">
+  <div *ngFor="let lamp of switches" class="lamp">
+    {{lamp.id}} <span class="number">{{lamp.number}}</span>
+  </div>
+</div>

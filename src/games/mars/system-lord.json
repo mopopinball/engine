@@ -16,6 +16,11 @@
             "id": "HIT_1",
             "type": "sound",
             "play": true
+        },
+        {
+            "id": "HIGH_GAME_TO_DATE",
+            "type": "light",
+            "state": 2
         }],
         "actions": [{
             "id": "start",

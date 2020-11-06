@@ -1,5 +1,5 @@
 import { BytesWritten, PromisifiedBus } from "i2c-bus";
-import * as i2c from 'i2c-bus';
+import {openPromisified} from 'i2c-bus';
 import { logger } from "../logger";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import {padStart} from 'lodash';
@@ -21,7 +21,8 @@ export abstract class Pic {
     }
 
     async openConnection(): Promise<PromisifiedBus> {
-        return i2c.openPromisified(1);
+        
+        return openPromisified(1);
     }
 
     async scan(): Promise<number[]> {

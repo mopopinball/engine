@@ -29,10 +29,6 @@ export class MessageBroker extends EventEmitter {
         super();
         this.client = connect('mqtt://127.0.0.1:1883');
         this.client.on('message', (messageTopic, message) => this._onMqttMessage(messageTopic, message));
-        this.publishRetain('mopo/info', JSON.stringify({
-            name: 'Mopo Pinball',
-            gameName: 'sebbb'
-        }));
     }
 
     // emit(event: EVENTS | symbol, ...args: any[]): boolean {

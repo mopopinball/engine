@@ -86,7 +86,7 @@ export class Game {
         }
 
         // init our instance variables.
-        this.name = this.hardwareConfig.name;
+        this.name = this.gameStateConfig.metadata.name;
         this.fpsTracker = new FpsTracker();
 
         this.board = new Board();
@@ -97,10 +97,15 @@ export class Game {
         this.engineDirty = true;
 
         // Setup all message bindings.
-        MessageBroker.getInstance().publishRetain('mopo/devices/lamps/all/state', JSON.stringify(this.lamps));
-        MessageBroker.getInstance().publishRetain('mopo/devices/coils/all/state', JSON.stringify(this.coils));
-        MessageBroker.getInstance().publishRetain('mopo/devices/sounds/all/state', JSON.stringify(this.sounds));
-        MessageBroker.getInstance().publishRetain('mopo/devices/switches/all/state', JSON.stringify(this.switches));
+        MessageBroker.getInstance().publishRetain('mopo/info/general', JSON.stringify({
+            name: 'Mopo Pinball',
+            gameName: this.name,
+            version: '1.0.0'
+        }));
+        MessageBroker.getInstance().publishRetain('mopo/devices/lamps/all/state', JSON.stringify(Array.from(this.lamps.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/coils/all/state', JSON.stringify(Array.from(this.coils.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/sounds/all/state', JSON.stringify(Array.from(this.sounds.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/switches/all/state', JSON.stringify(Array.from(this.switches.values())));
         MessageBroker.getInstance().on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
 
         this.setupHardware().then(() => {
@@ -196,7 +201,7 @@ export class Game {
         Object.entries(this.hardwareConfig.devices.lamps)
             .filter((lampEntry) => lampEntry[1].role === LAMP_ROLES.LAMP)
             .forEach((lampEntry) => {
-                const lamp = new PlayfieldLamp(lampEntry[1].number, lampEntry[1].role, lampEntry[1].name, LightState.OFF);
+                const lamp = new PlayfieldLamp(lampEntry[0], lampEntry[1].number, lampEntry[1].role, lampEntry[1].name, LightState.OFF);
                 this.lamps.set(lampEntry[0], lamp);
             });
 
@@ -229,7 +234,7 @@ export class Game {
         this.sounds.clear();
         Object.entries(this.hardwareConfig.sounds)
             .forEach((soundEntry) => {
-                const sound = new Sound(soundEntry[1].number, soundEntry[1].description);
+                const sound = new Sound(soundEntry[0], soundEntry[1].number, soundEntry[1].description);
                 this.sounds.set(soundEntry[0], sound);
             });
 
@@ -310,13 +315,21 @@ export class Game {
             dirtyOffDevices.forEach((device) => device.ackDirty(false));
         }
 
-        // MessageBroker.emit(
+        // MessageBroker.getInstance().emit(
         //     EVENTS.OUTPUT_DEVICE_CHANGE,
         //     payload
         // );
         // todo: emit this here? what if no game is loaded and we want to see device states.
-        // MessageBroker.publish('mopo/devices/all/state', JSON.stringify(payload));
-        
+        MessageBroker.getInstance().publish(
+            `mopo/devices/changes/state`,
+            JSON.stringify(this.dirtyDevices.map((dd) => {
+                return {
+                    id: dd.id,
+                    isOn: dd.isOn
+                };
+            }))
+        );
+
         // clear the array
         for(const don of dirtyOnDevices) {
             this.dirtyDevices.splice(this.dirtyDevices.indexOf(don), 1);    

@@ -9,8 +9,8 @@ export enum LAMP_ROLES {
  * todo
  */
 export class PlayfieldLamp extends Light {
-    constructor(public number: number, private role: LAMP_ROLES, private name: string, state: LightState) {
-        super(state);
+    constructor(id: string, public number: number, private role: LAMP_ROLES, private name: string, state: LightState) {
+        super(id, state);
         this.number = number;
         this.role = role;
         this.name = name;

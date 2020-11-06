@@ -112,8 +112,8 @@ export class DriverPic extends Pic {
             0
         );
 
-        logger.debug('[LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]')
-        this.logBuffer(this.buffer);
+        // logger.debug('[LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]')
+        // this.logBuffer(this.buffer);
 
         // Perform the I2C write.
         try {

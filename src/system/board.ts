@@ -24,9 +24,9 @@ export class Board {
     ledCollection: OutputDeviceCollection;
     shutdownInterval: NodeJS.Timeout;
     constructor() {
-        this.errorLed = new StatusLed(pins.D2_Error_Led);
-        this.piLed = new StatusLed(pins.D3_Pi_Led);
-        this.nodeLed = new StatusLed(pins.D4_Node_Led);
+        this.errorLed = new StatusLed('D2', pins.D2_Error_Led);
+        this.piLed = new StatusLed('D3', pins.D3_Pi_Led);
+        this.nodeLed = new StatusLed('D4', pins.D4_Node_Led);
         // this.ledCollection = new OutputDeviceCollection([this.piLed, this.nodeLed]);
         this.shutdownInterval = null;
 

@@ -1,0 +1,30 @@
+header {
+    h1, h2, h3 {
+        display: inline-block;
+    }
+
+    h2, h3 {
+        margin-left: 1em;
+    }
+}
+
+.device-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lamp {
+    background-color: lightgreen;
+    padding: 5px;
+    margin: 5px;
+    border: solid 1px green;
+    border-radius: 3px;
+
+    &.on {
+        font-weight: bold;;
+    }
+}
+
+.number {
+    font-size: x-small;
+}
