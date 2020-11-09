@@ -1,7 +1,7 @@
 /**
  * Common utilities.
  */
-class Utils {
+export class Utils {
     /**
      * Returns a random item from the given collection.
      * Useful for playing a random sound, lighting a random light, etc.
@@ -32,5 +32,3 @@ class Utils {
         });
     }
 }
-
-module.exports = Utils;

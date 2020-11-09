@@ -1,6 +1,6 @@
 # Mopo Pinball - (Mo)dern (Po)wer Pinball
 
-A modern pinball engine built for modern hardware to revive old Gottlieb pinball machines. Revived machines have new rules and other modern capabilies not possible on 1980s hardware. CPUs are powered by a Raspberry Pi and the engine is build in Node.
+A modern pinball engine built for modern hardware to revive old Gottlieb pinball machines. Revived machines have new rules and other modern capabilies not possible on 1980s hardware. CPUs are powered by a Raspberry Pi and the engine is build for Node in Typescript.
 
 ## Special Thanks
 
@@ -18,6 +18,12 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 sudo curl -o- https://todo/setup.sh | bash
 ```
 
+6. Select your game.
+
+
 ## Developing
 
 [Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+
+Mopo Pinball has a visual designer which is used to design games. Games have new rules, advanced display output and
+other features.

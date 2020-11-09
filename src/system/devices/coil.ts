@@ -1,20 +1,11 @@
 import { logger } from "../logger";
+import { DriverType } from "./driver-type";
 import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
 
 export enum ACTUATION_TYPE {
     FIRE,
     ON,
     OFF
-}
-
-export enum CoilType {
-    COIL = 'coil',
-    RELAY = 'relay'
-}
-
-export enum DRIVER_TYPES {
-    LAMP,
-    COIL
 }
 
 /**
@@ -24,8 +15,10 @@ export class Coil extends OutputDevice {
     private _autoOffTimeout: NodeJS.Timeout;
 
     constructor(
-        id: string, public readonly number: number, private readonly name: string, public readonly driverType: DRIVER_TYPES, private readonly duration: number) {
-        super(id, OUTPUT_DEVICE_TYPES.COIL);
+        id: string, public readonly number: number, name: string, public readonly driverType: DriverType,
+        private readonly duration: number
+    ) {
+        super(id, name, OUTPUT_DEVICE_TYPES.COIL);
         this.isOn = false;
         this._autoOffTimeout = null;
 
@@ -70,5 +63,9 @@ export class Coil extends OutputDevice {
         else {
             this.off();
         }
+    }
+
+    getNumber(): number {
+        return this.number;
     }
 }

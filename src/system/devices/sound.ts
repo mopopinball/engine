@@ -7,8 +7,8 @@ import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
  * dirty for the next clock tick, thus sending the sound interrupt.
  */
 export class Sound extends OutputDevice {
-    constructor(id: string, public readonly number: number, public readonly description: string) {
-        super(id, OUTPUT_DEVICE_TYPES.SOUND);
+    constructor(id: string, public readonly number: number, description: string) {
+        super(id, description, OUTPUT_DEVICE_TYPES.SOUND);
     }
 
     ackDirty(ackOn: boolean): void {
@@ -16,5 +16,9 @@ export class Sound extends OutputDevice {
         if(ackOn) {
             this.off();
         }
+    }
+
+    public getNumber(): number {
+        return this.number;
     }
 }

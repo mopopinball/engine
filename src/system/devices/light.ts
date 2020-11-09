@@ -13,8 +13,8 @@ export class Light extends OutputDevice {
     private blinkInterval: NodeJS.Timeout = null;
     private pulseTimeout: NodeJS.Timeout = null;
 
-    constructor(id: string, protected state: LightState) {
-        super(id, OUTPUT_DEVICE_TYPES.LIGHT);
+    constructor(id: string, name: string, protected state: LightState) {
+        super(id, name, OUTPUT_DEVICE_TYPES.LIGHT);
         this.setState(state);
     }
     
@@ -85,5 +85,9 @@ export class Light extends OutputDevice {
     clearTimers(): void {
         clearInterval(this.blinkInterval);
         clearTimeout(this.pulseTimeout);
+    }
+
+    getNumber(): number {
+        return null;
     }
 }

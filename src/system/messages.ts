@@ -31,11 +31,7 @@ export class MessageBroker extends EventEmitter {
         this.client.on('message', (messageTopic, message) => this._onMqttMessage(messageTopic, message));
     }
 
-    // emit(event: EVENTS | symbol, ...args: any[]): boolean {
-    //     return super.emit(event, args);
-    // }
-
-    _onMqttMessage(messageTopic: string, message): void {
+    _onMqttMessage(messageTopic: string, message: Buffer): void {
         // try to find a direct match
         let match = this.topicToCallbacks.get(messageTopic);
         if (!match) {
@@ -49,8 +45,7 @@ export class MessageBroker extends EventEmitter {
         }
 
         if (match) {
-            // TODO: FIX
-            // match.callbacks.forEach((cb) => cb(messageTopic, message));
+            match.callbacks.forEach((cb) => cb(messageTopic, message.toString()));
         }
     }
 
@@ -67,7 +62,7 @@ export class MessageBroker extends EventEmitter {
     }
 
     // Subscribe to MQTT.
-    subscribe(topic: string, cb: () => void): void {
+    subscribe(topic: string, cb: MqttCallback): void {
         let callbackCollection = this._findCallbackCollection(topic);
         if (!callbackCollection) {
             callbackCollection = {
@@ -94,8 +89,10 @@ export class MessageBroker extends EventEmitter {
     }
 }
 
+type MqttCallback = (topic: string, message: string) => void;
+
 interface CallbackCollection {
-    callbacks: unknown[];
+    callbacks: MqttCallback[];
 }
 
 export enum EVENTS {
@@ -120,5 +117,6 @@ export enum EVENTS {
 
 export interface InfoMqttMessage {
     name: string;
-    gameName: string;   
+    gameName: string;
+    version: string;   
 }

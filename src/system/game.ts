@@ -1,4 +1,4 @@
-import { Coil, CoilType, DRIVER_TYPES } from "./devices/coil";
+import { Coil } from "./devices/coil";
 import { DisplaysPic } from "./devices/displays-pic";
 import { DriverPic } from "./devices/driver-pic";
 import { LightState } from "./devices/light";
@@ -22,6 +22,11 @@ import { logger } from "./logger";
 import { GpioPin } from "./devices/gpio-pin";
 import { Board } from "./board";
 import { PicVersionMessage } from "./devices/pic-version-message";
+import { Server } from "./server/server";
+import { Security } from "./security";
+import { ClientDevice } from "./server/client-device";
+import { DriverType } from "./devices/driver-type";
+import { CoilType } from "./devices/coil-type";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -54,6 +59,7 @@ export class Game {
     private dirtyDevices: OutputDevice[] = [];
     board: Board;
     engineDirty: boolean;
+    server: Server;
 
     constructor(private hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
         if (!hardwareConfig || !gameStateConfig) {
@@ -72,11 +78,13 @@ export class Game {
     }
 
     setup(): void {
-        logger.debug('Loading config');
-        // this.server = new Server();
-        // this.server.start();
+        Security.getInstance().setSystem(this.hardwareConfig.system);
+
+        this.server = new Server();
+        this.server.start();
 
         // Load our hardware config.
+        logger.debug('Loading config');
         this._loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
             this.displays = new Sys80or80ADisplay();
@@ -102,11 +110,13 @@ export class Game {
             gameName: this.name,
             version: '1.0.0'
         }));
-        MessageBroker.getInstance().publishRetain('mopo/devices/lamps/all/state', JSON.stringify(Array.from(this.lamps.values())));
-        MessageBroker.getInstance().publishRetain('mopo/devices/coils/all/state', JSON.stringify(Array.from(this.coils.values())));
-        MessageBroker.getInstance().publishRetain('mopo/devices/sounds/all/state', JSON.stringify(Array.from(this.sounds.values())));
-        MessageBroker.getInstance().publishRetain('mopo/devices/switches/all/state', JSON.stringify(Array.from(this.switches.values())));
+        
+        this.updateDeviceMessages();
         MessageBroker.getInstance().on(EVENTS.MATRIX, (payload) => this.onSwitchMatrixEvent(payload));
+        MessageBroker.getInstance().subscribe('mopo/devices/+/+/state/update/client', (topic, msg) => {
+            const clientDevice: ClientDevice = JSON.parse(msg);
+            this.onClientDeviceUpdate(clientDevice);
+        });
 
         this.setupHardware().then(() => {
             SwitchesPic.getInstance().reset();
@@ -114,6 +124,25 @@ export class Game {
             logger.debug('Starting game loop.');
             this.gameLoop();
         });
+    }
+
+    onClientDeviceUpdate(clientDevice: ClientDevice): void {
+        const device = this.outputDevices.find((od) => od.id === clientDevice.id);
+        if (device) {
+            if (clientDevice.isOn) {
+                device.on();
+            }
+            else {
+                device.off();
+            }
+        }
+    }
+
+    private updateDeviceMessages(): void {
+        MessageBroker.getInstance().publishRetain('mopo/devices/lamps/all/state', this.getClientDevicesString(Array.from(this.lamps.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/coils/all/state', this.getClientDevicesString(Array.from(this.coils.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/sounds/all/state', this.getClientDevicesString(Array.from(this.sounds.values())));
+        MessageBroker.getInstance().publishRetain('mopo/devices/switches/all/state', JSON.stringify(Array.from(this.switches.values())));
     }
 
     private async setupHardware(): Promise<void> {
@@ -216,11 +245,11 @@ export class Game {
                 if (coil.coilType === CoilType.RELAY) {
                     this.coils.set(coilId, new Relay(
                         coilId,
-                        coil.number, coil.name, DRIVER_TYPES.LAMP
+                        coil.number, coil.name, DriverType.LAMP
                     ));
                 }
                 else if (coil.coilType === CoilType.COIL) {
-                    const driverType = coil.role === LAMP_ROLES.COIL ? DRIVER_TYPES.LAMP : DRIVER_TYPES.COIL;
+                    const driverType = coil.role === LAMP_ROLES.COIL ? DriverType.LAMP : DriverType.COIL;
                     this.coils.set(coilId, new Coil(
                         coilId,
                         coil.number, coil.name, driverType, coil.durationMs || 100
@@ -320,14 +349,10 @@ export class Game {
         //     payload
         // );
         // todo: emit this here? what if no game is loaded and we want to see device states.
+        this.updateDeviceMessages();
         MessageBroker.getInstance().publish(
-            `mopo/devices/changes/state`,
-            JSON.stringify(this.dirtyDevices.map((dd) => {
-                return {
-                    id: dd.id,
-                    isOn: dd.isOn
-                };
-            }))
+            `mopo/devices/anytype/anyid/state/update`,
+            this.getClientDevicesString(this.dirtyDevices)
         );
 
         // clear the array
@@ -337,6 +362,22 @@ export class Game {
         for(const doff of dirtyOffDevices) {
             this.dirtyDevices.splice(this.dirtyDevices.indexOf(doff), 1);    
         }
+    }
+
+    private getClientDevicesString(devices: OutputDevice[]): string {
+        return JSON.stringify(
+            devices.map((d) => this.getClientDevice(d))
+        );
+    }
+
+    private getClientDevice(device: OutputDevice): ClientDevice {
+        return {
+            id: device.id,
+            name: device.name,
+            isOn: device.isOn,
+            number: device.getNumber(),
+            driverType: device instanceof Coil ? device.driverType : null
+        };
     }
 
     async _updateDisplays(): Promise<void> {

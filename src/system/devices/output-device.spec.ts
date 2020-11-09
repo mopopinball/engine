@@ -30,6 +30,10 @@ describe('output device', () => {
 
 class TestOutputDevice extends OutputDevice {
     constructor() {
-        super('id', OUTPUT_DEVICE_TYPES.LIGHT);
+        super('id', 'id', OUTPUT_DEVICE_TYPES.LIGHT);
+    }
+
+    getNumber(): number {
+        return null;
     }
 }

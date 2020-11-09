@@ -1,4 +1,4 @@
-import { CoilType } from "./devices/coil";
+import { CoilType } from "./devices/coil-type";
 import { LAMP_ROLES } from "./devices/playfield-lamp";
 import { SystemName } from "./game";
 

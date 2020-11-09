@@ -15,7 +15,7 @@ export abstract class OutputDevice extends DirtyNotifier {
     private onAckd = true;
     private offAckd = true;
 
-    constructor(public readonly id: string, public readonly type: OUTPUT_DEVICE_TYPES) {
+    constructor(public readonly id: string, public readonly name: string, public readonly type: OUTPUT_DEVICE_TYPES) {
         super();
     }
 
@@ -55,4 +55,6 @@ export abstract class OutputDevice extends DirtyNotifier {
             this.offAckd = true;
         }
     }
+
+    public abstract getNumber(): number;
 }

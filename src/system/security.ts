@@ -1,0 +1,34 @@
+import { SystemName } from "./game";
+import { Utils } from "./utils";
+
+// const Utils = require('./utils');
+
+/**
+ * Machine security.
+ */
+export class Security {
+    private pinCode: number;
+
+    private static instance: Security;
+
+    public static getInstance(): Security {
+        if (!Security.instance) {
+            Security.instance = new Security();
+        }
+
+        return Security.instance;
+    }
+
+    setSystem(system: SystemName): void {
+        if (system === SystemName.SYS80 || system === SystemName.SYS80A) {
+            this.pinCode = Utils.getRandomInteger(1000, 10000);
+        }
+        else {
+            this.pinCode = Utils.getRandomInteger(1000, 10000);
+        }
+    }
+
+    getPinCode(): number {
+        return this.pinCode;
+    }
+}

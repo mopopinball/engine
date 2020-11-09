@@ -1,13 +1,14 @@
 import { byte } from "bitwise";
 import { Bit, UInt8 } from "bitwise/types";
 import { PromisifiedBus } from "i2c-bus";
-import { Coil, DRIVER_TYPES } from "./coil";
+import { Coil } from "./coil";
 import { OutputDevice } from "./output-device";
 import { Pic } from "./pic";
 import { PlayfieldLamp } from "./playfield-lamp";
 import { Sound } from "./sound";
 import {modify} from 'bitwise/buffer';
 import { logger } from "../logger";
+import { DriverType } from "./driver-type";
 
 const PIC_ADDRESS = 0x41;
 
@@ -75,10 +76,10 @@ export class DriverPic extends Pic {
                 this.lamps[device.number] = device.isOn ? 1 : 0;
             }
             else if (device instanceof Coil) {
-                if (device.driverType === DRIVER_TYPES.LAMP) {
+                if (device.driverType === DriverType.LAMP) {
                     this.lamps[device.number] = device.isOn ? 1 : 0;
                 }
-                else if (device.driverType === DRIVER_TYPES.COIL) {
+                else if (device.driverType === DriverType.COIL) {
                     this.coils[device.number - 1] = device.isOn ? 1 : 0;
                 }
             }

@@ -20,8 +20,21 @@ header {
     border: solid 1px green;
     border-radius: 3px;
 
+    button {
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
     &.on {
-        font-weight: bold;;
+        font-weight: bold;
+
+        .far {
+            font-weight: bold;
+        }
+
+        button .far {
+            font-weight: normal;
+        }
     }
 }
 

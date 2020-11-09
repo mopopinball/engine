@@ -11,7 +11,7 @@ export class StatusLed extends Light {
     private gpioPin: GpioPin;
 
     constructor(id: string, private pin: number) {
-        super(id, LightState.OFF);
+        super(id, id, LightState.OFF);
         this.gpioPin = new GpioPin(this.pin, DIR_OUT);
     }
 
@@ -30,4 +30,5 @@ export class StatusLed extends Light {
             this.gpioPin.writeLow();
         }
     }
+
 }

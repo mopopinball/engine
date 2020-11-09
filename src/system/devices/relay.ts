@@ -1,10 +1,11 @@
-import { Coil, DRIVER_TYPES } from "./coil";
+import { Coil } from "./coil";
+import { DriverType } from "./driver-type";
 
 /**
  * A toggle relay.
  */
 export class Relay extends Coil {
-    constructor(readonly id: string, number: number, name: string, driverType: DRIVER_TYPES) {
+    constructor(readonly id: string, number: number, name: string, driverType: DriverType) {
         super(id, number, name, driverType, null);
     }
 
