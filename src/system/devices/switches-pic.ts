@@ -294,7 +294,7 @@ export class SwitchesPic extends Pic {
         });
     }
 
-    sendMessage(topic: EVENTS, payload): void {
+    sendMessage(topic: EVENTS, payload: unknown): void {
         MessageBroker.getInstance().emit(topic, payload);
         MessageBroker.getInstance().publish('mopo/dips', JSON.stringify(payload), null);
     }

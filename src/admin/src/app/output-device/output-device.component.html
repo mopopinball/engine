@@ -1,0 +1,6 @@
+<div class="device" [class.on]="device.isOn">
+    <i *ngIf="!isLampDriver(device)" [class]="icon"></i>
+    <i *ngIf="isLampDriver(device)" [class]="lampIcon"></i>
+    {{device.name}} <span class="number">#<span *ngIf="isLampDriver(device)">L</span>{{device.number}}</span>
+    <button (click)="toggleDevice()"><i class="far fa-edit"></i></button>
+</div>

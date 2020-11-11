@@ -21,7 +21,7 @@ export class Server {
     }
 
     setupWebserverBindings(): void {
-        const staticDir = path.resolve(__dirname + '../../../../site');
+        const staticDir = path.resolve(__dirname + '../../../../admin');
         logger.info(`Setting static dir to ${staticDir}`);
         const users = {
             admin: Security.getInstance().getPinCode().toString(),

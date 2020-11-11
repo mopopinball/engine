@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { InfoMqttMessage } from "../../../system/messages"
 import {ClientDevice} from '../../../system/server/client-device';
-import { DriverType } from '../../../system/devices/driver-type';
 
 @Component({
     selector: 'app-root',
@@ -13,11 +12,13 @@ import { DriverType } from '../../../system/devices/driver-type';
 export class AppComponent implements OnDestroy {
     private subscription: Subscription;
     info: InfoMqttMessage;
-    fps: any;
-    lamps: any[] = [];
-    coils: any[] = [];
-    sounds: any[] = [];
+    fps: InfoMqttMessage;
+    lamps: ClientDevice[] = [];
+    coils: ClientDevice[] = [];
+    sounds: ClientDevice[] = [];
     switches: any[] = [];
+    rows = [0,1,2,3,4,5,6,7,8];
+    cols = [1,2,3,4,5,6,7,8];
 
     constructor(private _mqttService: MqttService) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
@@ -66,16 +67,17 @@ export class AppComponent implements OnDestroy {
         }
     }
 
-    public ngOnDestroy() {
+    public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
-    toggleDevice(device: ClientDevice) {
-        device.isOn = !device.isOn;
+    toggleDevice(device: ClientDevice): void {
         this._mqttService.publish('mopo/devices/anytype/anyid/state/update/client', JSON.stringify(device)).subscribe();
     }
 
-    isLampDriver(lamp: ClientDevice): boolean {
-        return lamp.driverType === DriverType.LAMP;
+    getSwitch(row: number, col: number): any {
+        const swNum = (row * 10) + col;
+        const sw = this.switches.find((sw) => sw.number === swNum);
+        return sw || {id: '', number: swNum};
     }
 }

@@ -1,4 +1,3 @@
-import {logger} from './logger';
 import { MessageBroker } from './messages';
 
 /**
@@ -24,8 +23,6 @@ export class FpsTracker {
         }
         const sum = this.loopTimes.reduce((previous, current) => current += previous);
         const avg = sum / this.loopTimes.length;
-        // logger.info(`Loop time: ${avg}`);
-        // logger.debug(JSON.stringify(this.loopTimes));
         MessageBroker.getInstance().publish('mopo/info/fps', JSON.stringify({
             fps: 30, // todo: fix
             loopTime: avg

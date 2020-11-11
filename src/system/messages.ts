@@ -57,7 +57,7 @@ export class MessageBroker extends EventEmitter {
     }
 
     // Publishes to MQTT.
-    publish(topic: string, message, options: IClientPublishOptions = null): void {
+    publish(topic: string, message: string, options: IClientPublishOptions = null): void {
         this.client.publish(topic, message, options);
     }
 
