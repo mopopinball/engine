@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 import {
   MqttModule,
@@ -21,6 +22,7 @@ import { OutputDeviceComponent } from './output-device/output-device.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
   ],
   providers: [],

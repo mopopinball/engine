@@ -1,5 +1,5 @@
 <header>
-    <h1>{{info?.name}} <span>{{info?.version}}</span></h1>
+    <h1>{{info?.name}} <span>{{info?.version}}<button (click)="checkForUpdate()">Check</button></span><span *ngIf="availableUpdate">Version {{availableUpdate.name}} is available!</span></h1>
     <h2>{{info?.gameName}}</h2>
     <h3 *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</h3>
 </header>

@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { InfoMqttMessage } from "../../../system/messages"
 import {ClientDevice} from '../../../system/server/client-device';
+import {GithubRelease} from '../../../system/github-release';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -11,6 +13,7 @@ import {ClientDevice} from '../../../system/server/client-device';
 })
 export class AppComponent implements OnDestroy {
     private subscription: Subscription;
+    availableUpdate: GithubRelease;
     info: InfoMqttMessage;
     fps: InfoMqttMessage;
     lamps: ClientDevice[] = [];
@@ -20,7 +23,7 @@ export class AppComponent implements OnDestroy {
     rows = [0,1,2,3,4,5,6,7,8];
     cols = [1,2,3,4,5,6,7,8];
 
-    constructor(private _mqttService: MqttService) {
+    constructor(private _mqttService: MqttService, private http: HttpClient) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
             this.info = JSON.parse(message.payload.toString());
         });
@@ -79,5 +82,11 @@ export class AppComponent implements OnDestroy {
         const swNum = (row * 10) + col;
         const sw = this.switches.find((sw) => sw.number === swNum);
         return sw || {id: '', number: swNum};
+    }
+
+    checkForUpdate(): void {
+        this.http.post('/update/check', {}).subscribe((update: GithubRelease) => {
+            this.availableUpdate = update;
+        });
     }
 }

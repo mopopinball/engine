@@ -27,6 +27,7 @@ import { Security } from "./security";
 import { ClientDevice } from "./server/client-device";
 import { DriverType } from "./devices/driver-type";
 import { CoilType } from "./devices/coil-type";
+import { Update } from "./update";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -108,7 +109,7 @@ export class Game {
         MessageBroker.getInstance().publishRetain('mopo/info/general', JSON.stringify({
             name: 'Mopo Pinball',
             gameName: this.name,
-            version: '1.0.0'
+            version: Update.getInstance().getVersion()
         }));
         
         this.updateDeviceMessages();

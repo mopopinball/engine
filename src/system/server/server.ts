@@ -5,6 +5,7 @@ const app = express();
 import path from 'path';
 import { logger } from '../logger';
 import { Security } from '../security';
+import { UpdateController } from './update-controller';
 const port = 80;
 
 /**
@@ -34,6 +35,13 @@ export class Server {
             realm: 'mopo'
         }));
         app.use(express.static(staticDir));
+
+        this.setupControllers();
+
         app.listen(port, () => logger.info(`Mopo Pinball admin webserver listening on port ${port}!`));
+    }
+
+    private setupControllers() {
+        new UpdateController().setup(app);
     }
 }
