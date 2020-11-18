@@ -1,8 +1,11 @@
 {
-  "name": "mopo-pinball",
+  "name": "@mopopinball/engine",
   "version": "1.0.0-beta.5",
   "description": "",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
+  },
   "engines": {
     "node": "10.18.0"
   },
