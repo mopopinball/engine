@@ -1,7 +1,13 @@
 <header>
-    <h1>{{info?.name}} <span>{{info?.version}}<button (click)="checkForUpdate()">Check</button></span><span *ngIf="availableUpdate">Version {{availableUpdate.name}} is available!</span></h1>
-    <h2>{{info?.gameName}}</h2>
-    <h3 *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</h3>
+    <div>
+        <h1>{{info?.name}}</h1>
+        <h2>{{info?.gameName}}</h2>
+    </div>
+    <div>
+        <div>{{info?.version}}<button (click)="checkForUpdate()">Check</button></div>
+        <div *ngIf="availableUpdate">Version {{availableUpdate.system.name}} is available!</div>
+        <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
+    </div>
 </header>
 <h3><i class="far fa-lightbulb"></i> Lamps</h3>
 <div class="device-list">

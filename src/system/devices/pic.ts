@@ -41,13 +41,6 @@ export abstract class Pic {
         return padStart((dec >>> 0).toString(2), size, '0');
     }
 
-    programHex(pathToHexFile: string): SpawnSyncReturns<string> {
-        // todo
-        const result = spawnSync('picpgm', ['-p', pathToHexFile], {stdio: 'pipe', encoding: 'utf-8'});
-        logger.info(result.stdout);
-        return result;
-    }
-
     protected logBuffer(buffer: Buffer): void {
         if (this.DEBUG) {
             let log = '';
@@ -58,7 +51,4 @@ export abstract class Pic {
         }
     }
 
-    // compareHex(pathToHexFile: string): void {
-    //     // todo
-    // }
 }

@@ -4,6 +4,7 @@ import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { InfoMqttMessage } from "../../../system/messages"
 import {ClientDevice} from '../../../system/server/client-device';
 import {GithubRelease} from '../../../system/github-release';
+import {UpdateDetails} from '../../../system/server/update-details';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -13,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent implements OnDestroy {
     private subscription: Subscription;
-    availableUpdate: GithubRelease;
+    availableUpdate: UpdateDetails;
     info: InfoMqttMessage;
     fps: InfoMqttMessage;
     lamps: ClientDevice[] = [];
