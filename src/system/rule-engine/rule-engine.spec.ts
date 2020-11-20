@@ -87,4 +87,18 @@ describe('Rules', () => {
             expect(ruleEngine.children[1].active).toBeTruthy();
         });
     });
+
+    describe('serialization', () => {
+        it('serialized devices', () => {
+            //setup
+            const data: RuleSchema = loadTestData(testData);
+            ruleEngine = RuleEngine.load(data);
+
+            // exercise
+            const serialization = JSON.stringify(ruleEngine);
+
+            // check
+            expect(serialization).toBe('{"devices":[{"id":"SHOOT_AGAIN","type":"light","state":0},{"id":"L4","type":"light","state":1}]}');
+        });
+    });
 });

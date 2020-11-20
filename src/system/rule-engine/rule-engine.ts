@@ -34,44 +34,9 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         for (const deviceSchema of schema.devices ?? []) {
-            switch (deviceSchema.type) {
-                case OUTPUT_DEVICE_TYPES.LIGHT:
-                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
-                        deviceSchema.id, OUTPUT_DEVICE_TYPES.LIGHT, deviceSchema.state
-                    ))
-                    // engine.devices.set(deviceSchema.id, new PlayfieldLamp(
-                    //     deviceSchema.number, deviceSchema.role, deviceSchema.name, deviceSchema.state
-                    // ));
-                    break;
-                case OUTPUT_DEVICE_TYPES.COIL:
-                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
-                        deviceSchema.id, OUTPUT_DEVICE_TYPES.COIL, deviceSchema.state
-                    ));
-                    // switch(deviceSchema.coilType) {
-                    //     case CoilType.COIL:
-                    //         engine.devices.set(deviceSchema.id, new Coil(
-                    //             deviceSchema.id, deviceSchema.number, deviceSchema.name,
-                    //             null, null
-                    //         ));
-                    //         break;
-                    //     case CoilType.RELAY:
-                    //         engine.devices.set(deviceSchema.id, new Relay(
-                    //             deviceSchema.id, deviceSchema.number, deviceSchema.name, null
-                    //         ));
-                    //         break;
-                    // }
-                break;
-                case OUTPUT_DEVICE_TYPES.SOUND:
-                    engine.devices.set(deviceSchema.id, new DesiredOutputState(
-                        deviceSchema.id, OUTPUT_DEVICE_TYPES.SOUND, deviceSchema.play
-                    ));
-                    // engine.devices.set(deviceSchema.id, new Sound(
-                    //     deviceSchema.number, null
-                    // ));
-                    break;
-                default:
-                    throw new Error('Not implemented');
-            }
+            engine.devices.set(deviceSchema.id, 
+                DesiredOutputState.constructFromOutputState(deviceSchema)
+            );
         }
 
         if (schema.actions) {
@@ -217,5 +182,11 @@ export class RuleEngine extends DirtyNotifier {
 
     private getActiveChildren(): RuleEngine[] {
         return this.children.filter((c) => c.active);
+    }
+
+    toJSON() {
+        return {
+            devices: Array.from(this.devices.values())
+        };
     }
 }
