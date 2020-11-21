@@ -186,6 +186,9 @@ export class RuleEngine extends DirtyNotifier {
 
     toJSON() {
         return {
+            id: this.id,
+            autostart: this.autoStart,
+            children: this.children,
             devices: Array.from(this.devices.values())
         };
     }
