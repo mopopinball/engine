@@ -1,6 +1,7 @@
 import { logger } from "../logger";
 import { DriverType } from "./driver-type";
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { OutputDevice } from "./output-device";
+import { OutputDeviceType } from "./output-device-type";
 
 export enum ACTUATION_TYPE {
     FIRE,
@@ -18,7 +19,7 @@ export class Coil extends OutputDevice {
         id: string, public readonly number: number, name: string, public readonly driverType: DriverType,
         private readonly duration: number
     ) {
-        super(id, name, OUTPUT_DEVICE_TYPES.COIL);
+        super(id, name, OutputDeviceType.COIL);
         this.isOn = false;
         this._autoOffTimeout = null;
 

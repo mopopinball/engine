@@ -1,15 +1,11 @@
+import { LampRole } from "./lamp-role";
 import { Light, LightState } from "./light";
-
-export enum LAMP_ROLES {
-    LAMP = 'lamp',
-    COIL = 'coil'
-}
 
 /**
  * todo
  */
 export class PlayfieldLamp extends Light {
-    constructor(id: string, public number: number, private role: LAMP_ROLES, name: string, state: LightState) {
+    constructor(id: string, public number: number, private role: LampRole, name: string, state: LightState) {
         super(id, name, state);
     }
 

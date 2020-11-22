@@ -1,4 +1,3 @@
-import { OUTPUT_DEVICE_TYPES } from "../devices/output-device";
 import { DirtyNotifier } from "../dirty-notifier";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";

@@ -1,5 +1,5 @@
 import { LightState } from "../devices/light";
-import { OUTPUT_DEVICE_TYPES } from "../devices/output-device";
+import { OutputDeviceType } from "../devices/output-device-type";
 import { DesiredOutputState } from "./desired-output-state";
 import { LightOutputState } from "./schema/rule.schema";
 
@@ -9,7 +9,7 @@ describe('Desired output state', () => {
         const lightSchema: LightOutputState = {
             id: 'light-id',
             state: LightState.BLINK,
-            type: OUTPUT_DEVICE_TYPES.LIGHT
+            type: OutputDeviceType.LIGHT
         };
 
         // exercise
@@ -26,7 +26,7 @@ describe('Desired output state', () => {
         const lightSchema: LightOutputState = {
             id: 'light-id',
             state: LightState.BLINK,
-            type: OUTPUT_DEVICE_TYPES.LIGHT
+            type: OutputDeviceType.LIGHT
         };
         const desiredOutput: DesiredOutputState = DesiredOutputState.constructFromOutputState(lightSchema);
 

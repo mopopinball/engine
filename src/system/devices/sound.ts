@@ -1,4 +1,5 @@
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { OutputDevice } from "./output-device";
+import { OutputDeviceType } from "./output-device-type";
 
 /**
  * Sounds work by setting the sound data on the sound lines, then triggering an inerrupt by going low.
@@ -8,7 +9,7 @@ import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
  */
 export class Sound extends OutputDevice {
     constructor(id: string, public readonly number: number, description: string) {
-        super(id, description, OUTPUT_DEVICE_TYPES.SOUND);
+        super(id, description, OutputDeviceType.SOUND);
     }
 
     ackDirty(ackOn: boolean): void {

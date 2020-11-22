@@ -1,4 +1,5 @@
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { OutputDevice } from "./output-device";
+import { OutputDeviceType } from "./output-device-type";
 
 describe('output device', () => {
     let outputDevice: TestOutputDevice;
@@ -30,7 +31,7 @@ describe('output device', () => {
 
 class TestOutputDevice extends OutputDevice {
     constructor() {
-        super('id', 'id', OUTPUT_DEVICE_TYPES.LIGHT);
+        super('id', 'id', OutputDeviceType.LIGHT);
     }
 
     getNumber(): number {

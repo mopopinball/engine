@@ -1,4 +1,5 @@
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./output-device";
+import { OutputDevice } from "./output-device";
+import { OutputDeviceType } from "./output-device-type";
 
 export enum LightState {
     OFF,
@@ -14,7 +15,7 @@ export class Light extends OutputDevice {
     private pulseTimeout: NodeJS.Timeout = null;
 
     constructor(id: string, name: string, protected state: LightState) {
-        super(id, name, OUTPUT_DEVICE_TYPES.LIGHT);
+        super(id, name, OutputDeviceType.LIGHT);
         this.setState(state);
     }
     

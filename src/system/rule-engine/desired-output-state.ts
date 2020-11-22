@@ -1,5 +1,5 @@
 import { LightState } from "../devices/light";
-import { OUTPUT_DEVICE_TYPES } from "../devices/output-device";
+import { OutputDeviceType } from "../devices/output-device-type";
 import { CoilOutputState, LightOutputState, OutputDeviceState, SoundOutputState } from "./schema/rule.schema";
 
 export declare type DesiredOutputStateType = LightState | boolean;
@@ -9,7 +9,7 @@ export class DesiredOutputState {
     
     static constructFromOutputState(ouputState: LightOutputState | CoilOutputState | SoundOutputState) {
         switch(ouputState.type) {
-            case OUTPUT_DEVICE_TYPES.SOUND:
+            case OutputDeviceType.SOUND:
                 return new DesiredOutputState(
                     ouputState.id, ouputState.type, ouputState.play
                 );
@@ -20,7 +20,7 @@ export class DesiredOutputState {
         }
     }
     
-    constructor(public readonly id: string, public readonly type: OUTPUT_DEVICE_TYPES, private readonly initialState: DesiredOutputStateType) {
+    constructor(public readonly id: string, public readonly type: OutputDeviceType, private readonly initialState: DesiredOutputStateType) {
         this.currentState = initialState;
     }
 
@@ -38,11 +38,11 @@ export class DesiredOutputState {
 
     toJSON(): LightOutputState | CoilOutputState | SoundOutputState {
         switch(this.type) {
-            case OUTPUT_DEVICE_TYPES.SOUND:
+            case OutputDeviceType.SOUND:
                 return {id: this.id, type: this.type, play: this.initialState as boolean};
-            case OUTPUT_DEVICE_TYPES.COIL:
+            case OutputDeviceType.COIL:
                 return {id: this.id, type: this.type, state: this.initialState as boolean};
-            case OUTPUT_DEVICE_TYPES.LIGHT:
+            case OutputDeviceType.LIGHT:
                 return {id: this.id, type: this.type, state: this.initialState as LightState};
         }
     }

@@ -1,10 +1,5 @@
 import { DirtyNotifier } from "../dirty-notifier";
-
-export enum OUTPUT_DEVICE_TYPES {
-    LIGHT = 'light',
-    COIL = 'coil',
-    SOUND = 'sound'
-}
+import { OutputDeviceType } from "./output-device-type";
 
 /**
  * An output device which is controled by the driver PIC.
@@ -15,7 +10,7 @@ export abstract class OutputDevice extends DirtyNotifier {
     private onAckd = true;
     private offAckd = true;
 
-    constructor(public readonly id: string, public readonly name: string, public readonly type: OUTPUT_DEVICE_TYPES) {
+    constructor(public readonly id: string, public readonly name: string, public readonly type: OutputDeviceType) {
         super();
     }
 

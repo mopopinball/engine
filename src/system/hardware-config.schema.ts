@@ -1,5 +1,5 @@
 import { CoilType } from "./devices/coil-type";
-import { LAMP_ROLES } from "./devices/playfield-lamp";
+import { LampRole } from "./devices/lamp-role";
 import { SystemName } from "./game";
 
 export interface HardwareConfig {
@@ -32,7 +32,7 @@ export interface LampsSchema {
 
 export interface HardwareLampSchema {
     number: number;
-    role: LAMP_ROLES;
+    role: LampRole;
     name: string;
     coilType: string;
 }
@@ -46,7 +46,7 @@ export interface HardwareCoilSchema {
     name: string;
     coilType: CoilType;
     durationMs: number;
-    role?: LAMP_ROLES;
+    role?: LampRole;
 }
 
 export interface SoundsSchema {

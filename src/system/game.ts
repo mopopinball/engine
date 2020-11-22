@@ -2,8 +2,8 @@ import { Coil } from "./devices/coil";
 import { DisplaysPic } from "./devices/displays-pic";
 import { DriverPic } from "./devices/driver-pic";
 import { LightState } from "./devices/light";
-import { OutputDevice, OUTPUT_DEVICE_TYPES } from "./devices/output-device";
-import { LAMP_ROLES, PlayfieldLamp } from "./devices/playfield-lamp";
+import { OutputDevice } from "./devices/output-device";
+import { PlayfieldLamp } from "./devices/playfield-lamp";
 import { PlayfieldSwitch } from "./devices/playfield-switch";
 import { Relay } from "./devices/relay";
 import { Sound } from "./devices/sound";
@@ -28,6 +28,8 @@ import { ClientDevice } from "./server/client-device";
 import { DriverType } from "./devices/driver-type";
 import { CoilType } from "./devices/coil-type";
 import { Update } from "./update";
+import { OutputDeviceType } from "./devices/output-device-type";
+import { LampRole } from "./devices/lamp-role";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -38,6 +40,10 @@ process.on('uncaughtException', (err) => onUncaughtError(err));
 process.on('unhandledRejection', (reason) => onUncaughtError(reason));
 
 const MS_PER_FRAME = 33; // 30 fps
+// 3 ticks = .1 seconds
+// 6 ticks = .2s
+// 15 ticks = .5s
+// 30 ticks = 1s; clock is tick % fps
 
 /**
  * The Mopo Pinball engine.
@@ -180,13 +186,13 @@ export class Game {
 
         const devices = this.ruleEngine.getDevices().values();
         for (const desiredState of devices) {
-            if (desiredState.type === OUTPUT_DEVICE_TYPES.LIGHT) {
+            if (desiredState.type === OutputDeviceType.LIGHT) {
                 const lamp = this.lamps.get(desiredState.id);
                 if (lamp.getState() !== desiredState.getState()) {
                     lamp.setState(desiredState.getState() as LightState);
                 }
             }
-            else if (desiredState.type === OUTPUT_DEVICE_TYPES.COIL) {
+            else if (desiredState.type === OutputDeviceType.COIL) {
                 const coil = this.coils.get(desiredState.id);
                 if (coil instanceof Relay && coil.isRelayOn() && desiredState.getState() === false) {
                     coil.off();
@@ -199,7 +205,7 @@ export class Game {
                     desiredState.setState(false); // makes the coil fire once
                 }
             }
-            else if (desiredState.type === OUTPUT_DEVICE_TYPES.SOUND) {
+            else if (desiredState.type === OutputDeviceType.SOUND) {
                 const sound = this.sounds.get(desiredState.id);
                 if (desiredState.getState() as boolean === true) {
                     sound.on();
@@ -229,7 +235,7 @@ export class Game {
 
         this.lamps.clear();
         Object.entries(this.hardwareConfig.devices.lamps)
-            .filter((lampEntry) => lampEntry[1].role === LAMP_ROLES.LAMP)
+            .filter((lampEntry) => lampEntry[1].role === LampRole.LAMP)
             .forEach((lampEntry) => {
                 const lamp = new PlayfieldLamp(lampEntry[0], lampEntry[1].number, lampEntry[1].role, lampEntry[1].name, LightState.OFF);
                 this.lamps.set(lampEntry[0], lamp);
@@ -238,7 +244,7 @@ export class Game {
         // Get all lamps designated as coils and all coils and map for direct lookup.
         this.coils.clear();
         Object.entries(this.hardwareConfig.devices.lamps)
-            .filter((lampEntry) => lampEntry[1].role === LAMP_ROLES.COIL)
+            .filter((lampEntry) => lampEntry[1].role === LampRole.COIL)
             .concat(Object.entries(this.hardwareConfig.devices.coils))
             .forEach((coilEntry) => {
                 const coilId = coilEntry[0];
@@ -250,7 +256,7 @@ export class Game {
                     ));
                 }
                 else if (coil.coilType === CoilType.COIL) {
-                    const driverType = coil.role === LAMP_ROLES.COIL ? DriverType.LAMP : DriverType.COIL;
+                    const driverType = coil.role === LampRole.COIL ? DriverType.LAMP : DriverType.COIL;
                     this.coils.set(coilId, new Coil(
                         coilId,
                         coil.number, coil.name, driverType, coil.durationMs || 100

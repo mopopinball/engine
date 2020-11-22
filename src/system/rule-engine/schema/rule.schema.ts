@@ -1,5 +1,5 @@
 import { LightState } from "../../devices/light";
-import { OUTPUT_DEVICE_TYPES } from "../../devices/output-device";
+import { OutputDeviceType } from "../../devices/output-device-type";
 
 export interface RuleSchema {
     id: string;
@@ -26,17 +26,17 @@ export interface OutputDeviceState {
 }
 
 export interface LightOutputState extends OutputDeviceState {
-    type: OUTPUT_DEVICE_TYPES.LIGHT;
+    type: OutputDeviceType.LIGHT;
     state: LightState;
 }
 
 export interface CoilOutputState extends OutputDeviceState {
-    type: OUTPUT_DEVICE_TYPES.COIL;
+    type: OutputDeviceType.COIL;
     state: boolean;
 }
 
 export interface SoundOutputState extends OutputDeviceState {
-    type: OUTPUT_DEVICE_TYPES.SOUND;
+    type: OutputDeviceType.SOUND;
     play: boolean;
 }
 
