@@ -40,7 +40,7 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.actions) {
             for (const action of schema.actions) {
-                RuleEngine.createAction(action, engine, action.next);
+                engine.createAction(action);
             }
         }
 
@@ -53,28 +53,28 @@ export class RuleEngine extends DirtyNotifier {
         return engine;
     }
 
-    private static createAction(action: DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema, engine: RuleEngine, next: string[]): void {
+    public createAction(action: DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema): void {
         let newAction: Action = null;
         switch (action.type) {
             case ActionType.DATA:
-                newAction = new DataAction(action.id, action.dataId, action.operation, action.operand, engine.allActions, next);
+                newAction = new DataAction(action.id, action.dataId, action.operation, action.operand, this.allActions, action.next);
                 break;
             case ActionType.DEVICE:
-                newAction = new DeviceAction(action.id, action.deviceId, action.state, engine.allActions, next);
+                newAction = new DeviceAction(action.id, action.deviceId, action.state, this.allActions, action.next);
                 break;
             case ActionType.STATE: {
                 newAction = new StateAction(
                         action.id, 
                         action.startTargetId,
                         action.stopTargetId,
-                        engine.allActions,
-                        next
+                        this.allActions,
+                        action.next
                     );
                 break;
             }
             case ActionType.CONDITION:
                 newAction = new ConditionalAction(
-                    action.id, action.statement, action.trueResult, action.falseResult, engine.allActions, next
+                    action.id, action.statement, action.trueResult, action.falseResult, this.allActions, action.next
                 );
                 break;
             default:
@@ -82,15 +82,15 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         if (action.switchId) {
-            engine.addAction(action.switchId, newAction);
+            this.addAction(action.switchId, newAction);
         }
-        engine.allActions.set(newAction.id, newAction);
+        this.allActions.set(newAction.id, newAction);
         newAction.onDirty(() => {
-            engine.emitDirty();
+            this.emitDirty();
         });
     }
 
-    addAction(switchId: string, action: Action): Action {
+    private addAction(switchId: string, action: Action): Action {
         if (!this.switchActions.has(switchId)) {
             this.switchActions.set(switchId, []);
         }

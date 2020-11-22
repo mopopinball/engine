@@ -1,4 +1,5 @@
 export enum LampRole {
     LAMP = 'lamp',
-    COIL = 'coil'
+    COIL = 'coil',
+    SOUND = 'sound'
 }
