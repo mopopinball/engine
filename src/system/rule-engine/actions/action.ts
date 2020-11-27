@@ -2,22 +2,29 @@ import { DirtyNotifier } from "../../dirty-notifier";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
+import { ActionTriggerType } from "./switch-action-trigger";
 
 export abstract class Action extends DirtyNotifier {
-    constructor(
-        public id: string, protected actions: Map<string, Action>, private nextCollection: string[] = []
-    ){
+    protected engines: Map<string, RuleEngine>;
+    protected data: Map<string, RuleData>;
+    protected devices: Map<string, DesiredOutputState>;
+    
+    constructor() {
         super();
     }
 
-    abstract onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void;
+    abstract onAction(): void;
     
     handle(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void {
-        this.onAction(engines, data, devices);
+        this.engines = engines;
+        this.data = data;
+        this.devices = devices;
+
+        this.onAction();
         this.emitDirty();
         
-        for (const a of this.nextCollection) {
-            this.actions.get(a).handle(engines, data, devices);
-        }
+        // for (const a of this.nextCollection) {
+        //     this.actions.get(a).handle(engines, data, devices);
+        // }
     }
 }

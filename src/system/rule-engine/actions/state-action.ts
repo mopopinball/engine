@@ -1,20 +1,30 @@
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
+import { ActionType, StateActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
+import { SwitchActionTrigger } from "./switch-action-trigger";
 
 export class StateAction extends Action {
-    constructor(id: string, private startTargetId: string, private stopTargetId: string, actions: Map<string, Action>,
-        nextCollection: string[]) {
-        super(id, actions, nextCollection);
+    constructor(private startTargetId: string, private stopTargetId: string
+    ) {
+        super();
     }
     
-    onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+    onAction(): void {
         if (this.startTargetId) {
-            engines.get(this.startTargetId).start();
+            this.engines.get(this.startTargetId).start();
         }
         if (this.stopTargetId) {
-            engines.get(this.stopTargetId).stop();
+            this.engines.get(this.stopTargetId).stop();
+        }
+    }
+
+    toJSON(): StateActionSchema {
+        return {
+            type: ActionType.STATE,
+            startTargetId: this.startTargetId,
+            stopTargetId: this.startTargetId
         }
     }
 

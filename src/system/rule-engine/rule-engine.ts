@@ -4,17 +4,17 @@ import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { StateAction } from "./actions/state-action";
+import { ActionTriggerType, SwitchActionTrigger } from "./actions/switch-action-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { RuleData } from "./rule-data";
-import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema } from "./schema/rule.schema";
+import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
     active = false;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
-    switchActions: Map<string, Action[]> = new Map();
-    allActions: Map<string, Action> = new Map();
+    triggers: ActionTriggerType[] = [];
     children: RuleEngine[] = [];
 
     constructor(public id: string, public autoStart: boolean) {
@@ -38,9 +38,9 @@ export class RuleEngine extends DirtyNotifier {
             );
         }
 
-        if (schema.actions) {
-            for (const action of schema.actions) {
-                engine.createAction(action);
+        if (schema.triggers) {
+            for (const trigger of schema.triggers) {
+                engine.createAction(trigger);
             }
         }
 
@@ -53,49 +53,59 @@ export class RuleEngine extends DirtyNotifier {
         return engine;
     }
 
-    public createAction(action: DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema): void {
+    public createAction(triggerSchema: SwitchActionTriggerSchema): void {
         let newAction: Action = null;
-        switch (action.type) {
-            case ActionType.DATA:
-                newAction = new DataAction(action.id, action.dataId, action.operation, action.operand, this.allActions, action.next);
-                break;
-            case ActionType.DEVICE:
-                newAction = new DeviceAction(action.id, action.deviceId, action.state, this.allActions, action.next);
-                break;
-            case ActionType.STATE: {
-                newAction = new StateAction(
-                        action.id, 
-                        action.startTargetId,
-                        action.stopTargetId,
-                        this.allActions,
-                        action.next
-                    );
+
+        let trigger: SwitchActionTrigger = null;
+        switch(triggerSchema.type) {
+            case TriggerType.SWITCH: {
+                trigger = this.getSwitchTrigger(triggerSchema.switchId);
+                if (!trigger) {
+                    trigger = new SwitchActionTrigger(triggerSchema.switchId);
+                    this.triggers.push(trigger);
+                }
                 break;
             }
-            case ActionType.CONDITION:
-                newAction = new ConditionalAction(
-                    action.id, action.statement, action.trueResult, action.falseResult, this.allActions, action.next
-                );
-                break;
-            default:
-                throw new Error('Not implemented');
         }
 
-        if (action.switchId) {
-            this.addAction(action.switchId, newAction);
-        }
-        this.allActions.set(newAction.id, newAction);
-        newAction.onDirty(() => {
-            this.emitDirty();
-        });
-    }
+        for (const actionSchema of triggerSchema.actions) {
+            switch (actionSchema.type) {
+                case ActionType.DATA:
+                    newAction = new DataAction(
+                        actionSchema.dataId, 
+                        actionSchema.operation, 
+                        actionSchema.operand
+                    );
+                    break;
+                case ActionType.DEVICE:
+                    newAction = new DeviceAction(
+                        actionSchema.deviceId, actionSchema.state
+                    );
+                    break;
+                case ActionType.STATE: {
+                    newAction = new StateAction(
+                            actionSchema.startTargetId,
+                            actionSchema.stopTargetId
+                        );
+                    break;
+                }
+                // case ActionType.CONDITION:
+                //     newAction = new ConditionalAction(
+                //         actionSchema.statement,
+                //         actionSchema.trueResult,
+                //         actionSchema.falseResult
+                //     );
+                //     break;
+                default:
+                    throw new Error('Not implemented');
+            }
 
-    private addAction(switchId: string, action: Action): Action {
-        if (!this.switchActions.has(switchId)) {
-            this.switchActions.set(switchId, []);
+            trigger.actions.push(newAction);
+
+            newAction.onDirty(() => {
+                this.emitDirty();
+            });
         }
-        this.switchActions.get(switchId).push(action);
-        return action;
     }
 
     start(): void {
@@ -122,14 +132,23 @@ export class RuleEngine extends DirtyNotifier {
 
         if (childHandled) {
             return true;
-        } else if (this.switchActions.has(id)) {
-            for (const action of this.switchActions.get(id)) {
+        }
+        const switchTrigger = this.getSwitchTrigger(id);
+        if (switchTrigger) {
+            for(const action of switchTrigger.actions) {
                 action.handle(RuleEngine.root.getAllEngines(), this.getData(), this.getDevices());
             }
             return true;
-        } else {
+        }
+        else {
             return false;
         }
+    }
+
+    getSwitchTrigger(switchId: string): SwitchActionTrigger {
+        return this.triggers.find((action) =>
+            action.type === TriggerType.SWITCH && action.switchId == switchId
+        );
     }
 
     // compressed data.
@@ -188,6 +207,7 @@ export class RuleEngine extends DirtyNotifier {
             id: this.id,
             autostart: this.autoStart,
             children: this.children,
+            triggers: this.triggers,
             devices: Array.from(this.devices.values())
         };
     }

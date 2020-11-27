@@ -42,7 +42,7 @@ describe('Rule Engine Load()', () => {
     });
 
     it('loads actions', () => {
-        expect(ruleEngine.switchActions.size).toBe(2);
-        expect(ruleEngine.switchActions.get('sw0').length).toBe(2);
+        expect(ruleEngine.triggers.length).toBe(2);
+        expect(ruleEngine.getSwitchTrigger('sw0').actions.length).toBe(2);
     });
 });

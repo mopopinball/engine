@@ -4,15 +4,15 @@ import { RuleEngine } from "../rule-engine";
 import { Action } from "./action";
 
 export class DataAction extends Action {
-    constructor(id: string, private dataKey: string, private operation: DataOperation, private operand: number, actions: Map<string, Action>,
-        nextCollection: string[]) {
-        super(id, actions, nextCollection);
+    constructor(private dataKey: string, private operation: DataOperation, private operand: number
+    ) {
+        super();
     }
     
-    onAction(engines: Map<string, RuleEngine>, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+    onAction(): void {
         // todo: operate
         if (this.operation === DataOperation.INCREMENT) {
-            data.get(this.dataKey).value += this.operand; 
+            this.data.get(this.dataKey).value += this.operand; 
         }
     }
 }

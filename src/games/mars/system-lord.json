@@ -22,12 +22,14 @@
             "type": "light",
             "state": 2
         }],
-        "actions": [{
-            "id": "start",
+        "triggers": [{
+            "type": "switch",
             "switchId": "REPLAY",
-            "type": "state",
-            "startTargetId": "play",
-            "stopTargetId": "attract"
+            "actions": [{
+                "type": "state",
+                "startTargetId": "play",
+                "stopTargetId": "attract"
+            }]
         }]
     }, {
         "id": "play",
@@ -43,12 +45,14 @@
             "type": "sound",
             "play": true
         }],
-        "actions": [{
-            "id": "end",
+        "triggers": [{
+            "type": "switch",
             "switchId": "PLAY_TEST",
-            "type": "state",
-            "startTargetId": "attract",
-            "stopTargetId": "play"
+            "actions": [{
+                "type": "state",
+                "startTargetId": "attract",
+                "stopTargetId": "play"    
+            }]
         }]
     }],
     "devices": [{

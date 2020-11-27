@@ -4,12 +4,14 @@
     "children": [{
         "id": "a",
         "autostart": true,
-        "actions": [{
-            "id": "goto b",
+        "triggers": [{
+            "type": "switch",
             "switchId": "sw0",
-            "type": "state",
-            "startTargetId": "b",
-            "stopTargetId": "a"
+            "actions": [{
+                "type": "state",
+                "startTargetId": "b",
+                "stopTargetId": "a"
+            }]
         }]
     }, {
         "id": "b",

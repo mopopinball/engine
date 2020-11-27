@@ -7,7 +7,7 @@ export interface RuleSchema {
     autostart: boolean;
     data: DataSchema[];
     devices: [LightOutputState | CoilOutputState | SoundOutputState],
-    actions: [DataActionSchema | DeviceActionSchema | StateActionSchema],
+    triggers: [SwitchActionTriggerSchema],
     children: RuleSchema[]
 }
 
@@ -40,39 +40,6 @@ export interface SoundOutputState extends OutputDeviceState {
     play: boolean;
 }
 
-// export interface LampSchema {
-//     id: string;
-//     type: OUTPUT_DEVICE_TYPES.LIGHT;
-//     number: number;
-//     role: LAMP_ROLES;
-//     name: string;
-//     state?: number;
-// }
-
-// export interface SolenoidSchema {
-//     id: string;
-//     type: OUTPUT_DEVICE_TYPES.COIL;
-//     number: number;
-//     name: string;
-//     coilType: CoilType;
-//     durationMs: number;
-// }
-
-// export interface SoundSchema {
-//     id: string;
-//     type: OUTPUT_DEVICE_TYPES.SOUND;
-//     number: number;
-//     play: boolean;
-//     // description: string;
-//     // background: boolean;
-// }
-
-export interface ActionSchema {
-    id: string;
-    switchId?: string;
-    next: string[];
-}
-
 export enum ActionType {
     DATA = 'data',
     DEVICE = 'device',
@@ -80,28 +47,41 @@ export enum ActionType {
     CONDITION = 'condition'
 }
 
-export interface DataActionSchema extends ActionSchema {
+export enum TriggerType {
+    SWITCH = 'switch'
+}
+
+export interface DataActionSchema {
     type: ActionType.DATA;
     dataId: string;
     operation: number;
     operand: number;
 }
 
-export interface DeviceActionSchema extends ActionSchema {
+export interface DeviceActionSchema {
     type: ActionType.DEVICE;
     deviceId: string;
     state: number;
 }
 
-export interface StateActionSchema extends ActionSchema {
+export interface StateActionSchema {
     type: ActionType.STATE;
     startTargetId: string;
     stopTargetId: string;
 }
 
-export interface ConditionalActionSchema extends ActionSchema {
+export interface ConditionalActionSchema {
     type: ActionType.CONDITION;
     statement: string[];
     trueResult: string;
     falseResult: string;
+}
+
+export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
+    type: TriggerType.SWITCH;
+    switchId: string;
+}
+
+export interface ActionTriggerSchema {
+    actions: [DataActionSchema | DeviceActionSchema | StateActionSchema]
 }

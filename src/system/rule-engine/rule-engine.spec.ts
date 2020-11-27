@@ -89,7 +89,7 @@ describe('Rules', () => {
     });
 
     describe('serialization', () => {
-        it('serialized devices', () => {
+        it('serializes correctly', () => {
             //setup
             const data: RuleSchema = loadTestData(testData);
             ruleEngine = RuleEngine.load(data);
