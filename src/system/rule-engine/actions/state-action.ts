@@ -24,7 +24,7 @@ export class StateAction extends Action {
         return {
             type: ActionType.STATE,
             startTargetId: this.startTargetId,
-            stopTargetId: this.startTargetId
+            stopTargetId: this.stopTargetId
         }
     }
 
