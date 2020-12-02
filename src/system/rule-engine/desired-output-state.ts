@@ -20,8 +20,13 @@ export class DesiredOutputState {
         }
     }
     
-    constructor(public readonly id: string, public readonly type: OutputDeviceType, private readonly initialState: DesiredOutputStateType) {
+    constructor(public readonly id: string, public readonly type: OutputDeviceType, private initialState: DesiredOutputStateType) {
         this.currentState = initialState;
+    }
+
+    setInitialState(state: DesiredOutputStateType) {
+        this.initialState = state;
+        this.currentState = state;
     }
 
     getState(): DesiredOutputStateType {
