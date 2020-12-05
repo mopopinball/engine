@@ -12,6 +12,8 @@ import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSche
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
     active = false;
+    name: string;
+    description: string;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
     triggers: ActionTriggerType[] = [];
@@ -26,7 +28,8 @@ export class RuleEngine extends DirtyNotifier {
 
     static load(schema: RuleSchema): RuleEngine {
         const engine = new RuleEngine(schema.id, schema.autostart);
-
+        engine.name = schema.metadata?.name;
+        engine.description = schema.metadata?.description;
         engine.children = schema.children?.map((c) => RuleEngine.load(c)) ?? [];
         for (const child of engine.children) {
             child.onDirty(() => engine.emitDirty());
@@ -206,6 +209,10 @@ export class RuleEngine extends DirtyNotifier {
         return {
             id: this.id,
             autostart: this.autoStart,
+            metadata: {
+                name: this.name,
+                description: this.description
+            },
             children: this.children,
             triggers: this.triggers,
             devices: Array.from(this.devices.values())
