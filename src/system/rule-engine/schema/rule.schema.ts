@@ -60,8 +60,7 @@ export interface DataActionSchema {
 
 export interface DeviceActionSchema {
     type: ActionType.DEVICE;
-    deviceId: string;
-    state: number;
+    state: LightOutputState | CoilOutputState | SoundOutputState;
 }
 
 export interface StateActionSchema {
@@ -79,6 +78,7 @@ export interface ConditionalActionSchema {
 
 export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
     type: TriggerType.SWITCH;
+    holdIntervalMs?: number;
     switchId: string;
 }
 

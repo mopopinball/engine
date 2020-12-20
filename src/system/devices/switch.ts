@@ -1,9 +1,6 @@
 import { EventEmitter } from "events";
+import { DelayedCallback } from "../delayed-callback";
 import { MessageBroker } from "../messages";
-
-// const {MessageBroker} = require('../system/messages');
-// const EventEmitter = require('events');
-// const logger = require('../system/logger');
 
 /**
  * An abstract switch.
@@ -12,6 +9,7 @@ export abstract class Switch extends EventEmitter {
     protected lastActiveTime = 0;
     protected active: boolean;
     private ack: boolean;
+    private holdCallbacks: DelayedCallback[] = [];
 
     constructor(
         public readonly id: string, protected readonly activeLow: boolean,
@@ -25,25 +23,34 @@ export abstract class Switch extends EventEmitter {
 
     }
 
-    hasChanged(): boolean {
-        return this.active !== this.ack;
-    }
+    // hasChanged(): boolean {
+    //     return this.active !== this.ack;
+    // }
 
     getActive(): boolean {
+        return this.active;
         // todo debounce
-        if (this.active !== this.ack) {
-            this.ack = this.active;
-            return this.active;
-        }
-        else {
-            return false;
-        }
+        // if (this.active !== this.ack) {
+        //     this.ack = this.active;
+        //     return this.active;
+        // }
+        // else {
+        //     return false;
+        // }
     }
 
-    onChange(value: boolean): void {
+    protected onChange(value: boolean): void {
         const realValue = this.activeLow ? !value : value;
         // TODO: Maybe only set to true, allow getActive() to reset it.
         this.active = realValue;
+        for(const cb of this.holdCallbacks) {
+            if (this.active) {
+                cb.start();
+            }
+            else {
+                cb.clear();
+            }
+        }
         // we always want 'true' to indicate the switch is activated.
         // If the switch is active low, that is, it goes low when activated/pressed/closed, invert its output
         // here.
@@ -67,15 +74,20 @@ export abstract class Switch extends EventEmitter {
         // this.active = realValue;
     }
 
-    _publish(realValue: boolean): void {
-        this.emit('change', realValue);
-        if (realValue) {
-            this.emit('active', realValue);
-        }
-        MessageBroker.getInstance().publish(`mopo/devices/${this.id}/state`, realValue.toString());
+    public onPress(callback: () => void, holdTime = 0): void {
+        this.holdCallbacks.push(new DelayedCallback(callback, holdTime));
     }
 
-    _getNow(): number {
+    private _publish(realValue: boolean): void {
+        this.emit('change', realValue);
+        // if (realValue) {
+        //     this.emit('active', realValue);
+        // }
+        // todo: this used?
+        // MessageBroker.getInstance().publish(`mopo/devices/${this.id}/state`, realValue.toString());
+    }
+
+    private _getNow(): number {
         return new Date().valueOf();
     }
 }

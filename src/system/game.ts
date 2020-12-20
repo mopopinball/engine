@@ -30,6 +30,7 @@ import { CoilType } from "./devices/coil-type";
 import { Update } from "./update";
 import { OutputDeviceType } from "./devices/output-device-type";
 import { LampRole } from "./devices/lamp-role";
+import { DipSwitchState } from "./dip-switch-state";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -80,7 +81,6 @@ export class Game {
 
         // this.security = new Security(this.hardwareConfig.system);
 
-        // MessageBroker.on(EVENTS.IC1_DIPS, () => this.onSetupComplete());
         this.setup();
     }
 
@@ -106,9 +106,7 @@ export class Game {
 
         this.board = new Board();
 
-        this.ruleEngine = RuleEngine.load(this.gameStateConfig);
-        this.ruleEngine.onDirty(() => this.engineDirty = true);
-        this.ruleEngine.start();
+        this.onNewRuleSchema(this.gameStateConfig);
         this.engineDirty = true;
 
         // Setup all message bindings.
@@ -131,6 +129,12 @@ export class Game {
             logger.debug('Starting game loop.');
             this.gameLoop();
         });
+    }
+
+    onNewRuleSchema(ruleSchema: RuleSchema): void {
+        this.ruleEngine = RuleEngine.load(ruleSchema);
+        this.ruleEngine.onDirty(() => this.engineDirty = true);
+        this.ruleEngine.start();
     }
 
     onClientDeviceUpdate(clientDevice: ClientDevice): void {

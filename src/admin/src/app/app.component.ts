@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { InfoMqttMessage } from "../../../system/messages"
 import {ClientDevice} from '../../../system/server/client-device';
+import {DipSwitchState} from '../../../system/dip-switch-state';
 import {GithubRelease} from '../../../system/github-release';
 import {UpdateDetails} from '../../../system/server/update-details';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +18,7 @@ export class AppComponent implements OnDestroy {
     availableUpdate: UpdateDetails;
     info: InfoMqttMessage;
     fps: InfoMqttMessage;
+    dips?: DipSwitchState;
     lamps: ClientDevice[] = [];
     coils: ClientDevice[] = [];
     sounds: ClientDevice[] = [];
@@ -32,6 +34,7 @@ export class AppComponent implements OnDestroy {
             this.fps = JSON.parse(message.payload.toString());
         });
 
+        // Subscribe only long enough to get all initial state, then unsubscribe.
         this.subscription = this._mqttService.observe('mopo/devices/+/all/state').subscribe((message: IMqttMessage) => {
             switch (message.topic) {
                 case 'mopo/devices/lamps/all/state':
@@ -58,6 +61,10 @@ export class AppComponent implements OnDestroy {
             this.update(this.coils, payload);
             this.update(this.sounds, payload);
             // this.update()
+        });
+
+        this._mqttService.observe('mopo/devices/dips/all/state').subscribe((message: IMqttMessage) => {
+            this.dips = JSON.parse(message.payload.toString());
         });
     }
 
@@ -87,7 +94,10 @@ export class AppComponent implements OnDestroy {
 
     checkForUpdate(): void {
         this.http.post('/update/check', {}).subscribe((update: GithubRelease) => {
-            this.availableUpdate = update;
+            this.availableUpdate = {
+                system: update,
+                pics: null
+            };
         });
     }
 }

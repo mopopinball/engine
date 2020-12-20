@@ -9,6 +9,12 @@ header {
     }
 }
 
+.dips {
+    .on {
+        background: black;
+    }
+}
+
 .device-list {
     display: flex;
     flex-wrap: wrap;

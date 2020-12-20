@@ -82,7 +82,7 @@ export class RuleEngine extends DirtyNotifier {
                     break;
                 case ActionType.DEVICE:
                     newAction = new DeviceAction(
-                        actionSchema.deviceId, actionSchema.state
+                        DesiredOutputState.constructFromOutputState(actionSchema.state)
                     );
                     break;
                 case ActionType.STATE: {

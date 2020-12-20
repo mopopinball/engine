@@ -29,8 +29,11 @@
             "operand": 5
         }, {
             "type": "device",
-            "deviceId": "L4",
-            "state": 2
+            "state": {
+                "id": "L4",
+                "type": "light",
+                "state": 2
+            }
         }]
     }, {
         "type": "switch",

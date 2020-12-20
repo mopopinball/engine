@@ -9,6 +9,38 @@
         <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
     </div>
 </header>
+<h3>Dips</h3>
+<div>
+    S1
+    <div>
+        <table class="dips">
+            <tr>
+                <td [class.on]="dips?.s1.sw1"></td>
+                <td [class.on]="dips?.s1.sw2"></td>
+                <td [class.on]="dips?.s1.sw3"></td>
+                <td [class.on]="dips?.s1.sw4"></td>
+                <td [class.on]="dips?.s1.sw5"></td>
+                <td [class.on]="dips?.s1.sw6"></td>
+                <td [class.on]="dips?.s1.sw7"></td>
+                <td [class.on]="dips?.s1.sw8"></td>
+            </tr>
+            <tr>
+                <td [class.on]="!dips?.s1.sw1"></td>
+                <td [class.on]="!dips?.s1.sw2"></td>
+                <td [class.on]="!dips?.s1.sw3"></td>
+                <td [class.on]="!dips?.s1.sw4"></td>
+                <td [class.on]="!dips?.s1.sw5"></td>
+                <td [class.on]="!dips?.s1.sw6"></td>
+                <td [class.on]="!dips?.s1.sw7"></td>
+                <td [class.on]="!dips?.s1.sw8"></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        Slam: {{dips?.slam}}
+    </div>
+</div>
+
 <h3><i class="far fa-lightbulb"></i> Lamps</h3>
 <div class="device-list">
     <app-output-device *ngFor="let lamp of lamps" [device]="lamp" [icon]="'far fa-lightbulb'" (toggle)="toggleDevice($event)"></app-output-device>

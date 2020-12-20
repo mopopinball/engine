@@ -7,6 +7,7 @@ import { Pic } from "./pic";
 
 import {DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
 import * as pins from '../../pins.json';
+import { DipSwitchState } from "../dip-switch-state";
 
 const PAYLOAD_SIZE_BYTES = 2;
 const LAST_NIBBLE_INDEX = (PAYLOAD_SIZE_BYTES * 2) - 1;
@@ -39,17 +40,17 @@ export class SwitchesPic extends Pic {
     private readonly _retry: GpioPin;
     private readonly _reset: GpioPin;
     private _payloadInProgress: boolean;
-    k1_1: number;
-    k1_2: number;
-    k1_3: number;
-    k1_4: number;
-    k1_5: number;
-    s1_1: number;
-    s1_3: number;
-    s1_4: number;
-    s1_5: number;
-    slam: number;
-    ready = false;
+    private k1_1: number;
+    private k1_2: number;
+    private k1_3: number;
+    private k1_4: number;
+    private k1_5: number;
+    private s1_1: number;
+    private s1_3: number;
+    private s1_4: number;
+    private s1_5: number;
+    private slam: number;
+    private ready = false;
     
     public static getInstance(): SwitchesPic {
         if (!SwitchesPic.instance) {
@@ -116,8 +117,6 @@ export class SwitchesPic extends Pic {
                 // }
             }
         });
-
-        // MessageBroker.on(EVENTS.SETUP_GPIO_COMPLETE, () => this.reset());
 
         // MessageBroker.on('S3', (value) => {
         //     if (value) {
@@ -296,7 +295,6 @@ export class SwitchesPic extends Pic {
 
     sendMessage(topic: EVENTS, payload: unknown): void {
         MessageBroker.getInstance().emit(topic, payload);
-        MessageBroker.getInstance().publish('mopo/dips', JSON.stringify(payload), null);
     }
 
     async _readNibble(): Promise<Bit[]> {
@@ -339,22 +337,28 @@ export class SwitchesPic extends Pic {
     }
 
     private reportDips(): void {
-        this.sendMessage(EVENTS.IC1_DIPS, {
-            K1: {
-                1: this.k1_1,
-                2: this.k1_2,
-                3: this.k1_3,
-                4: this.k1_4,
-                5: this.k1_5
+        const state: DipSwitchState = {
+            k1: {
+                sw1: !!this.k1_1,
+                sw2: !!this.k1_2,
+                sw3: !!this.k1_3,
+                sw4: !!this.k1_4,
+                sw5: !!this.k1_5
             },
-            S1: {
-                1: this.s1_1,
-                3: this.s1_3,
-                4: this.s1_4,
-                5: this.s1_5
+            s1: {
+                sw1: !!this.s1_1,
+                sw2: null,
+                sw3: !!this.s1_3,
+                sw4: !!this.s1_4,
+                sw5: !!this.s1_5,
+                sw6: null,
+                sw7: null,
+                sw8: null
             },
-            slam: this.slam
-        });
+            slam: !!this.slam
+        };
+        MessageBroker.getInstance().emit(EVENTS.IC1_DIPS, state);
+        
     }
 
     getParity(n: number): number {

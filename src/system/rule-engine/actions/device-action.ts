@@ -1,16 +1,16 @@
 import { LightState } from "../../devices/light";
-import { DesiredOutputState } from "../desired-output-state";
+import { DesiredOutputState, DesiredOutputStateType } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
 import { Action } from "./action";
 
 export class DeviceAction extends Action {
-    constructor(private key: string, private state: LightState
+    constructor(private state: DesiredOutputState
     ) {
         super();
     }
     
     onAction(): void {
-        this.devices.get(this.key).setState(this.state);
+        this.devices.get(this.state.id).setState(this.state.getState());
     }
 }
