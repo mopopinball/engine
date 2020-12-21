@@ -10,7 +10,7 @@ export abstract class ActionTrigger {
 export class SwitchActionTrigger extends ActionTrigger {
     readonly type = TriggerType.SWITCH;
     
-    constructor(readonly switchId: string) {
+    constructor(readonly switchId: string, readonly holdIntervalMs?: number) {
         super();
     }
 

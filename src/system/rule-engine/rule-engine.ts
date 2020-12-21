@@ -1,3 +1,4 @@
+import { Switch } from "../devices/switch";
 import { DirtyNotifier } from "../dirty-notifier";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";
@@ -62,9 +63,9 @@ export class RuleEngine extends DirtyNotifier {
         let trigger: SwitchActionTrigger = null;
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
-                trigger = this.getSwitchTrigger(triggerSchema.switchId);
+                trigger = this.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                 if (!trigger) {
-                    trigger = new SwitchActionTrigger(triggerSchema.switchId);
+                    trigger = new SwitchActionTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -148,9 +149,11 @@ export class RuleEngine extends DirtyNotifier {
         }
     }
 
-    getSwitchTrigger(switchId: string): SwitchActionTrigger {
-        return this.triggers.find((action) =>
-            action.type === TriggerType.SWITCH && action.switchId == switchId
+    getSwitchTrigger(switchId: string, holdIntervalMs?: number): SwitchActionTrigger {
+        return this.triggers.find((trigger) =>
+            trigger.type === TriggerType.SWITCH &&
+            trigger.switchId == switchId &&
+            trigger.holdIntervalMs === holdIntervalMs
         );
     }
 

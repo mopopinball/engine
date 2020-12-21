@@ -39,7 +39,7 @@ export abstract class Switch extends EventEmitter {
         // }
     }
 
-    protected onChange(value: boolean): void {
+    public onChange(value: boolean): void {
         const realValue = this.activeLow ? !value : value;
         // TODO: Maybe only set to true, allow getActive() to reset it.
         this.active = realValue;

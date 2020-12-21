@@ -11,7 +11,7 @@ import { Sys80or80ADisplay } from "./display-80-80a";
 import { FpsTracker } from "./fps-tracker";
 import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
-import { RuleSchema } from "./rule-engine/schema/rule.schema";
+import { RuleSchema, TriggerType } from "./rule-engine/schema/rule.schema";
 import { SwitchPayload } from "./rule-engine/switch-payload";
 
 import {MessageBroker, EVENTS} from './messages';
@@ -31,6 +31,7 @@ import { Update } from "./update";
 import { OutputDeviceType } from "./devices/output-device-type";
 import { LampRole } from "./devices/lamp-role";
 import { DipSwitchState } from "./dip-switch-state";
+import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -134,7 +135,20 @@ export class Game {
     onNewRuleSchema(ruleSchema: RuleSchema): void {
         this.ruleEngine = RuleEngine.load(ruleSchema);
         this.ruleEngine.onDirty(() => this.engineDirty = true);
+        const holdSwitches = this.ruleEngine.triggers.filter((trigger) =>
+            trigger.type === TriggerType.SWITCH &&
+            trigger.holdIntervalMs > 0
+        );
+        this.wireUpHoldSwitches(holdSwitches);
         this.ruleEngine.start();
+    }
+
+    wireUpHoldSwitches(holdSwitcheTriggers: SwitchActionTrigger[]): void {
+        for(const hs of holdSwitcheTriggers) {
+            const matchingSw: PlayfieldSwitch =
+                Object.values(this.switches).find((sw: PlayfieldSwitch) => sw.id === hs.switchId);
+            matchingSw.onPress(() => this.ruleEngine.onSwitch(matchingSw.id), hs.holdIntervalMs);
+        }
     }
 
     onClientDeviceUpdate(clientDevice: ClientDevice): void {
@@ -172,7 +186,11 @@ export class Game {
         else {
             logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
             try {
-                this.ruleEngine.onSwitch(sw.id);
+                //todo: does this fire for activanted and un-activated?
+                sw.onChange(payload.activated);
+                if (sw.getActive()) {
+                    this.ruleEngine.onSwitch(sw.id);
+                }
             }
             catch (e) {
                 logger.error(`${e.message} ${e.stack}`);
