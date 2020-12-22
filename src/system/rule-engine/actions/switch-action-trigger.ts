@@ -14,11 +14,12 @@ export class SwitchActionTrigger extends ActionTrigger {
         super();
     }
 
-    toJSON() {
+    toJSON(): SwitchActionTriggerSchema {
         return {
             type: this.type,
             switchId: this.switchId,
-            actions: this.actions
+            holdIntervalMs: this.holdIntervalMs,
+            actions: this.actions.map((a) => a.toJSON())
         };
     }
 }

@@ -2,6 +2,7 @@ import { DirtyNotifier } from "../../dirty-notifier";
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
+import { ActionSchemaType, DataActionSchema, DeviceActionSchema, StateActionSchema } from "../schema/rule.schema";
 import { ActionTriggerType } from "./switch-action-trigger";
 
 export abstract class Action extends DirtyNotifier {
@@ -27,4 +28,6 @@ export abstract class Action extends DirtyNotifier {
         //     this.actions.get(a).handle(engines, data, devices);
         // }
     }
+    
+    public abstract toJSON(): ActionSchemaType;
 }

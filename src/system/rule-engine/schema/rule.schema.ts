@@ -82,6 +82,8 @@ export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
     switchId: string;
 }
 
+export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema;
+
 export interface ActionTriggerSchema {
-    actions: [DataActionSchema | DeviceActionSchema | StateActionSchema]
+    actions: ActionSchemaType[]
 }

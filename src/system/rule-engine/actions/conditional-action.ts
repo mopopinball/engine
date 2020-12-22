@@ -1,6 +1,7 @@
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
+import { DataActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
 export class ConditionalAction extends Action {
@@ -31,6 +32,10 @@ export class ConditionalAction extends Action {
             case '>':
                 return d.value > parseInt(value);
         }
+    }
+
+    toJSON(): DataActionSchema {
+        throw new Error('no impl');
     }
 
 }
