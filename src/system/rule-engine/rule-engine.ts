@@ -49,7 +49,7 @@ export class RuleEngine extends DirtyNotifier {
                     engine.createAction(trigger);
                 }
                 catch(e) {
-                    logger.error(e);                    
+                    // logger.error(e);                    
                 }
             }
         }
