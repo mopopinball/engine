@@ -3,6 +3,7 @@ import { RuleEngine } from "./rule-engine";
 import * as testData from "../../../test-data/parent-child.json";
 import * as actionSiblingData from "../../../test-data/action-sibling.json";
 import { LightState } from "../devices/light";
+import { SwitchActionTrigger } from "./actions/switch-action-trigger";
 
 describe('Rules', () => {
     let ruleEngine: RuleEngine = null;
@@ -60,6 +61,38 @@ describe('Rules', () => {
 
             // check
             expect(ruleEngine.getDevices().get("L4").getState()).toEqual(LightState.BLINK);
+        });
+
+        it('getSwitchTrigger - null vs undefined hold time', () => {
+            // setup
+            ruleEngine.triggers = [];
+            ruleEngine.triggers.push(new SwitchActionTrigger(
+                'sw0',
+                null
+            ));
+
+            // exercise
+            const trigger = ruleEngine.getSwitchTrigger('sw0');
+
+            // check
+            expect(trigger).toBeTruthy();
+        });
+
+        it('getSwitchTrigger - hold time', () => {
+            // setup
+            ruleEngine.triggers = [];
+            ruleEngine.triggers.push(new SwitchActionTrigger(
+                'sw0',
+                666
+            ));
+
+            // exercise
+            const trigger = ruleEngine.getSwitchTrigger('sw0', 666);
+            const triggerWithoutHoldTime = ruleEngine.getSwitchTrigger('sw0');
+
+            // check
+            expect(trigger).toBeTruthy();
+            expect(triggerWithoutHoldTime).toBeFalsy();
         });
     });
 

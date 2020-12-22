@@ -158,8 +158,8 @@ export class RuleEngine extends DirtyNotifier {
     getSwitchTrigger(switchId: string, holdIntervalMs?: number): SwitchActionTrigger {
         return this.triggers.find((trigger) =>
             trigger.type === TriggerType.SWITCH &&
-            trigger.switchId == switchId &&
-            trigger.holdIntervalMs === holdIntervalMs
+            trigger.switchId === switchId &&
+            trigger.holdIntervalMs == holdIntervalMs
         );
     }
 
