@@ -1,5 +1,6 @@
 import { Switch } from "../devices/switch";
 import { DirtyNotifier } from "../dirty-notifier";
+import { logger } from "../logger";
 import { Action } from "./actions/action";
 import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
@@ -44,7 +45,12 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.triggers) {
             for (const trigger of schema.triggers) {
-                engine.createAction(trigger);
+                try {
+                    engine.createAction(trigger);
+                }
+                catch(e) {
+                    logger.error(e);                    
+                }
             }
         }
 

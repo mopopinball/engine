@@ -1,7 +1,5 @@
-import { LightState } from "../../devices/light";
-import { DesiredOutputState, DesiredOutputStateType } from "../desired-output-state";
-import { RuleData } from "../rule-data";
-import { RuleEngine } from "../rule-engine";
+import { DesiredOutputState } from "../desired-output-state";
+import { ActionType, DeviceActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
 export class DeviceAction extends Action {
@@ -12,5 +10,12 @@ export class DeviceAction extends Action {
     
     onAction(): void {
         this.devices.get(this.state.id).setState(this.state.getState());
+    }
+
+    toJSON(): DeviceActionSchema {
+        return {
+            type: ActionType.DEVICE,
+            state: this.state.toJSON()
+        }
     }
 }
