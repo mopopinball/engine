@@ -4,6 +4,7 @@ import * as testData from "../../../test-data/parent-child.json";
 import * as actionSiblingData from "../../../test-data/action-sibling.json";
 import { LightState } from "../devices/light";
 import { SwitchActionTrigger } from "./actions/switch-action-trigger";
+import { DataAction, DataOperation } from "./actions/data-action";
 
 describe('Rules', () => {
     let ruleEngine: RuleEngine = null;
@@ -119,6 +120,81 @@ describe('Rules', () => {
             expect(ruleEngine.children[0].active).toBeFalsy();
             expect(ruleEngine.children[1].active).toBeTruthy();
         });
+    });
+
+    describe('data', () => {
+        beforeEach(() => {
+            const data: RuleSchema = loadTestData(testData);
+            ruleEngine = RuleEngine.load(data);
+            ruleEngine.data.clear();
+            addData(ruleEngine, 'd0', 13);
+        });
+
+        it('gets data', () => {
+            // exercise
+            const d0 = ruleEngine.getData().get('d0');
+
+            // check
+            expect(d0.value).toBe(13)
+        });
+
+        it('gets data with child overwriting - inactive', () => {
+            // setup
+            ruleEngine.children[0].data.clear();
+            addData(ruleEngine.children[0], 'd0', 1);
+            addData(ruleEngine.children[0], 'd1', 2);           
+
+            // exercise
+            const d0 = ruleEngine.getData().get('d0');
+            const d1 = ruleEngine.getData().get('d1');
+
+            // check
+            expect(ruleEngine.data.size).toBe(1);
+            expect(d0.value).toBe(13);
+            expect(d1).toBeFalsy();
+        });
+
+        it('gets data with child overwriting', () => {
+            // setup
+            ruleEngine.start();
+            ruleEngine.children[0].start();
+            ruleEngine.children[0].data.clear();
+            addData(ruleEngine.children[0], 'd0', 1);
+            addData(ruleEngine.children[0], 'd1', 2);           
+
+            // exercise
+            const d0 = ruleEngine.getData().get('d0');
+            const d1 = ruleEngine.getData().get('d1');
+
+            // check
+            expect(ruleEngine.data.size).toBe(1);
+            expect(d0.value).toBe(1);
+            expect(d1.value).toBe(2);
+        });
+
+        it('switch can trigger data operation', () => {
+            // setup
+            ruleEngine.triggers = [];
+            ruleEngine.triggers.push(new SwitchActionTrigger(
+                'sw0'
+            ));
+            ruleEngine.triggers[0].actions.push(
+                new DataAction('d0', DataOperation.INCREMENT, 10)
+            );
+
+            // exercise
+            ruleEngine.onSwitch('sw0');
+
+            // check
+            expect(ruleEngine.getData().get('d0').value).toBe(23);
+        });
+
+        function addData(ruleEngine: RuleEngine, id: string, value: number): void {
+            ruleEngine.data.set(id, {
+                id: id,
+                value: value
+            });         
+        }
     });
 
     describe('serialization', () => {

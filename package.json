@@ -11,6 +11,7 @@
   },
   "main": "src/game.js",
   "scripts": {
+    "fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts",
     "pretest": "npm run lint",
     "test": "NODE_ENV=test jest --coverage",

@@ -56,7 +56,7 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.data) {
             for (const data of schema.data) {
-                engine.data.set(data.id, { value: data.value });
+                engine.data.set(data.id, {id: data.id, value: data.value });
             }
         }
 

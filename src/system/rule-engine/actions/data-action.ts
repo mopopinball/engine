@@ -11,10 +11,17 @@ export class DataAction extends Action {
     }
     
     onAction(): void {
-        // todo: operate
         if (this.operation === DataOperation.INCREMENT) {
-            this.data.get(this.dataKey).value += this.operand; 
+            this.getData().value += this.operand; 
+        } else if (this.operation === DataOperation.DECREMENT) {
+            this.getData().value -= this.operand; 
+        } else if (this.operation === DataOperation.ASSIGN) {
+            this.getData().value = this.operand; 
         }
+    }
+
+    private getData(): RuleData {
+        return this.data.get(this.dataKey);
     }
 
     toJSON(): DataActionSchema {
@@ -29,5 +36,6 @@ export class DataAction extends Action {
 
 export enum DataOperation {
     INCREMENT,
-    DECREMENT
+    DECREMENT,
+    ASSIGN
 }
