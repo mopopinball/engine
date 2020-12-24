@@ -224,7 +224,8 @@ export class RuleEngine extends DirtyNotifier {
             },
             children: this.children,
             triggers: this.triggers,
-            devices: Array.from(this.devices.values())
+            devices: Array.from(this.devices.values()),
+            data: Object.values(this.data)
         };
     }
 }
