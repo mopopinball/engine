@@ -146,7 +146,9 @@ export class RuleEngine extends DirtyNotifier {
         const switchTrigger = this.getSwitchTrigger(id);
         if (switchTrigger) {
             for(const action of switchTrigger.actions) {
-                action.handle(RuleEngine.root.getAllEngines(), this.getData(), this.getDevices());
+                action.handle(
+                    RuleEngine.root.getAllEngines(), this.getInheritedData(), this.getDevices()
+                );
             }
             return true;
         }
