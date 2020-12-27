@@ -21,18 +21,18 @@ export class RuleEngine extends DirtyNotifier {
     triggers: ActionTriggerType[] = [];
     children: RuleEngine[] = [];
 
-    constructor(public id: string, public autoStart: boolean) {
+    constructor(public id: string, public autoStart: boolean, private readonly parent: RuleEngine) {
         super();
         if (this.id === 'root') {
             RuleEngine.root = this;
         }
     }
 
-    static load(schema: RuleSchema): RuleEngine {
-        const engine = new RuleEngine(schema.id, schema.autostart);
+    static load(schema: RuleSchema, parent: RuleEngine = null): RuleEngine {
+        const engine = new RuleEngine(schema.id, schema.autostart, parent);
         engine.name = schema.metadata?.name;
         engine.description = schema.metadata?.description;
-        engine.children = schema.children?.map((c) => RuleEngine.load(c)) ?? [];
+        engine.children = schema.children?.map((c) => RuleEngine.load(c, engine)) ?? [];
         for (const child of engine.children) {
             child.onDirty(() => engine.emitDirty());
         }
@@ -212,6 +212,17 @@ export class RuleEngine extends DirtyNotifier {
 
     private getActiveChildren(): RuleEngine[] {
         return this.children.filter((c) => c.active);
+    }
+
+    public getInheritedData(): Map<string, RuleData> {
+        const parentData = this.parent ? this.parent.getInheritedData() : new Map<string, RuleData>();
+
+        // apply our data over our parents
+        for(const d of this.data) {
+            parentData.set(d[0], d[1]);
+        }
+
+        return parentData;
     }
 
     toJSON() {

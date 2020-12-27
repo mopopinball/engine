@@ -1,5 +1,6 @@
 import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
+import { DataOperation } from "../actions/data-action";
 
 export interface RuleSchema {
     id: string;
@@ -54,7 +55,7 @@ export enum TriggerType {
 export interface DataActionSchema {
     type: ActionType.DATA;
     dataId: string;
-    operation: number;
+    operation: DataOperation;
     operand: number;
 }
 

@@ -189,6 +189,23 @@ describe('Rules', () => {
             expect(ruleEngine.getData().get('d0').value).toBe(23);
         });
 
+        it('getInheritedData', () => {
+            // setup
+            ruleEngine.data.clear();
+            addData(ruleEngine, 'd0', 0);
+            addData(ruleEngine, 'd1', 1);
+            const child = ruleEngine.children[0];
+            addData(child, 'd1', 11);
+
+            // exercise
+            const data = child.getInheritedData();
+
+            // check
+            expect(data.size).toBe(2);
+            expect(data.get('d0').value).toBe(0);
+            expect(data.get('d1').value).toBe(11);
+        });
+
         function addData(ruleEngine: RuleEngine, id: string, value: number): void {
             ruleEngine.data.set(id, {
                 id: id,
