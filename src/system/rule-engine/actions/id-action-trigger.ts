@@ -8,6 +8,10 @@ export class IdActionTrigger extends ActionTrigger {
         super();
     }
 
+    static fromJSON(triggerSchema: IdActionTriggerSchema): IdActionTrigger {
+        return new IdActionTrigger(triggerSchema.id);
+    }
+
     toJSON(): IdActionTriggerSchema {
         const convertedBase = super.toJSON();
         return {

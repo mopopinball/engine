@@ -57,6 +57,19 @@ export class ConditionalAction extends Action {
         }
     }
 
+    static fromJSON(actionSchema: ConditionalActionSchema): ConditionalAction {
+        return new ConditionalAction(
+            {
+                conditionType: actionSchema.condition.conditionType,
+                dataId: actionSchema.condition.dataId,
+                operator: actionSchema.condition.operator,
+                operand: actionSchema.condition.operand
+            },
+            actionSchema.trueTriggerId,
+            actionSchema.falseTriggerId
+        );
+    }
+
     toJSON(): ConditionalActionSchema {
         return {
             type: ActionType.CONDITION,

@@ -15,7 +15,7 @@ export abstract class Action extends DirtyNotifier {
     }
 
     abstract onAction(): void;
-    
+
     handle(rootEngine: RuleEngine, data: Map<string, RuleData>, devices: Map<string, DesiredOutputState>): void {
         this.rootEngine = rootEngine;
         this.engines = this.rootEngine?.getAllEngines() ?? new Map();

@@ -22,6 +22,14 @@ export class DataAction extends Action {
         return this.data.get(this.dataKey);
     }
 
+    public static fromJSON(actionSchema: DataActionSchema): DataAction {
+        return new DataAction(
+            actionSchema.dataId, 
+            actionSchema.operation, 
+            actionSchema.operand
+        );
+    }
+
     toJSON(): DataActionSchema {
         return {
             type: ActionType.DATA,

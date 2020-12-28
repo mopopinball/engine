@@ -10,7 +10,7 @@ import { StateAction } from "./actions/state-action";
 import { SwitchActionTrigger } from "./actions/switch-action-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { RuleData } from "./rule-data";
-import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, IdActionTriggerSchema, RuleSchema, StateActionSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
+import { ActionType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -71,7 +71,7 @@ export class RuleEngine extends DirtyNotifier {
             case TriggerType.SWITCH: {
                 trigger = this.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                 if (!trigger) {
-                    trigger = new SwitchActionTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+                    trigger = SwitchActionTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -79,7 +79,7 @@ export class RuleEngine extends DirtyNotifier {
             case TriggerType.ID: {
                 trigger = this.getTrigger(triggerSchema.id);
                 if (!trigger) {
-                    trigger = new IdActionTrigger(triggerSchema.id);
+                    trigger = IdActionTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -91,11 +91,7 @@ export class RuleEngine extends DirtyNotifier {
         for (const actionSchema of triggerSchema.actions) {
             switch (actionSchema.type) {
                 case ActionType.DATA:
-                    newAction = new DataAction(
-                        actionSchema.dataId, 
-                        actionSchema.operation, 
-                        actionSchema.operand
-                    );
+                    newAction = DataAction.fromJSON(actionSchema);
                     break;
                 case ActionType.DEVICE:
                     newAction = new DeviceAction(
@@ -103,23 +99,11 @@ export class RuleEngine extends DirtyNotifier {
                     );
                     break;
                 case ActionType.STATE: {
-                    newAction = new StateAction(
-                            actionSchema.startTargetId,
-                            actionSchema.stopTargetId
-                        );
+                    newAction = StateAction.fromJSON(actionSchema);
                     break;
                 }
                 case ActionType.CONDITION:
-                    newAction = new ConditionalAction(
-                        {
-                            conditionType: actionSchema.condition.conditionType,
-                            dataId: actionSchema.condition.dataId,
-                            operator: actionSchema.condition.operator,
-                            operand: actionSchema.condition.operand
-                        },
-                        actionSchema.trueTriggerId,
-                        actionSchema.falseTriggerId
-                    );
+                    newAction = ConditionalAction.fromJSON(actionSchema);
                     break;
                 default:
                     throw new Error('Not implemented');

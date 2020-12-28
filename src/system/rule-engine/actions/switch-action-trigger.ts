@@ -8,6 +8,10 @@ export class SwitchActionTrigger extends ActionTrigger {
         super();
     }
 
+    static fromJSON(triggerSchema: SwitchActionTriggerSchema): SwitchActionTrigger {
+        return new SwitchActionTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+    }
+
     toJSON(): SwitchActionTriggerSchema {
         const convertedBase = super.toJSON();
         return {

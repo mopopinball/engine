@@ -20,6 +20,13 @@ export class StateAction extends Action {
         }
     }
 
+    static fromJSON(actionSchema: StateActionSchema): StateAction {
+        return new StateAction(
+            actionSchema.startTargetId,
+            actionSchema.stopTargetId
+        );
+    }
+
     toJSON(): StateActionSchema {
         return {
             type: ActionType.STATE,
