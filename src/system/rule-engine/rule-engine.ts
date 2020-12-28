@@ -1,15 +1,16 @@
-import { Switch } from "../devices/switch";
 import { DirtyNotifier } from "../dirty-notifier";
 import { logger } from "../logger";
 import { Action } from "./actions/action";
+import { ActionTriggerType } from "./actions/action-trigger";
 import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
+import { IdActionTrigger } from "./actions/id-action-trigger";
 import { StateAction } from "./actions/state-action";
-import { ActionTriggerType, SwitchActionTrigger } from "./actions/switch-action-trigger";
+import { SwitchActionTrigger } from "./actions/switch-action-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { RuleData } from "./rule-data";
-import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, RuleSchema, StateActionSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
+import { ActionType, ConditionalActionSchema, DataActionSchema, DeviceActionSchema, IdActionTriggerSchema, RuleSchema, StateActionSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -46,7 +47,7 @@ export class RuleEngine extends DirtyNotifier {
         if (schema.triggers) {
             for (const trigger of schema.triggers) {
                 try {
-                    engine.createAction(trigger);
+                    engine.createTrigger(trigger);
                 }
                 catch(e) {
                     // logger.error(e);                    
@@ -63,10 +64,9 @@ export class RuleEngine extends DirtyNotifier {
         return engine;
     }
 
-    public createAction(triggerSchema: SwitchActionTriggerSchema): void {
-        let newAction: Action = null;
-
-        let trigger: SwitchActionTrigger = null;
+    public createTrigger(triggerSchema: SwitchActionTriggerSchema | IdActionTriggerSchema): void {
+        // First, find or create the incoming trigger.
+        let trigger: ActionTriggerType = null;
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
                 trigger = this.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
@@ -76,8 +76,18 @@ export class RuleEngine extends DirtyNotifier {
                 }
                 break;
             }
+            case TriggerType.ID: {
+                trigger = this.getTrigger(triggerSchema.id);
+                if (!trigger) {
+                    trigger = new IdActionTrigger(triggerSchema.id);
+                    this.triggers.push(trigger);
+                }
+                break;
+            }
         }
 
+        // Second, create this triggers actions.
+        let newAction: Action = null;
         for (const actionSchema of triggerSchema.actions) {
             switch (actionSchema.type) {
                 case ActionType.DATA:
@@ -99,13 +109,18 @@ export class RuleEngine extends DirtyNotifier {
                         );
                     break;
                 }
-                // case ActionType.CONDITION:
-                //     newAction = new ConditionalAction(
-                //         actionSchema.statement,
-                //         actionSchema.trueResult,
-                //         actionSchema.falseResult
-                //     );
-                //     break;
+                case ActionType.CONDITION:
+                    newAction = new ConditionalAction(
+                        {
+                            conditionType: actionSchema.condition.conditionType,
+                            dataId: actionSchema.condition.dataId,
+                            operator: actionSchema.condition.operator,
+                            operand: actionSchema.condition.operand
+                        },
+                        actionSchema.trueTriggerId,
+                        actionSchema.falseTriggerId
+                    );
+                    break;
                 default:
                     throw new Error('Not implemented');
             }
@@ -133,9 +148,17 @@ export class RuleEngine extends DirtyNotifier {
             .map((c) => c.stop());
     }
 
-    onSwitch(id: string): boolean {
+    public onSwitch(id: string): boolean {
+        return this.activateTrigger(id, TriggerType.SWITCH);
+    }
+
+    public onTrigger(id: string): boolean {
+        return this.activateTrigger(id, TriggerType.ID);
+    }
+
+    private activateTrigger(id: string, type: TriggerType): boolean {
         const childHandled = this.getActiveChildren()
-            .map((child) => child.onSwitch(id))
+            .map((child) => child.activateTrigger(id, type))
             .reduce((accum, curv) => {
                 return accum || curv;
             }, false);
@@ -143,11 +166,22 @@ export class RuleEngine extends DirtyNotifier {
         if (childHandled) {
             return true;
         }
-        const switchTrigger = this.getSwitchTrigger(id);
-        if (switchTrigger) {
-            for(const action of switchTrigger.actions) {
+
+        let matchingTrigger: ActionTriggerType = null;
+        switch(type) {
+            case TriggerType.SWITCH:
+                matchingTrigger = this.getSwitchTrigger(id);
+            break;
+            case TriggerType.ID:
+                matchingTrigger = this.getTrigger(id);
+            break;
+        }
+
+        if (matchingTrigger) {
+            for(const action of matchingTrigger.actions) {
                 action.handle(
-                    RuleEngine.root.getAllEngines(), this.getInheritedData(), this.getDevices()
+                    RuleEngine.root,
+                    this.getInheritedData(), this.getDevices()
                 );
             }
             return true;
@@ -157,12 +191,29 @@ export class RuleEngine extends DirtyNotifier {
         }
     }
 
-    getSwitchTrigger(switchId: string, holdIntervalMs?: number): SwitchActionTrigger {
-        return this.triggers.find((trigger) =>
-            trigger.type === TriggerType.SWITCH &&
-            trigger.switchId === switchId &&
-            trigger.holdIntervalMs == holdIntervalMs
-        );
+    getSwitchTrigger(switchId: string, holdIntervalMs?: number): ActionTriggerType {
+        return this.getSwitchTriggers()
+            .find((trigger: SwitchActionTrigger) =>
+                trigger.type === TriggerType.SWITCH &&
+                trigger.switchId === switchId &&
+                trigger.holdIntervalMs == holdIntervalMs
+            );
+    }
+
+    public getHoldSwitchTriggers(): SwitchActionTrigger[] {
+        return this.getSwitchTriggers()
+            .filter((trigger) => trigger.holdIntervalMs > 0);
+    }
+
+    public getSwitchTriggers(): SwitchActionTrigger[] {
+        return this.triggers
+            .filter((trigger) => trigger.type === TriggerType.SWITCH) as SwitchActionTrigger[];
+    }
+
+    getTrigger(triggerId: string): ActionTriggerType {
+        return this.triggers
+            .filter((trigger) => trigger.type === TriggerType.ID)
+            .find((trigger: IdActionTrigger) => trigger.id === triggerId);
     }
 
     // compressed data.

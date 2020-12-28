@@ -135,10 +135,7 @@ export class Game {
     onNewRuleSchema(ruleSchema: RuleSchema): void {
         this.ruleEngine = RuleEngine.load(ruleSchema);
         this.ruleEngine.onDirty(() => this.engineDirty = true);
-        const holdSwitches = this.ruleEngine.triggers.filter((trigger) =>
-            trigger.type === TriggerType.SWITCH &&
-            trigger.holdIntervalMs > 0
-        );
+        const holdSwitches = this.ruleEngine.getHoldSwitchTriggers();
         this.wireUpHoldSwitches(holdSwitches);
         this.ruleEngine.start();
     }

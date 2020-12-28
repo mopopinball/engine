@@ -1,41 +1,74 @@
 import { DesiredOutputState } from "../desired-output-state";
 import { RuleData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
-import { DataActionSchema } from "../schema/rule.schema";
+import { ActionType, ConditionalActionSchema, DataActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
+
+export type Operator = '>' | '<' | '<=' | '>=' | '===' | '!=';
+
+export type DataCondition = {
+    conditionType: 'data',
+    dataId: string,
+    operator: Operator,
+    operand: number
+}
+
+export type Condition = DataCondition;
 
 export class ConditionalAction extends Action {
     constructor(
-        private condition: string[], private trueResult: string, private falseResult: string
+        private condition: Condition, private trueTriggerId: string, private falseTriggerId: string
     ) {
         super();
     }
     
     onAction(): void {
         let result: boolean;
-        switch(this.condition[0]) {
+        switch(this.condition.conditionType) {
             case 'data':
-                result = this.onData(this.condition[1], this.condition[2], this.condition[3], this.data);
+                result = this.onData(this.condition);
                 break;
         }
 
-        // if (result) {
-        //     this.actions.get(this.trueResult).handle(engines, data, devices);
-        // } else {
-        //     this.actions.get(this.falseResult).handle(engines, data, devices);
-        // }
-    }
-
-    onData(key: string, operator: string, value: string, data: Map<string, RuleData>): boolean {
-        const d = data.get(key);
-        switch(operator) {
-            case '>':
-                return d.value > parseInt(value);
+        if (result && this.trueTriggerId) {
+            this.rootEngine.onTrigger(this.trueTriggerId);
+        } else if (this.falseTriggerId) {
+            this.rootEngine.onTrigger(this.falseTriggerId);
         }
     }
 
-    toJSON(): DataActionSchema {
-        throw new Error('no impl');
+    onData(dataCondition: DataCondition): boolean {
+        const d = this.data.get(dataCondition.dataId);
+        switch(dataCondition.operator) {
+            case '>':
+                return d.value > dataCondition.operand;
+            case '<':
+                return d.value < dataCondition.operand;
+            case '<=':
+                return d.value <= dataCondition.operand;
+            case '>=':
+                return d.value >= dataCondition.operand;
+            case '===':
+                return d.value === dataCondition.operand;
+            case '!=':
+                return d.value != dataCondition.operand;
+            default:
+                throw new Error('not impl');
+        }
+    }
+
+    toJSON(): ConditionalActionSchema {
+        return {
+            type: ActionType.CONDITION,
+            condition: {
+                conditionType: this.condition.conditionType,
+                dataId: this.condition.dataId,
+                operator: this.condition.operator,
+                operand: this.condition.operand
+            },
+            trueTriggerId: this.trueTriggerId,
+            falseTriggerId: this.falseTriggerId
+        };
     }
 
 }

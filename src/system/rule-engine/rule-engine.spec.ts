@@ -116,7 +116,7 @@ describe('Rules', () => {
             expect(ruleEngine.children[0].active).toBeTruthy();
 
             // exercise
-            ruleEngine.onSwitch("sw0");
+            ruleEngine.onSwitch('sw0');
             expect(ruleEngine.children[0].active).toBeFalsy();
             expect(ruleEngine.children[1].active).toBeTruthy();
         });

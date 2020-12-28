@@ -1,5 +1,6 @@
 import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
+import { Operator } from "../actions/conditional-action";
 import { DataOperation } from "../actions/data-action";
 
 export interface RuleSchema {
@@ -49,7 +50,8 @@ export enum ActionType {
 }
 
 export enum TriggerType {
-    SWITCH = 'switch'
+    SWITCH = 'switch',
+    ID = 'id'
 }
 
 export interface DataActionSchema {
@@ -72,9 +74,14 @@ export interface StateActionSchema {
 
 export interface ConditionalActionSchema {
     type: ActionType.CONDITION;
-    statement: string[];
-    trueResult: string;
-    falseResult: string;
+    condition: {
+        conditionType: 'data',
+        dataId: string,
+        operator: Operator,
+        operand: number
+    };
+    trueTriggerId: string;
+    falseTriggerId: string;
 }
 
 export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
@@ -83,7 +90,12 @@ export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
     switchId: string;
 }
 
-export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema;
+export interface IdActionTriggerSchema extends ActionTriggerSchema {
+    type: TriggerType.ID,
+    id: string
+}
+
+export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema;
 
 export interface ActionTriggerSchema {
     actions: ActionSchemaType[]

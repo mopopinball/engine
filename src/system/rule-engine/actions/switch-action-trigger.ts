@@ -1,11 +1,5 @@
 import { SwitchActionTriggerSchema, TriggerType } from "../schema/rule.schema";
-import { Action } from "./action";
-
-export type ActionTriggerType = SwitchActionTrigger;
-
-export abstract class ActionTrigger {
-    actions: Action[] = [];
-}
+import { ActionTrigger } from "./action-trigger";
 
 export class SwitchActionTrigger extends ActionTrigger {
     readonly type = TriggerType.SWITCH;
@@ -15,11 +9,12 @@ export class SwitchActionTrigger extends ActionTrigger {
     }
 
     toJSON(): SwitchActionTriggerSchema {
+        const convertedBase = super.toJSON();
         return {
             type: this.type,
             switchId: this.switchId,
             holdIntervalMs: this.holdIntervalMs,
-            actions: this.actions.map((a) => a.toJSON())
+            actions: convertedBase.actions
         };
     }
 }
