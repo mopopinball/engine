@@ -209,7 +209,8 @@ describe('Rules', () => {
         function addData(ruleEngine: RuleEngine, id: string, value: number): void {
             ruleEngine.data.set(id, {
                 id: id,
-                value: value
+                value: value,
+                initValue: value
             });         
         }
     });

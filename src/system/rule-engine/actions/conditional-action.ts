@@ -7,7 +7,7 @@ import { Action } from "./action";
 export type Operator = '>' | '<' | '<=' | '>=' | '===' | '!=';
 
 export type DataCondition = {
-    conditionType: 'data',
+    conditionType: string,
     dataId: string,
     operator: Operator,
     operand: number

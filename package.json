@@ -14,7 +14,7 @@
     "fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts",
     "pretest": "npm run lint",
-    "test": "NODE_ENV=test jest --coverage",
+    "test": "tsc && NODE_ENV=test jest --coverage",
     "tsc": "tsc",
     "semantic-release": "semantic-release"
   },

@@ -75,7 +75,7 @@ export interface StateActionSchema {
 export interface ConditionalActionSchema {
     type: ActionType.CONDITION;
     condition: {
-        conditionType: 'data',
+        conditionType: string,
         dataId: string,
         operator: Operator,
         operand: number

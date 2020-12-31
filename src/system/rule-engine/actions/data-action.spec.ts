@@ -8,7 +8,8 @@ describe('data action', () => {
     beforeEach(() => {
         d0 = {
             id: 'd0',
-            value: 10
+            value: 10,
+            initValue: 10
         };
         dataMap.set('d0', d0);
     });

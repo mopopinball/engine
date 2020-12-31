@@ -57,7 +57,7 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.data) {
             for (const data of schema.data) {
-                engine.data.set(data.id, {id: data.id, value: data.value });
+                engine.data.set(data.id, {id: data.id, value: data.value, initValue: data.value });
             }
         }
 
@@ -273,7 +273,9 @@ export class RuleEngine extends DirtyNotifier {
             children: this.children,
             triggers: this.triggers,
             devices: Array.from(this.devices.values()),
-            data: Array.from(this.data.values())
+            data: Array.from(this.data.values()).map((d) => {
+                return {id: d.id, value: d.initValue};
+            })
         };
     }
 }
