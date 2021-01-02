@@ -206,11 +206,31 @@ describe('Rules', () => {
             expect(data.get('d1').value).toBe(11);
         });
 
-        function addData(ruleEngine: RuleEngine, id: string, value: number): void {
+        it('resets data on stop which requires reset', () => {
+            // setup
+            ruleEngine.data.clear();
+            addData(ruleEngine, 'd0', 0);
+            addData(ruleEngine, 'd1', 1, true);
+            ruleEngine.start();
+            ruleEngine.data.get('d0').value = 1000;
+            ruleEngine.data.get('d1').value = 1000;
+            
+            // exercise
+            ruleEngine.stop();
+
+            // check
+            expect(ruleEngine.data.get('d0').value).toBe(1000);
+            expect(ruleEngine.data.get('d1').value).toBe(1);
+        });
+
+        function addData(ruleEngine: RuleEngine, id: string, value: number, reset = false): void {
             ruleEngine.data.set(id, {
                 id: id,
                 value: value,
-                initValue: value
+                initValue: value,
+                attributes: {
+                    resetOnStateStop: reset
+                }
             });         
         }
     });

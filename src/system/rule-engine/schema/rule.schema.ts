@@ -21,6 +21,10 @@ export interface RuleMetadata {
 export interface DataSchema {
     id: string;
     value: number;
+    attributes?: {
+        isWholeNumber?: boolean,
+        resetOnStateStop?: boolean
+    }
 }
 
 export interface OutputDeviceState {
@@ -58,7 +62,7 @@ export interface DataActionSchema {
     type: ActionType.DATA;
     dataId: string;
     operation: DataOperation;
-    operand: number;
+    operand: number | string;
 }
 
 export interface DeviceActionSchema {

@@ -57,7 +57,12 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.data) {
             for (const data of schema.data) {
-                engine.data.set(data.id, {id: data.id, value: data.value, initValue: data.value });
+                engine.data.set(data.id, {
+                    id: data.id,
+                    value: data.value,
+                    initValue: data.value,
+                    attributes: data.attributes
+                });
             }
         }
 
@@ -128,6 +133,15 @@ export class RuleEngine extends DirtyNotifier {
 
     stop(): void {
         this.active = false;
+
+        // Stop work
+        // 1. Reset any data requiring reset.
+        for(const d of Array.from(this.data.values())) {
+            if (d.attributes?.resetOnStateStop) {
+                d.value = d.initValue;
+            }
+        }
+
         this.children
             .map((c) => c.stop());
     }

@@ -3,23 +3,31 @@ import { ActionType, DataActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
 export class DataAction extends Action {
-    constructor(public readonly dataKey: string, public operation: DataOperation, public operand: number
+    constructor(
+        public readonly dataKey: string, public operation: DataOperation, public operand: number | string
     ) {
         super();
     }
     
     onAction(): void {
+        const currentOperand: number = typeof this.operand === 'number' ?
+            this.operand :
+            this.getData(this.operand).value;
+
         if (this.operation === DataOperation.INCREMENT) {
-            this.getData().value += this.operand; 
+            this.getData().value += currentOperand; 
         } else if (this.operation === DataOperation.DECREMENT) {
-            this.getData().value -= this.operand; 
+            this.getData().value -= currentOperand;
+            if (this.getData().attributes?.isWholeNumber && this.getData().value < 0) {
+                this.getData().value = 0;
+            }
         } else if (this.operation === DataOperation.ASSIGN) {
-            this.getData().value = this.operand; 
+            this.getData().value = currentOperand; 
         }
     }
 
-    private getData(): RuleData {
-        return this.data.get(this.dataKey);
+    private getData(dataKey: string = this.dataKey): RuleData {
+        return this.data.get(dataKey);
     }
 
     public static fromJSON(actionSchema: DataActionSchema): DataAction {

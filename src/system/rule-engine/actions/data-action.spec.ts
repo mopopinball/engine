@@ -46,4 +46,18 @@ describe('data action', () => {
         // check
         expect(d0.value).toBe(1);
     });
+
+    it('can decrement and obey whole number constraint', () => {
+        // setup
+        dataMap.get('d0').attributes = {
+            isWholeNumber: true
+        }
+        const action = new DataAction('d0', DataOperation.DECREMENT, 100);
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(0);
+    });
 });
