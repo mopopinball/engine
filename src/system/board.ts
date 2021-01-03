@@ -19,6 +19,7 @@ import { DipSwitchState } from './dip-switch-state';
  * Manages board IO including status LEDs and dip switch settings.
  */
 export class Board {
+    private static instance: Board;
     private dipState: DipSwitchState;
     private s1_2: BoardSwitch;
     private s1_6: BoardSwitch;
@@ -29,8 +30,16 @@ export class Board {
     private nodeLed: StatusLed;
     private ledCollection: OutputDeviceCollection;
     private shutdownInterval: NodeJS.Timeout;
+
+    static getInstance(): Board {
+        if(!Board.instance) {
+            Board.instance = new Board();
+        }
+
+        return Board.instance;
+    }
     
-    constructor() {
+    private constructor() {
         this.errorLed = new StatusLed('D2', pins.D2_Error_Led);
         this.piLed = new StatusLed('D3', pins.D3_Pi_Led);
         this.nodeLed = new StatusLed('D4', pins.D4_Node_Led);
@@ -106,5 +115,9 @@ export class Board {
         this.piLed.blink(250);
         // const resp = spawn('shutdown', ['now'], {stdio: 'pipe', encoding: 'utf-8'});
         // logger.debug(JSON.stringify(resp));
+    }
+
+    isDebugEnabled(): boolean {
+        return true;
     }
 }

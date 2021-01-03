@@ -30,6 +30,7 @@ popd
 cp flash_sw.sh dist
 cp flash_dr.sh dist
 cp flash_disp.sh dist
+cp debug.sh dist
 cp package.json dist
 cp package-lock.json dist
 rsync -r --verbose src/games/ dist/src/games

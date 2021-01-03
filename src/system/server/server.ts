@@ -1,5 +1,6 @@
 import express from 'express';
 import basicAuth from 'express-basic-auth';
+import bodyParser from 'body-parser';
 const app = express();
 
 import path from 'path';
@@ -35,6 +36,7 @@ export class Server {
             realm: 'mopo'
         }));
         app.use(express.static(staticDir));
+        app.use(bodyParser.json())
 
         this.setupControllers();
 

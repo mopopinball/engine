@@ -105,10 +105,17 @@ export class Game {
         this.name = this.gameStateConfig.metadata.name;
         this.fpsTracker = new FpsTracker();
 
-        this.board = new Board();
+        this.board = Board.getInstance();
 
         this.onNewRuleSchema(this.gameStateConfig);
-        this.engineDirty = true;
+        MessageBroker.getInstance().on(EVENTS.NEW_RULE_SCHEMA, (ruleSchema: RuleSchema) => {
+            // only act on the incoming message if debug is enabled
+            if (this.board.isDebugEnabled()){
+                logger.info('Received a new rule engine.');
+                this.gameStateConfig = ruleSchema;
+                this.onNewRuleSchema(this.gameStateConfig);
+            }
+        });
 
         // Setup all message bindings.
         MessageBroker.getInstance().publishRetain('mopo/info/general', JSON.stringify({
@@ -138,13 +145,22 @@ export class Game {
         const holdSwitches = this.ruleEngine.getHoldSwitchTriggers();
         this.wireUpHoldSwitches(holdSwitches);
         this.ruleEngine.start();
+        this.engineDirty = true;
     }
 
     wireUpHoldSwitches(holdSwitcheTriggers: SwitchActionTrigger[]): void {
+        const allSwitches = Array.from(this.switches.values());
+        for(const sw of allSwitches) {
+            sw.clearHoldCallbacks();
+        }
+        
         for(const hs of holdSwitcheTriggers) {
             const matchingSw: PlayfieldSwitch =
-                Object.values(this.switches).find((sw: PlayfieldSwitch) => sw.id === hs.switchId);
-            matchingSw.onPress(() => this.ruleEngine.onSwitch(matchingSw.id), hs.holdIntervalMs);
+                allSwitches.find((sw: PlayfieldSwitch) => sw.id === hs.switchId);
+            matchingSw.onPress(
+                () => this.ruleEngine.onSwitch(matchingSw.id, hs.holdIntervalMs),
+                hs.holdIntervalMs
+            );
         }
     }
 

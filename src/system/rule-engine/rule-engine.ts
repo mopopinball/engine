@@ -146,15 +146,16 @@ export class RuleEngine extends DirtyNotifier {
             .map((c) => c.stop());
     }
 
-    public onSwitch(id: string): boolean {
-        return this.activateTrigger(id, TriggerType.SWITCH);
+    public onSwitch(id: string, holdIntervalMs?: number): boolean {
+        return this.activateTrigger(id, TriggerType.SWITCH, holdIntervalMs);
     }
 
     public onTrigger(id: string): boolean {
         return this.activateTrigger(id, TriggerType.ID);
     }
 
-    private activateTrigger(id: string, type: TriggerType): boolean {
+    // TODO: Accepting holdIntervalMs here is crap. Fix?
+    private activateTrigger(id: string, type: TriggerType, holdIntervalMs?: number): boolean {
         const childHandled = this.getActiveChildren()
             .map((child) => child.activateTrigger(id, type))
             .reduce((accum, curv) => {
@@ -168,7 +169,7 @@ export class RuleEngine extends DirtyNotifier {
         let matchingTrigger: ActionTriggerType = null;
         switch(type) {
             case TriggerType.SWITCH:
-                matchingTrigger = this.getSwitchTrigger(id);
+                matchingTrigger = this.getSwitchTrigger(id, holdIntervalMs);
             break;
             case TriggerType.ID:
                 matchingTrigger = this.getTrigger(id);

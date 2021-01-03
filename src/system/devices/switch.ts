@@ -87,7 +87,17 @@ export abstract class Switch extends EventEmitter {
         // MessageBroker.getInstance().publish(`mopo/devices/${this.id}/state`, realValue.toString());
     }
 
+    public clearHoldCallbacks(): void {
+        this.holdCallbacks = [];
+    }
+
     private _getNow(): number {
         return new Date().valueOf();
+    }
+
+    public toJSON() {
+        return {
+            id: this.id
+        };
     }
 }

@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "bitwise": "2.0.4",
+    "body-parser": "^1.19.0",
     "deep-equal": "2.0.3",
     "eval": "0.1.4",
     "express": "4.17.1",
