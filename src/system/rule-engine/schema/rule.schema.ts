@@ -2,6 +2,7 @@ import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
 import { Operator } from "../actions/conditional-action";
 import { DataOperation } from "../actions/data-action";
+import { TimerActionTriggerMode } from "../actions/timer-action-trigger";
 
 export interface RuleSchema {
     id: string;
@@ -55,7 +56,8 @@ export enum ActionType {
 
 export enum TriggerType {
     SWITCH = 'switch',
-    ID = 'id'
+    ID = 'id',
+    TIMER = 'timer'
 }
 
 export interface DataActionSchema {
@@ -97,6 +99,13 @@ export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
 export interface IdActionTriggerSchema extends ActionTriggerSchema {
     type: TriggerType.ID,
     id: string
+}
+
+export interface TimerActionTriggerSchema extends ActionTriggerSchema {
+    type: TriggerType.TIMER,
+    id: string,
+    valueMs: number;
+    mode: TimerActionTriggerMode
 }
 
 export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema;

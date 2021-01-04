@@ -8,9 +8,10 @@ import { DeviceAction } from "./actions/device-action";
 import { IdActionTrigger } from "./actions/id-action-trigger";
 import { StateAction } from "./actions/state-action";
 import { SwitchActionTrigger } from "./actions/switch-action-trigger";
+import { TimerActionTrigger } from "./actions/timer-action-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { RuleData } from "./rule-data";
-import { ActionType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TriggerType } from "./schema/rule.schema";
+import { ActionType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TimerActionTriggerSchema, TriggerType } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -69,7 +70,7 @@ export class RuleEngine extends DirtyNotifier {
         return engine;
     }
 
-    public createTrigger(triggerSchema: SwitchActionTriggerSchema | IdActionTriggerSchema): void {
+    public createTrigger(triggerSchema: SwitchActionTriggerSchema | IdActionTriggerSchema | TimerActionTriggerSchema): void {
         // First, find or create the incoming trigger.
         let trigger: ActionTriggerType = null;
         switch(triggerSchema.type) {
@@ -85,6 +86,14 @@ export class RuleEngine extends DirtyNotifier {
                 trigger = this.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = IdActionTrigger.fromJSON(triggerSchema);
+                    this.triggers.push(trigger);
+                }
+                break;
+            }
+            case TriggerType.TIMER: {
+                trigger = this.getTrigger(triggerSchema.id);
+                if (!trigger) {
+                    trigger = TimerActionTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -126,6 +135,8 @@ export class RuleEngine extends DirtyNotifier {
         // when starting, need to reset any state, or clone it to reset on end?
         this.active = true;
         this.devices.forEach((d) => d.reset());
+        this.getTimerTriggers()
+            .forEach((t: TimerActionTrigger) => t.start());
         this.children
             .filter((child) => child.autoStart)
             .map((c) => c.start());
@@ -141,6 +152,9 @@ export class RuleEngine extends DirtyNotifier {
                 d.value = d.initValue;
             }
         }
+        // 2. Stop any running timer triggers.
+        this.getTimerTriggers()
+            .forEach((t: TimerActionTrigger) => t.stop());
 
         this.children
             .map((c) => c.stop());
@@ -275,6 +289,31 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         return parentData;
+    }
+
+    getAllStateNames(names = new Set<string>()): Set<string> {
+        names.add(this.id);
+        
+        for(const c of this.children) {
+            c.getAllStateNames(names);
+        }
+
+        return names;
+    }
+
+    getAllTimerTriggers(): TimerActionTrigger[] {
+        let timerTriggers: TimerActionTrigger[] = this.getTimerTriggers();
+        
+        for(const c of this.children) {
+            timerTriggers = timerTriggers.concat(c.getAllTimerTriggers());
+        }
+        
+        return timerTriggers;
+    }
+
+    private getTimerTriggers(): TimerActionTrigger[] {
+        return this.triggers
+            .filter((t) => t.type === TriggerType.TIMER) as TimerActionTrigger[];
     }
 
     toJSON() {

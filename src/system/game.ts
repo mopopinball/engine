@@ -144,6 +144,9 @@ export class Game {
         this.ruleEngine.onDirty(() => this.engineDirty = true);
         const holdSwitches = this.ruleEngine.getHoldSwitchTriggers();
         this.wireUpHoldSwitches(holdSwitches);
+        this.ruleEngine.getAllTimerTriggers().forEach((t) => {
+            t.eventEmitter.on('tick', () => this.ruleEngine.onTrigger(t.id));
+        });
         this.ruleEngine.start();
         this.engineDirty = true;
     }
