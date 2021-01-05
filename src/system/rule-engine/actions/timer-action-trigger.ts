@@ -12,7 +12,7 @@ export class TimerActionTrigger extends ActionTrigger {
     public readonly eventEmitter: EventEmitter;
     private timeout: NodeJS.Timeout;
     
-    constructor(public readonly id: string, private valueMs: number, private mode: TimerActionTriggerMode) {
+    constructor(public readonly id: string, public valueMs: number, public mode: TimerActionTriggerMode) {
         super();
         this.eventEmitter = new EventEmitter();
     }

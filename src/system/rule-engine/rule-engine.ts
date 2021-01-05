@@ -225,7 +225,7 @@ export class RuleEngine extends DirtyNotifier {
 
     getTrigger(triggerId: string): ActionTriggerType {
         return this.triggers
-            .filter((trigger) => trigger.type === TriggerType.ID)
+            .filter((trigger) => trigger.type === TriggerType.ID || trigger.type === TriggerType.TIMER)
             .find((trigger: IdActionTrigger) => trigger.id === triggerId);
     }
 
