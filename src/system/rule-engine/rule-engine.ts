@@ -171,7 +171,7 @@ export class RuleEngine extends DirtyNotifier {
     // TODO: Accepting holdIntervalMs here is crap. Fix?
     private activateTrigger(id: string, type: TriggerType, holdIntervalMs?: number): boolean {
         const childHandled = this.getActiveChildren()
-            .map((child) => child.activateTrigger(id, type))
+            .map((child) => child.activateTrigger(id, type, holdIntervalMs))
             .reduce((accum, curv) => {
                 return accum || curv;
             }, false);
@@ -194,7 +194,8 @@ export class RuleEngine extends DirtyNotifier {
             for(const action of matchingTrigger.actions) {
                 action.handle(
                     RuleEngine.root,
-                    this.getInheritedData(), this.getDevices()
+                    this.getInheritedData(),
+                    this.getDevices()
                 );
             }
             return true;
