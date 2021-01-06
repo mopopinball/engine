@@ -1,5 +1,6 @@
 export enum OutputDeviceType {
     LIGHT = 'light',
     COIL = 'coil',
-    SOUND = 'sound'
+    SOUND = 'sound',
+    DISPLAY = 'display'
 }

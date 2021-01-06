@@ -7,7 +7,7 @@ import { PlayfieldLamp } from "./devices/playfield-lamp";
 import { PlayfieldSwitch } from "./devices/playfield-switch";
 import { Relay } from "./devices/relay";
 import { Sound } from "./devices/sound";
-import { Sys80or80ADisplay } from "./display-80-80a";
+import { DisplayId, Sys80or80ADisplay } from "./devices/display-80-80a";
 import { FpsTracker } from "./fps-tracker";
 import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
@@ -33,6 +33,7 @@ import { LampRole } from "./devices/lamp-role";
 import { DipSwitchState } from "./dip-switch-state";
 import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
 import { writeFileSync } from "fs";
+import { DisplayFormatter } from "./devices/display-formatter";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -254,6 +255,32 @@ export class Game {
                     desiredState.setState(false, false); // makes the sound play once
                 }
             }
+            else if (desiredState.type === OutputDeviceType.DISPLAY) {
+                const formattedString = DisplayFormatter.format(
+                    desiredState.getState() as string,
+                    this.ruleEngine.getData()
+                );
+                switch(desiredState.id) {
+                    case DisplayId.PLAYER1:
+                        this.displays.setPlayerDisplay(1, formattedString);
+                    break;
+                    case DisplayId.PLAYER2:
+                        this.displays.setPlayerDisplay(2, formattedString);
+                    break;
+                    case DisplayId.PLAYER3:
+                        this.displays.setPlayerDisplay(3, formattedString);
+                    break;
+                    case DisplayId.PLAYER4:
+                        this.displays.setPlayerDisplay(4, formattedString);
+                    break;
+                    case DisplayId.BALLNUM:
+                        this.displays.setBall(formattedString);
+                    break;
+                    case DisplayId.CREDITS:
+                        this.displays.setCredits(formattedString);
+                    break;
+                }
+             }
         }
         this.engineDirty = false;
     }

@@ -1,5 +1,14 @@
 import {padStart, padEnd} from 'lodash';
 
+export enum DisplayId {
+    PLAYER1 = 'p1',
+    PLAYER2 = 'p2',
+    PLAYER3 = 'p3',
+    PLAYER4 = 'p4',
+    CREDITS = 'c',
+    BALLNUM = 'b'
+}
+
 /**
  * A System 80, 80A style display.
  */
@@ -13,16 +22,12 @@ export class Sys80or80ADisplay {
     status: string;
     
     constructor() {
-        // this.type = '80/80a';
         this.player1 = this.leftPad('');
         this.player2 = this.leftPad('');
         this.player3 = this.leftPad('');
         this.player4 = this.leftPad('');
-        this.setStatus('FP', '');
+        this.setStatus('', '');
     }
-
-    // onPlay(): void {
-    // }
 
     setCredits(credits: string): void {
         this._credits = credits;
@@ -40,7 +45,7 @@ export class Sys80or80ADisplay {
         this._updateStatus();
     }
 
-    setPlayerDisplay(playerNumber: number, stringValue: string): void {
+    setPlayerDisplay(playerNumber: 1 | 2 | 3 | 4, stringValue: string): void {
         const paddedValue = this.leftPad(stringValue);
         if (playerNumber === 1) {
             this.player1 = paddedValue;

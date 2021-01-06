@@ -1,15 +1,16 @@
+import { CoilType } from "../devices/coil-type";
 import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
-import { CoilOutputState, LightOutputState, OutputDeviceState, SoundOutputState } from "./schema/rule.schema";
+import { CoilOutputState, DisplayOutputState, LightOutputState, OutputDeviceState, SoundOutputState } from "./schema/rule.schema";
 
-export declare type DesiredOutputStateType = LightState | boolean;
+export declare type DesiredOutputStateType = LightState | boolean | string;
 
 export class DesiredOutputState {
     private currentState: DesiredOutputStateType;
     private preTempState: DesiredOutputStateType;
     public temp = false;
     
-    static constructFromOutputState(ouputState: LightOutputState | CoilOutputState | SoundOutputState) {
+    static constructFromOutputState(ouputState: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState) {
         switch(ouputState.type) {
             case OutputDeviceType.SOUND:
                 return new DesiredOutputState(
@@ -22,7 +23,12 @@ export class DesiredOutputState {
         }
     }
     
-    constructor(public readonly id: string, public readonly type: OutputDeviceType, private initialState: DesiredOutputStateType) {
+    constructor(
+        public readonly id: string,
+        public readonly type: OutputDeviceType,
+        public readonly coilType: CoilType,
+        private initialState: DesiredOutputStateType
+    ) {
         this.currentState = initialState;
     }
 

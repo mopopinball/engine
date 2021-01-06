@@ -47,6 +47,11 @@ export interface SoundOutputState extends OutputDeviceState {
     play: boolean;
 }
 
+export interface DisplayOutputState extends OutputDeviceState {
+    type: OutputDeviceType.DISPLAY;
+    state: string;
+}
+
 export enum ActionType {
     DATA = 'data',
     DEVICE = 'device',
