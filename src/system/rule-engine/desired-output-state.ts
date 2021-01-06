@@ -6,6 +6,8 @@ export declare type DesiredOutputStateType = LightState | boolean;
 
 export class DesiredOutputState {
     private currentState: DesiredOutputStateType;
+    private preTempState: DesiredOutputStateType;
+    public temp = false;
     
     static constructFromOutputState(ouputState: LightOutputState | CoilOutputState | SoundOutputState) {
         switch(ouputState.type) {
@@ -33,12 +35,23 @@ export class DesiredOutputState {
         return this.currentState;
     }
 
-    setState(state: DesiredOutputStateType): void {
+    setState(state: DesiredOutputStateType, setByAction: boolean): void {
+        if (setByAction) {
+            this.preTempState = this.currentState;
+        }
         this.currentState = state;
+        this.temp = setByAction;
     }
 
     reset(): void {
         this.currentState = this.initialState;
+    }
+
+    resetTemp(): void {
+        if (!this.temp) {
+            return;
+        }
+        this.currentState = this.preTempState;
     }
 
     toJSON(): LightOutputState | CoilOutputState | SoundOutputState {

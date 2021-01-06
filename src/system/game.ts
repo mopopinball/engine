@@ -222,8 +222,8 @@ export class Game {
             return;
         }
 
-        const devices = this.ruleEngine.getDevices().values();
-        for (const desiredState of devices) {
+        const desiredDeviceStates = this.ruleEngine.getDevices().values();
+        for (const desiredState of desiredDeviceStates) {
             if (desiredState.type === OutputDeviceType.LIGHT) {
                 const lamp = this.lamps.get(desiredState.id);
                 if (lamp.getState() !== desiredState.getState()) {
@@ -240,14 +240,14 @@ export class Game {
                 }
                 else if (coil instanceof Relay === false && desiredState.getState() === true) {
                     coil.on();
-                    desiredState.setState(false); // makes the coil fire once
+                    desiredState.setState(false, false); // makes the coil fire once
                 }
             }
             else if (desiredState.type === OutputDeviceType.SOUND) {
                 const sound = this.sounds.get(desiredState.id);
                 if (desiredState.getState() as boolean === true) {
                     sound.on();
-                    desiredState.setState(false); // makes the sound play once
+                    desiredState.setState(false, false); // makes the sound play once
                 }
             }
         }

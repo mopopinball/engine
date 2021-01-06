@@ -24,10 +24,6 @@ export abstract class Action extends DirtyNotifier {
 
         this.onAction();
         this.emitDirty();
-        
-        // for (const a of this.nextCollection) {
-        //     this.actions.get(a).handle(engines, data, devices);
-        // }
     }
     
     public abstract toJSON(): ActionSchemaType;

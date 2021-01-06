@@ -20,6 +20,7 @@ export class RuleEngine extends DirtyNotifier {
     description: string;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
+    rollbackDevices: DesiredOutputState[] = [];
     triggers: ActionTriggerType[] = [];
     children: RuleEngine[] = [];
 
@@ -145,6 +146,10 @@ export class RuleEngine extends DirtyNotifier {
     stop(): void {
         this.active = false;
 
+        // devices which were adjusted by a device action are reset on our stop()/exit.
+        this.rollbackDevices.forEach((d) => d.resetTemp());
+        this.rollbackDevices = [];
+
         // Stop work
         // 1. Reset any data requiring reset.
         for(const d of Array.from(this.data.values())) {
@@ -195,8 +200,11 @@ export class RuleEngine extends DirtyNotifier {
                 action.handle(
                     RuleEngine.root,
                     this.getInheritedData(),
-                    this.getDevices()
+                    this.getInheritedDevices()
                 );
+                if (action instanceof DeviceAction) {
+                    this.rollbackDevices = this.rollbackDevices.concat(action.rollback);
+                }
             }
             return true;
         }
@@ -290,6 +298,17 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         return parentData;
+    }
+
+    public getInheritedDevices(): Map<string, DesiredOutputState> {
+        const parentDevices = this.parent ? this.parent.getInheritedDevices() : new Map<string, DesiredOutputState>();
+
+        // apply our desired output state over our parents
+        for(const d of this.devices) {
+            parentDevices.set(d[0], d[1]);
+        }
+
+        return parentDevices;
     }
 
     getAllStateNames(names = new Set<string>()): Set<string> {
