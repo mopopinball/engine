@@ -32,6 +32,7 @@ import { OutputDeviceType } from "./devices/output-device-type";
 import { LampRole } from "./devices/lamp-role";
 import { DipSwitchState } from "./dip-switch-state";
 import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
+import { writeFileSync } from "fs";
 // const Server = require('./system/server');
 
 function onUncaughtError(err) {
@@ -142,13 +143,16 @@ export class Game {
     onNewRuleSchema(ruleSchema: RuleSchema): void {
         this.ruleEngine = RuleEngine.load(ruleSchema);
         this.ruleEngine.onDirty(() => this.engineDirty = true);
-        const holdSwitches = this.ruleEngine.getHoldSwitchTriggers();
+        const holdSwitches = this.ruleEngine.getAllHoldSwitchTriggers();
         this.wireUpHoldSwitches(holdSwitches);
         this.ruleEngine.getAllTimerTriggers().forEach((t) => {
             t.eventEmitter.on('tick', () => this.ruleEngine.onTrigger(t.id));
         });
         this.ruleEngine.start();
         this.engineDirty = true;
+
+        // save the new rule schema to disk.
+        writeFileSync('/home/pi/mopo/gamestate-config.json', JSON.stringify(this.ruleEngine), {encoding: 'utf8'});
     }
 
     wireUpHoldSwitches(holdSwitcheTriggers: SwitchActionTrigger[]): void {

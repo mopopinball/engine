@@ -50,6 +50,7 @@ export class DesiredOutputState {
 
     private isInstantState(state: DesiredOutputStateType): boolean {
         // TODO: This should check if the coil is a relay.
+        // TODO: It also needs to check if its a lamp in coil role.
         return this.type === OutputDeviceType.SOUND || (this.type === OutputDeviceType.COIL);
     }
 

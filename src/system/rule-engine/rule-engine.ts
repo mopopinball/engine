@@ -222,9 +222,15 @@ export class RuleEngine extends DirtyNotifier {
             );
     }
 
-    public getHoldSwitchTriggers(): SwitchActionTrigger[] {
-        return this.getSwitchTriggers()
+    public getAllHoldSwitchTriggers(): SwitchActionTrigger[] {
+        let holdSws: SwitchActionTrigger[] = this.getSwitchTriggers()
             .filter((trigger) => trigger.holdIntervalMs > 0);
+
+        for(const c of this.children) {
+            const childs = c.getAllHoldSwitchTriggers();
+            holdSws = holdSws.concat(childs);
+        }
+        return holdSws;
     }
 
     public getSwitchTriggers(): SwitchActionTrigger[] {
