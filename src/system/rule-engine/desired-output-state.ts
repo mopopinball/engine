@@ -36,11 +36,21 @@ export class DesiredOutputState {
     }
 
     setState(state: DesiredOutputStateType, setByAction: boolean): void {
-        if (setByAction) {
+        // Non-instanious states set by an action need to be unset when that rule exits.
+        // eg. clear a action which turns on a light, or relay, etc.
+        // This allows instant states (eg. fire a coil) to be serviced by the game even if a trigger
+        // fires the coil and exits the state. Turning a light on and exiting the state would therefore
+        // not illuminate the light.
+        if (setByAction && !this.isInstantState(state)) {
             this.preTempState = this.currentState;
         }
         this.currentState = state;
         this.temp = setByAction;
+    }
+
+    private isInstantState(state: DesiredOutputStateType): boolean {
+        // TODO: This should check if the coil is a relay.
+        return this.type === OutputDeviceType.SOUND || (this.type === OutputDeviceType.COIL);
     }
 
     reset(): void {

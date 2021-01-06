@@ -146,7 +146,7 @@ export class RuleEngine extends DirtyNotifier {
     stop(): void {
         this.active = false;
 
-        // devices which were adjusted by a device action are reset on our stop()/exit.
+        // non-instant devices which were adjusted by a device action are reset on our stop()/exit.
         this.rollbackDevices.forEach((d) => d.resetTemp());
         this.rollbackDevices = [];
 
