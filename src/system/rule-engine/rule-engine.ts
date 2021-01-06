@@ -348,7 +348,14 @@ export class RuleEngine extends DirtyNotifier {
             triggers: this.triggers,
             devices: Array.from(this.devices.values()),
             data: Array.from(this.data.values()).map((d) => {
-                return {id: d.id, value: d.initValue};
+                return {
+                    id: d.id,
+                    value: d.initValue,
+                    attributes: {
+                        isWholeNumber: d.attributes?.isWholeNumber,
+                        resetOnStateStop: d.attributes?.resetOnStateStop
+                    }
+                };
             })
         };
     }
