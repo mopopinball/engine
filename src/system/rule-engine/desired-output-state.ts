@@ -26,7 +26,7 @@ export class DesiredOutputState {
     constructor(
         public readonly id: string,
         public readonly type: OutputDeviceType,
-        public readonly coilType: CoilType,
+        // public readonly coilType: CoilType,
         private initialState: DesiredOutputStateType
     ) {
         this.currentState = initialState;

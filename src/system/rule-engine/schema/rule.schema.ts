@@ -74,7 +74,7 @@ export interface DataActionSchema {
 
 export interface DeviceActionSchema {
     type: ActionType.DEVICE;
-    state: LightOutputState | CoilOutputState | SoundOutputState;
+    state: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
 }
 
 export interface StateActionSchema {
