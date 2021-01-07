@@ -66,4 +66,5 @@ export interface DisplaysSchema {
 
 export interface HardwareDisplaySchema {
     id: DisplayId;
+    name: string;
 }
