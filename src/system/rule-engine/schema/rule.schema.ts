@@ -52,6 +52,8 @@ export interface DisplayOutputState extends OutputDeviceState {
     state: string;
 }
 
+export type OutputStateType = LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
+
 export enum ActionType {
     DATA = 'data',
     DEVICE = 'device',
@@ -75,7 +77,7 @@ export interface DataActionSchema {
 
 export interface DeviceActionSchema {
     type: ActionType.DEVICE;
-    state: LightOutputState | CoilOutputState | SoundOutputState;
+    state: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
 }
 
 export interface StateActionSchema {

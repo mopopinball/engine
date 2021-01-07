@@ -1,7 +1,7 @@
 import { CoilType } from "../devices/coil-type";
 import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
-import { CoilOutputState, DisplayOutputState, LightOutputState, OutputDeviceState, SoundOutputState } from "./schema/rule.schema";
+import { CoilOutputState, DisplayOutputState, LightOutputState, OutputDeviceState, OutputStateType, SoundOutputState } from "./schema/rule.schema";
 
 export declare type DesiredOutputStateType = LightState | boolean | string;
 
@@ -10,7 +10,7 @@ export class DesiredOutputState {
     private preTempState: DesiredOutputStateType;
     public temp = false;
     
-    static constructFromOutputState(ouputState: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState) {
+    static constructFromOutputState(ouputState: OutputStateType) {
         switch(ouputState.type) {
             case OutputDeviceType.SOUND:
                 return new DesiredOutputState(
@@ -26,7 +26,7 @@ export class DesiredOutputState {
     constructor(
         public readonly id: string,
         public readonly type: OutputDeviceType,
-        public readonly coilType: CoilType,
+        // public readonly coilType: CoilType,
         private initialState: DesiredOutputStateType
     ) {
         this.currentState = initialState;
@@ -47,14 +47,18 @@ export class DesiredOutputState {
         // This allows instant states (eg. fire a coil) to be serviced by the game even if a trigger
         // fires the coil and exits the state. Turning a light on and exiting the state would therefore
         // not illuminate the light.
-        if (setByAction && !this.isInstantState(state)) {
+        if (setByAction && !this.isInstantState()) {
             this.preTempState = this.currentState;
+            this.temp = true;
+        } else {
+            this.temp = false;
         }
         this.currentState = state;
-        this.temp = setByAction;
+        
     }
 
-    private isInstantState(state: DesiredOutputStateType): boolean {
+    // determines if this desired output state is instanious (eg. a coil or sound.)
+    public isInstantState(): boolean {
         // TODO: This should check if the coil is a relay.
         // TODO: It also needs to check if its a lamp in coil role.
         return this.type === OutputDeviceType.SOUND || (this.type === OutputDeviceType.COIL);
@@ -71,7 +75,7 @@ export class DesiredOutputState {
         this.currentState = this.preTempState;
     }
 
-    toJSON(): LightOutputState | CoilOutputState | SoundOutputState {
+    toJSON(): OutputStateType {
         switch(this.type) {
             case OutputDeviceType.SOUND:
                 return {id: this.id, type: this.type, play: this.initialState as boolean};
@@ -79,6 +83,8 @@ export class DesiredOutputState {
                 return {id: this.id, type: this.type, state: this.initialState as boolean};
             case OutputDeviceType.LIGHT:
                 return {id: this.id, type: this.type, state: this.initialState as LightState};
+            case OutputDeviceType.DISPLAY:
+                return {id: this.id, type: this.type, state: this.initialState as string};
         }
     }
 }

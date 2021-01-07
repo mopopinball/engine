@@ -227,6 +227,9 @@ export class Game {
             return;
         }
 
+        // compute data once
+        const data = this.ruleEngine.getData();
+
         const desiredDeviceStates = this.ruleEngine.getDevices().values();
         for (const desiredState of desiredDeviceStates) {
             if (desiredState.type === OutputDeviceType.LIGHT) {
@@ -258,7 +261,7 @@ export class Game {
             else if (desiredState.type === OutputDeviceType.DISPLAY) {
                 const formattedString = DisplayFormatter.format(
                     desiredState.getState() as string,
-                    this.ruleEngine.getData()
+                    data
                 );
                 switch(desiredState.id) {
                     case DisplayId.PLAYER1:

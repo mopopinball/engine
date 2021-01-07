@@ -35,9 +35,10 @@ describe('Rules', () => {
             const devices = ruleEngine.getDevices();
 
             // check
-            expect(devices.size).toBe(2);
+            expect(devices.size).toBe(3);
             expect(devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
             expect(devices.get('L4').getState()).toEqual(LightState.BLINK);
+            expect(ruleEngine.devices.get('p1').getState()).toEqual("Mopo");
         });
 
         it('modifies data', () => {

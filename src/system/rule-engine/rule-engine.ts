@@ -20,7 +20,7 @@ export class RuleEngine extends DirtyNotifier {
     description: string;
     data: Map<string, RuleData> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
-    rollbackDevices: DesiredOutputState[] = [];
+    rollbackActions: DeviceAction[] = [];
     triggers: ActionTriggerType[] = [];
     children: RuleEngine[] = [];
 
@@ -147,8 +147,8 @@ export class RuleEngine extends DirtyNotifier {
         this.active = false;
 
         // non-instant devices which were adjusted by a device action are reset on our stop()/exit.
-        this.rollbackDevices.forEach((d) => d.resetTemp());
-        this.rollbackDevices = [];
+        this.rollbackActions.forEach((d) => d.rollback());
+        this.rollbackActions = [];
 
         // Stop work
         // 1. Reset any data requiring reset.
@@ -202,8 +202,8 @@ export class RuleEngine extends DirtyNotifier {
                     this.getInheritedData(),
                     this.getInheritedDevices()
                 );
-                if (action instanceof DeviceAction) {
-                    this.rollbackDevices = this.rollbackDevices.concat(action.rollback);
+                if (action instanceof DeviceAction && action.requiresRollback()) {
+                    this.rollbackActions.push(action);// = this.rollbackDevices.concat(action.rollback);
                 }
             }
             return true;
