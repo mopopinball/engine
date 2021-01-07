@@ -52,6 +52,8 @@ export interface DisplayOutputState extends OutputDeviceState {
     state: string;
 }
 
+export type OutputStateType = LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
+
 export enum ActionType {
     DATA = 'data',
     DEVICE = 'device',

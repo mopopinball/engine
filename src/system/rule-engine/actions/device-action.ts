@@ -3,7 +3,7 @@ import { ActionType, DeviceActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
 export class DeviceAction extends Action {
-    public rollback: DesiredOutputState[] = [];
+    // public rollback: DesiredOutputState[] = [];
     constructor(
         private state: DesiredOutputState
     ) {
@@ -12,8 +12,17 @@ export class DeviceAction extends Action {
     
     onAction(): void {
         const device = this.devices.get(this.state.id);
-        this.rollback.push(device);
+        // const requiresRollback = this.state.isInstantState();
+        // this.rollback.push(device);
         device.setState(this.state.getState(), true);
+    }
+
+    public requiresRollback(): boolean {
+        return !this.state.isInstantState();
+    }
+
+    public rollback(): void {
+        const device = this.devices.get(this.state.id).resetTemp();
     }
 
     toJSON(): DeviceActionSchema {

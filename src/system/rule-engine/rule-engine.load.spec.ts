@@ -30,9 +30,10 @@ describe('Rule Engine Load()', () => {
 
     it('loads devices', () => {
         // check
-        expect(ruleEngine.devices.size).toBe(2);
+        expect(ruleEngine.devices.size).toBe(3);
         expect(ruleEngine.devices.get('SHOOT_AGAIN').getState()).toEqual(LightState.OFF);
         expect(ruleEngine.devices.get('L4').getState()).toEqual(LightState.ON);
+        expect(ruleEngine.devices.get('p1').getState()).toEqual("Mopo");
     });
 
     it('loads children', () => {

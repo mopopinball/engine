@@ -17,6 +17,10 @@
             "id": "L4",
             "type": "light",
             "state": 1
+        }, {
+            "id": "p1",
+            "type": "display",
+            "state": "Mopo"
         }
     ],
     "triggers": [{
