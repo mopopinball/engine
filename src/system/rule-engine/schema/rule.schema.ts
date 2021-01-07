@@ -56,7 +56,8 @@ export enum ActionType {
     DATA = 'data',
     DEVICE = 'device',
     STATE = 'state',
-    CONDITION = 'condition'
+    CONDITION = 'condition',
+    RANDOM = 'random'
 }
 
 export enum TriggerType {
@@ -95,6 +96,14 @@ export interface ConditionalActionSchema {
     falseTriggerId: string;
 }
 
+export interface RandomActionSchema {
+    type: ActionType.RANDOM;
+    candidates: {
+        triggerId: string;
+        weight?: number;
+    }[]
+}
+
 export interface SwitchActionTriggerSchema extends ActionTriggerSchema {
     type: TriggerType.SWITCH;
     holdIntervalMs?: number;
@@ -113,7 +122,7 @@ export interface TimerActionTriggerSchema extends ActionTriggerSchema {
     mode: TimerActionTriggerMode
 }
 
-export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema;
+export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
 
 export interface ActionTriggerSchema {
     actions: ActionSchemaType[]
