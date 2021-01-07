@@ -16,7 +16,6 @@ import { SwitchPayload } from "./rule-engine/switch-payload";
 
 import {MessageBroker, EVENTS} from './messages';
 // const Maintenance = require('./system/maintenance');
-// const Security = require('./system/security');
 import { SwitchesPic } from "./devices/switches-pic";
 import { logger } from "./logger";
 import { GpioPin } from "./devices/gpio-pin";
@@ -34,7 +33,7 @@ import { DipSwitchState } from "./dip-switch-state";
 import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
 import { writeFileSync } from "fs";
 import { DisplayFormatter } from "./devices/display-formatter";
-// const Server = require('./system/server');
+import { ConfigLoader } from "./config-loader";
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);
@@ -62,6 +61,7 @@ export class Game {
     ruleEngine: RuleEngine;
     lastPayload: string;
     private switches: Map<string, PlayfieldSwitch> = new Map();
+    private switchAliases: Map<string, string[]> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
     private lamps: Map<string, PlayfieldLamp> = new Map();
     private coils: Map<string, Coil> = new Map();
@@ -82,19 +82,11 @@ export class Game {
 
         // this.maintenance = new Maintenance();
 
-        // this.security = new Security(this.hardwareConfig.system);
-
         this.setup();
     }
 
     setup(): void {
-        Security.getInstance().setSystem(this.hardwareConfig.system);
-
-        this.server = new Server();
-        this.server.start();
-
         // Load our hardware config.
-        logger.debug('Loading config');
         this._loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
             this.displays = new Sys80or80ADisplay();
@@ -104,11 +96,17 @@ export class Game {
         }
 
         // init our instance variables.
+        // setting system initializes the pin code used by server.
+        Security.getInstance().setSystem(this.hardwareConfig.system);
+        this.server = new Server();
+        this.server.start();
+        
         this.name = this.gameStateConfig.metadata.name;
         this.fpsTracker = new FpsTracker();
 
         this.board = Board.getInstance();
 
+        // wire up the rules, and listen for new rules.
         this.onNewRuleSchema(this.gameStateConfig);
         MessageBroker.getInstance().on(EVENTS.NEW_RULE_SCHEMA, (ruleSchema: RuleSchema) => {
             // only act on the incoming message if debug is enabled
@@ -118,6 +116,9 @@ export class Game {
                 this.onNewRuleSchema(this.gameStateConfig);
             }
         });
+
+        // setup switch aliases
+        this.setupSwitchAliases();
 
         // Setup all message bindings.
         MessageBroker.getInstance().publishRetain('mopo/info/general', JSON.stringify({
@@ -153,7 +154,7 @@ export class Game {
         this.engineDirty = true;
 
         // save the new rule schema to disk.
-        writeFileSync('/home/pi/mopo/gamestate-config.json', JSON.stringify(this.ruleEngine), {encoding: 'utf8'});
+        ConfigLoader.saveRuleSchema(this.ruleEngine);
     }
 
     wireUpHoldSwitches(holdSwitcheTriggers: SwitchActionTrigger[]): void {
@@ -170,6 +171,31 @@ export class Game {
                 hs.holdIntervalMs
             );
         }
+    }
+
+    setupSwitchAliases(): void {
+        // load all the schemas and invert them so they can be looked up by incoming matrix ids.
+        const schemas = ConfigLoader.loadAllSwitchAliases();
+        for(const schema of schemas) {
+            for(const schemaEntry of Object.entries(schema)) {
+                for (const sw of schemaEntry[1].switches) {
+                    this.addSwitchAlias(sw, schemaEntry[0]);
+                }
+            }
+        }
+
+        // Additionally setup a auto-computed alias for playfield qualifying switches.
+        const qualifyPlayfieldSwitches = Array.from(this.switches.values()).filter((sw) => sw.qualifiesPlayfield);
+        for(const qpfs of qualifyPlayfieldSwitches) {
+            this.addSwitchAlias(qpfs.id, 'QUALIFY_PLAYFIELD');
+        }
+    }
+
+    private addSwitchAlias(switchId: string, aliasId: string): void {
+        if (!this.switchAliases.has(switchId)) {
+            this.switchAliases.set(switchId, []);
+        }
+        this.switchAliases.get(switchId).push(aliasId);
     }
 
     onClientDeviceUpdate(clientDevice: ClientDevice): void {
@@ -203,23 +229,32 @@ export class Game {
         const sw = this.switchesByNumber.get(payload.switch);
         if (!sw) {
             logger.warn(`No switch found: ${payload.switch}`);
+            return;
         }
-        else {
-            logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
-            try {
-                //todo: does this fire for activanted and un-activated?
-                sw.onChange(payload.activated);
-                if (sw.getActive()) {
-                    this.ruleEngine.onSwitch(sw.id);
+
+        logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
+        try {
+            // notify the switch object of new on/off state. This starts/stop hold states.
+            sw.onChange(payload.activated);
+            // if the switch is active, process it.
+            if (sw.getActive()) {
+                this.ruleEngine.onSwitch(sw.id);
+
+                // check if this switch is part of a switch alias. If so, fire everything in the alias.
+                const aliasCollection = this.switchAliases.get(sw.id);
+                if (aliasCollection) {
+                    for(const alias of aliasCollection) {
+                        this.ruleEngine.onSwitch(alias);
+                    }
                 }
             }
-            catch (e) {
-                logger.error(`${e.message} ${e.stack}`);
-            }
+        }
+        catch (e) {
+            logger.error(`${e.message} ${e.stack}`);
         }
     }
 
-    /**s
+    /**
      * Updates our output device states based on the states in the rule engine.
      */
     update(): void {
@@ -289,6 +324,8 @@ export class Game {
     }
 
     _loadConfig(): void {
+        logger.debug('Loading config');
+
         // Map switches to obj/dict for direct lookup.
         // Additionally, the switch PIC broadcasts switch activations by switch number.
         // Create a private mapping to facalitate direct lookup for those events.

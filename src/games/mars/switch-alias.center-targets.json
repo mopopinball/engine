@@ -1,0 +1,11 @@
+{
+    "CENTER_TARGETS": {
+        "description": "Any of the center targets",
+        "switches": [
+            "NUM1_CENTER_DROP_TARGET",
+            "NUM2_CENTER_DROP_TARGET",
+            "NUM3_CENTER_DROP_TARGET",
+            "NUM4_CENTER_DROP_TARGET"
+        ]
+    }
+}
