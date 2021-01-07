@@ -1,6 +1,26 @@
 {
     "name": "Mars",
     "system": "80",
+    "displays": {
+        "p1": {
+            "id": "p1"
+        },
+        "p2": {
+            "id": "p2"
+        },
+        "p3": {
+            "id": "p3"
+        },
+        "p4": {
+            "id": "p4"
+        },
+        "b": {
+            "id": "b"
+        },
+        "c": {
+            "id": "c"
+        }
+    },
     "devices": {
         "switches": {
             "PLAY_TEST": {

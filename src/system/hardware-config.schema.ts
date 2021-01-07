@@ -1,4 +1,5 @@
 import { CoilType } from "./devices/coil-type";
+import { DisplayId } from "./devices/display-80-80a";
 import { LampRole } from "./devices/lamp-role";
 import { SystemName } from "./game";
 
@@ -7,6 +8,7 @@ export interface HardwareConfig {
     system: SystemName;
     devices: DeviceConfigSchema;
     sounds: SoundsSchema;
+    displays: DisplaysSchema;
 }
 
 export interface DeviceConfigSchema {
@@ -56,4 +58,12 @@ export interface SoundsSchema {
 export interface HardwareSoundSchema {
     number: number;
     description: string;
+}
+
+export interface DisplaysSchema {
+    [key: string]: HardwareDisplaySchema;
+}
+
+export interface HardwareDisplaySchema {
+    id: DisplayId;
 }
