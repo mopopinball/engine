@@ -1,4 +1,5 @@
 import { DirtyNotifier } from "../dirty-notifier";
+import { logger } from "../logger";
 import { OutputDeviceType } from "./output-device-type";
 
 /**
@@ -15,6 +16,7 @@ export abstract class OutputDevice extends DirtyNotifier {
     }
 
     on(): void {
+        // logger.debug(`${this.name} on`);
         this.onWorker();
     }
 
@@ -25,6 +27,7 @@ export abstract class OutputDevice extends DirtyNotifier {
     }
 
     off(): void {
+        // logger.debug(`${this.name} off`);
         this.isOn = false;
         this.offAckd = false;
         this.emitDirty();

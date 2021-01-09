@@ -1,4 +1,3 @@
-import { logger } from "../logger";
 import { DriverType } from "./driver-type";
 import { OutputDevice } from "./output-device";
 import { OutputDeviceType } from "./output-device-type";
@@ -33,7 +32,6 @@ export class Coil extends OutputDevice {
             return;
         }
         super.on();
-        logger.debug(`Coil: ${this.name} on`);
 
         return this._autoOff();
     }
@@ -50,7 +48,6 @@ export class Coil extends OutputDevice {
     off(): void {
         super.off();
         clearTimeout(this._autoOffTimeout);
-        logger.debug(`Coil: ${this.name} off`);
     }
 
     getFiring(): boolean {

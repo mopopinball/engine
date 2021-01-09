@@ -6,7 +6,6 @@ import { SwitchAliasSchema } from "./switch-alias.schema";
 
 const hardwareConfigPath = '/home/pi/mopo/hardware-config.json';
 const gamestateConfigPath = '/home/pi/mopo/gamestate-config.json';
-const encoding = {encoding: 'utf8'};
 
 export abstract class ConfigLoader {
 
@@ -19,11 +18,11 @@ export abstract class ConfigLoader {
     }
 
     private static loadFile<T>(path: string) : T {
-        return JSON.parse(readFileSync(path, encoding)) as unknown as T;
+        return JSON.parse(readFileSync(path, {encoding: 'utf8'})) as unknown as T;
     }
 
     public static saveRuleSchema(ruleEngine: RuleEngine): void {
-        writeFileSync(gamestateConfigPath, JSON.stringify(ruleEngine), encoding);
+        writeFileSync(gamestateConfigPath, JSON.stringify(ruleEngine), {encoding: 'utf8'});
     }
 
     public static loadAllSwitchAliases(): SwitchAliasSchema[] {
