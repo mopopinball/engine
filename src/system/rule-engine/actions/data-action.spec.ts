@@ -47,6 +47,28 @@ describe('data action', () => {
         expect(d0.value).toBe(1);
     });
 
+    it('can multiply', () => {
+        // setup
+        const action = new DataAction('d0', DataOperation.MULTIPLY, 2);
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(20);
+    });
+
+    it('can divide', () => {
+        // setup
+        const action = new DataAction('d0', DataOperation.DIVIDE, 2);
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(5);
+    });
+
     it('can decrement and obey whole number constraint', () => {
         // setup
         dataMap.get('d0').attributes = {

@@ -14,15 +14,25 @@ export class DataAction extends Action {
             this.operand :
             this.getData(this.operand).value;
 
-        if (this.operation === DataOperation.INCREMENT) {
-            this.getData().value += currentOperand; 
-        } else if (this.operation === DataOperation.DECREMENT) {
-            this.getData().value -= currentOperand;
-            if (this.getData().attributes?.isWholeNumber && this.getData().value < 0) {
-                this.getData().value = 0;
-            }
-        } else if (this.operation === DataOperation.ASSIGN) {
-            this.getData().value = currentOperand; 
+        switch(this.operation) {
+            case DataOperation.INCREMENT:
+                this.getData().value += currentOperand; 
+                break;
+            case DataOperation.DECREMENT:
+                this.getData().value -= currentOperand;
+                if (this.getData().attributes?.isWholeNumber && this.getData().value < 0) {
+                    this.getData().value = 0;
+                }
+                break;
+            case DataOperation.ASSIGN:
+                this.getData().value = currentOperand;
+                break;
+            case DataOperation.MULTIPLY:
+                this.getData().value *= currentOperand;
+                break;
+            case DataOperation.DIVIDE:
+                this.getData().value /= currentOperand;
+                break;
         }
     }
 
@@ -51,5 +61,7 @@ export class DataAction extends Action {
 export enum DataOperation {
     INCREMENT,
     DECREMENT,
+    MULTIPLY,
+    DIVIDE,
     ASSIGN
 }

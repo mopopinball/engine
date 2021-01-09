@@ -18,6 +18,8 @@ export class TimerActionTrigger extends ActionTrigger {
     }
 
     public start(): void {
+        this.stop();
+        
         if (this.mode === TimerActionTriggerMode.INTERVAL) {
             this.timeout = setInterval(() => this.tick(), this.valueMs);
         } else {

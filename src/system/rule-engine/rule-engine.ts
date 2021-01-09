@@ -203,7 +203,7 @@ export class RuleEngine extends DirtyNotifier {
                     this.getInheritedDevices()
                 );
                 if (action instanceof DeviceAction && action.requiresRollback()) {
-                    this.rollbackActions.push(action);// = this.rollbackDevices.concat(action.rollback);
+                    this.rollbackActions.push(action);
                 }
             }
             return true;
@@ -216,7 +216,6 @@ export class RuleEngine extends DirtyNotifier {
     getSwitchTrigger(switchId: string, holdIntervalMs?: number): ActionTriggerType {
         return this.getSwitchTriggers()
             .find((trigger: SwitchActionTrigger) =>
-                trigger.type === TriggerType.SWITCH &&
                 trigger.switchId === switchId &&
                 trigger.holdIntervalMs == holdIntervalMs
             );

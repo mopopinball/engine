@@ -152,6 +152,12 @@ export class Game {
         });
         this.ruleEngine.start();
         this.engineDirty = true;
+        
+        // Any held switches on startup (eg. a ball in the outhole) should be sent to the rule engine.
+        const initiallyHeldSwitches = Array.from(this.switches.values()).filter((s) => s.getActive());
+        for (const s of initiallyHeldSwitches) {
+            this.ruleEngine.onSwitch(s.id);
+        }
 
         // save the new rule schema to disk.
         ConfigLoader.saveRuleSchema(this.ruleEngine);
