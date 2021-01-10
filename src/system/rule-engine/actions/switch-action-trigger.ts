@@ -4,7 +4,7 @@ import { ActionTrigger } from "./action-trigger";
 export class SwitchActionTrigger extends ActionTrigger {
     readonly type = TriggerType.SWITCH;
     
-    constructor(readonly switchId: string, readonly holdIntervalMs?: number) {
+    constructor(readonly switchId: string, public holdIntervalMs?: number) {
         super();
     }
 

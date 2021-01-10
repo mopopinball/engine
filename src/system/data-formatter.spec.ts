@@ -1,5 +1,5 @@
-import { RuleData } from "../rule-engine/rule-data";
-import { DisplayFormatter } from "./display-formatter";
+import { RuleData } from "./rule-engine/rule-data";
+import { DataFormatter } from "./data-formatter";
 
 describe('display formatter', () => {
     let data: Map<string, RuleData>;
@@ -9,7 +9,7 @@ describe('display formatter', () => {
 
     it('formats plain text', () => {
         // exercise
-        const output = DisplayFormatter.format('text', data);
+        const output = DataFormatter.format('text', data);
 
         // check
         expect(output).toBe('text');
@@ -30,7 +30,7 @@ describe('display formatter', () => {
         });
 
         // exercise
-        const output = DisplayFormatter.format('text ${d0} ${d1}', data);
+        const output = DataFormatter.format('text ${d0} ${d1}', data);
 
         // check
         expect(output).toBe('text 13 100');

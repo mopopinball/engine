@@ -32,7 +32,7 @@ import { LampRole } from "./devices/lamp-role";
 import { DipSwitchState } from "./dip-switch-state";
 import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
 import { writeFileSync } from "fs";
-import { DisplayFormatter } from "./devices/display-formatter";
+import { DataFormatter } from "./data-formatter";
 import { ConfigLoader } from "./config-loader";
 
 function onUncaughtError(err) {
@@ -300,7 +300,7 @@ export class Game {
                 }
             }
             else if (desiredState.type === OutputDeviceType.DISPLAY) {
-                const formattedString = DisplayFormatter.format(
+                const formattedString = DataFormatter.format(
                     desiredState.getState() as string,
                     data
                 );

@@ -1,3 +1,4 @@
+import { DataEvaluator } from "../../data-evaluator";
 import { RuleData } from "../rule-data";
 import { ActionType, DataActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
@@ -12,7 +13,7 @@ export class DataAction extends Action {
     onAction(): void {
         const currentOperand: number = typeof this.operand === 'number' ?
             this.operand :
-            this.getData(this.operand).value;
+            DataEvaluator.evaluate(this.operand, this.data);
 
         switch(this.operation) {
             case DataOperation.INCREMENT:

@@ -25,6 +25,17 @@ describe('data action', () => {
         expect(d0.value).toBe(11);
     });
 
+    it('can increment', () => {
+        // setup
+        const action = new DataAction('d0', DataOperation.INCREMENT, '1');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(11);
+    });
+
     it('can decrement', () => {
         // setup
         const action = new DataAction('d0', DataOperation.DECREMENT, 1);
@@ -81,5 +92,37 @@ describe('data action', () => {
 
         // check
         expect(d0.value).toBe(0);
+    });
+
+    it('can increment another data item', () => {
+        // setup
+        dataMap.set('d1', {
+            id: 'd1',
+            value: 55,
+            initValue: 55
+        });
+        const action = new DataAction('d0', DataOperation.INCREMENT, '${d1}');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(65);
+    });
+
+    it('can evaluate and expression with data', () => {
+        // setup
+        dataMap.set('d1', {
+            id: 'd1',
+            value: 55,
+            initValue: 55
+        });
+        const action = new DataAction('d0', DataOperation.ASSIGN, '${d1} * 10');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(550);
     });
 });
