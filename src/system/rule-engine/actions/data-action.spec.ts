@@ -125,4 +125,15 @@ describe('data action', () => {
         // check
         expect(d0.value).toBe(550);
     });
+
+    it('can evaluate and expression with mod data', () => {
+        // setup
+        const action = new DataAction('d0', DataOperation.ASSIGN, '${d0} % 3');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(1);
+    });
 });
