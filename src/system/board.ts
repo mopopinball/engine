@@ -14,6 +14,7 @@ import { logger } from './logger';
 import { EVENTS, MessageBroker } from "./messages";
 import { LightState } from './devices/light';
 import { DipSwitchState } from './dip-switch-state';
+import { BlinkLightStyle } from './devices/styles/blink-light-style';
 
 /**
  * Manages board IO including status LEDs and dip switch settings.
@@ -28,7 +29,6 @@ export class Board {
     private errorLed: StatusLed;
     private piLed: StatusLed;
     private nodeLed: StatusLed;
-    private ledCollection: OutputDeviceCollection;
     private shutdownInterval: NodeJS.Timeout;
 
     static getInstance(): Board {
@@ -98,7 +98,7 @@ export class Board {
     start(): void {
         // todo: only start this after setup is complete. remove check in status-led
         this.piLed.on();
-        this.nodeLed.setState(LightState.BLINK);
+        this.nodeLed.setStyles([new BlinkLightStyle(1000, LightState.OFF)]);
     }
 
     onWanDown(): void {
@@ -112,12 +112,18 @@ export class Board {
     onShutdownCommand(): void {
         logger.info('Shutting down system.');
         // TODO
-        this.piLed.blink(250);
+        this.piLed.setStyles([new BlinkLightStyle(250, LightState.OFF)]);
         // const resp = spawn('shutdown', ['now'], {stdio: 'pipe', encoding: 'utf-8'});
         // logger.debug(JSON.stringify(resp));
     }
 
     isDebugEnabled(): boolean {
         return true;
+    }
+
+    update(): void {
+        this.errorLed.update();
+        this.piLed.update();
+        this.nodeLed.update();
     }
 }

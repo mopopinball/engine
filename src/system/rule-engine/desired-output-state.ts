@@ -1,7 +1,8 @@
-import { CoilType } from "../devices/coil-type";
 import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
-import { CoilOutputState, DisplayOutputState, LightOutputState, OutputDeviceState, OutputStateType, SoundOutputState } from "./schema/rule.schema";
+import { BlinkLightStyle } from "../devices/styles/blink-light-style";
+import { Style } from "../devices/styles/style";
+import { OutputStateType } from "./schema/rule.schema";
 
 export declare type DesiredOutputStateType = LightState | boolean | string;
 
@@ -10,12 +11,27 @@ export class DesiredOutputState {
     private preTempState: DesiredOutputStateType;
     public temp = false;
     
-    static constructFromOutputState(ouputState: OutputStateType) {
+    static constructFromOutputState(ouputState: OutputStateType): DesiredOutputState {
         switch(ouputState.type) {
             case OutputDeviceType.SOUND:
                 return new DesiredOutputState(
                     ouputState.id, ouputState.type, ouputState.play
                 );
+                case OutputDeviceType.LIGHT: {
+                    const styles = [];
+                    const style = BlinkLightStyle.build(ouputState.style);
+                    if (style) {
+                        styles.push(style);
+                    }
+                    
+                    return new DesiredOutputState(
+                        ouputState.id, ouputState.type, ouputState.state, styles
+                    );
+                }
+                case OutputDeviceType.DISPLAY:
+                    return new DesiredOutputState(
+                        ouputState.id, ouputState.type, ouputState.state
+                    );
             default:
                 return new DesiredOutputState(
                     ouputState.id, ouputState.type, ouputState.state
@@ -27,12 +43,13 @@ export class DesiredOutputState {
         public readonly id: string,
         public readonly type: OutputDeviceType,
         // public readonly coilType: CoilType,
-        private initialState: DesiredOutputStateType
+        private initialState: DesiredOutputStateType,
+        public styles: Style[] = []
     ) {
         this.currentState = initialState;
     }
 
-    setInitialState(state: DesiredOutputStateType) {
+    setInitialState(state: DesiredOutputStateType): void {
         this.initialState = state;
         this.currentState = state;
     }

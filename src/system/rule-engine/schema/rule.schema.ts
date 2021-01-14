@@ -35,6 +35,7 @@ export interface OutputDeviceState {
 export interface LightOutputState extends OutputDeviceState {
     type: OutputDeviceType.LIGHT;
     state: LightState;
+    style?: OutputStyle
 }
 
 export interface CoilOutputState extends OutputDeviceState {
@@ -50,6 +51,11 @@ export interface SoundOutputState extends OutputDeviceState {
 export interface DisplayOutputState extends OutputDeviceState {
     type: OutputDeviceType.DISPLAY;
     state: string;
+    style?: OutputStyle
+}
+
+export interface OutputStyle {
+    [key: string]: string | number | OutputStyle;
 }
 
 export type OutputStateType = LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;

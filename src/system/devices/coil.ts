@@ -63,6 +63,10 @@ export class Coil extends OutputDevice {
         }
     }
 
+    public update(): void {
+        // intentionally nothing
+    }
+
     getNumber(): number {
         return this.number;
     }

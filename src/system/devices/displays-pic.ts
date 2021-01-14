@@ -69,11 +69,11 @@ export class DisplaysPic extends Pic {
      */
     async update(displayState: Sys80or80ADisplay): Promise<void> {
         if (this.system === SystemName.SYS80 || this.system === SystemName.SYS80A) {
-            this.setBuffer(1, displayState.player1);
-            this.setBuffer(7, displayState.player2);
-            this.setBuffer(13, displayState.player3);
-            this.setBuffer(19, displayState.player4);
-            this.setBuffer(25, displayState.status);
+            this.setBuffer(1, displayState.player1.currentValue);
+            this.setBuffer(7, displayState.player2.currentValue);
+            this.setBuffer(13, displayState.player3.currentValue);
+            this.setBuffer(19, displayState.player4.currentValue);
+            this.setBuffer(25, displayState.status.currentValue);
         }
 
         this.logBuffer(this.buffer);

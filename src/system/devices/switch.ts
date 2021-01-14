@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 import { DelayedCallback } from "../delayed-callback";
-import { MessageBroker } from "../messages";
 
 /**
  * An abstract switch.

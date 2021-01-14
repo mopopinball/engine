@@ -54,5 +54,7 @@ export abstract class OutputDevice extends DirtyNotifier {
         }
     }
 
+    public abstract update(): void;
+
     public abstract getNumber(): number;
 }

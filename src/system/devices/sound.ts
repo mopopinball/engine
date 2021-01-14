@@ -19,6 +19,10 @@ export class Sound extends OutputDevice {
         }
     }
 
+    public update(): void {
+        // intentionally nothing
+    }
+
     public getNumber(): number {
         return this.number;
     }

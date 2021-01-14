@@ -22,7 +22,7 @@ export class DeviceAction extends Action {
     }
 
     public rollback(): void {
-        const device = this.devices.get(this.state.id).resetTemp();
+        this.devices.get(this.state.id).resetTemp();
     }
 
     toJSON(): DeviceActionSchema {

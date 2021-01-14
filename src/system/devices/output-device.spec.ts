@@ -33,6 +33,10 @@ class TestOutputDevice extends OutputDevice {
     constructor() {
         super('id', 'id', OutputDeviceType.LIGHT);
     }
+ 
+    public update(): void {
+        throw new Error("Method not implemented.");
+    }
 
     getNumber(): number {
         return null;

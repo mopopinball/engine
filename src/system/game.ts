@@ -34,6 +34,7 @@ import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger
 import { writeFileSync } from "fs";
 import { DataFormatter } from "./data-formatter";
 import { ConfigLoader } from "./config-loader";
+import { GameClock } from "./game-clock";
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);
@@ -42,12 +43,6 @@ function onUncaughtError(err) {
 process.on('uncaughtException', (err) => onUncaughtError(err));
 process.on('unhandledRejection', (reason) => onUncaughtError(reason));
 
-const MS_PER_FRAME = 33; // 30 fps
-// 3 ticks = .1 seconds
-// 6 ticks = .2s
-// 15 ticks = .5s
-// 30 ticks = 1s; clock is tick % fps
-
 /**
  * The Mopo Pinball engine.
  */
@@ -55,11 +50,11 @@ export class Game {
     // maintenance: any;
     // security: any;
     // server: any;
+    clock: GameClock = GameClock.getInstance();
     displays: Sys80or80ADisplay;
     name: string;
     fpsTracker: FpsTracker;
     ruleEngine: RuleEngine;
-    lastPayload: string;
     private switches: Map<string, PlayfieldSwitch> = new Map();
     private switchAliases: Map<string, string[]> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
@@ -278,6 +273,7 @@ export class Game {
                 if (lamp.getState() !== desiredState.getState()) {
                     lamp.setState(desiredState.getState() as LightState);
                 }
+                lamp.setStyles(desiredState.styles);
             }
             else if (desiredState.type === OutputDeviceType.COIL) {
                 const coil = this.coils.get(desiredState.id);
@@ -306,22 +302,22 @@ export class Game {
                 );
                 switch(desiredState.id) {
                     case DisplayId.PLAYER1:
-                        this.displays.setPlayerDisplay(1, formattedString);
+                        this.displays.setPlayerDisplay(1, formattedString, desiredState.styles);
                     break;
                     case DisplayId.PLAYER2:
-                        this.displays.setPlayerDisplay(2, formattedString);
+                        this.displays.setPlayerDisplay(2, formattedString, desiredState.styles);
                     break;
                     case DisplayId.PLAYER3:
-                        this.displays.setPlayerDisplay(3, formattedString);
+                        this.displays.setPlayerDisplay(3, formattedString, desiredState.styles);
                     break;
                     case DisplayId.PLAYER4:
-                        this.displays.setPlayerDisplay(4, formattedString);
+                        this.displays.setPlayerDisplay(4, formattedString, desiredState.styles);
                     break;
                     case DisplayId.BALLNUM:
-                        this.displays.setBall(formattedString);
+                        this.displays.setBall(formattedString, desiredState.styles);
                     break;
                     case DisplayId.CREDITS:
-                        this.displays.setCredits(formattedString);
+                        this.displays.setCredits(formattedString, desiredState.styles);
                     break;
                 }
              }
@@ -407,19 +403,32 @@ export class Game {
     }
 
     private async gameLoop(): Promise<void> {
-        const start = this.getCurrentTime();
+        this.clock.startLoop();
         try {
             this.update();
         }
         catch (e) {
             logger.error(`${e.message} ${e.stack}`);
         }
+
+        try {
+            for(const outputDevice of this.outputDevices) {
+                outputDevice.update();
+            }
+            this.displays.update();
+            this.board.update(); // the board has LEDs which require the clock to blink.
+        }
+        catch (e) {
+            logger.error(`${e.message} ${e.stack}`);
+        }
+
         try {
             await this.updateDevices();
         }
         catch (e) {
             logger.error(`${e.message} ${e.stack}`);
         }
+
         try {
             await this._updateDisplays();
         }
@@ -429,14 +438,10 @@ export class Game {
 
         // Determine how long to wait before executing next loop iteration in order to meet
         // our desired FPS.
-        const end = this.getCurrentTime();
-        this.fpsTracker.sampleLoopTime(end - start);
+        this.clock.endLoop();
+        this.fpsTracker.sampleLoopTime(this.clock.getLoopDuration());
 
-        let loopDelay = start + MS_PER_FRAME - end;
-        if (loopDelay < 0) {
-            loopDelay = 0;
-        }
-        setTimeout(() => this.gameLoop(), loopDelay);
+        setTimeout(() => this.gameLoop(), this.clock.getLoopDelay());
     }
 
     private getCurrentTime(): number {
@@ -503,9 +508,9 @@ export class Game {
     }
 
     async _updateDisplays(): Promise<void> {
-        if (this.displays.getHash() !== this.lastPayload) {
-            this.lastPayload = this.displays.getHash();
+        if (this.displays.getIsDirty()) {
             await DisplaysPic.getInstance().update(this.displays);
+            this.displays.clean();
         }
     }
 

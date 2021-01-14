@@ -1,0 +1,48 @@
+import { GameClock } from "../../game-clock";
+import { OutputStyle } from "../../rule-engine/schema/rule.schema";
+import { LightState } from "../light";
+import { Style } from "./style";
+
+export class BlinkLightStyle implements Style {
+    private currentState: LightState;
+    private remaining = 0;
+    private lastStart: number = null;
+    
+    constructor(public readonly interval: number, initState: LightState) {
+        this.currentState = initState;
+        this.remaining = interval;
+    }
+
+    // accepts a style in the format "blink: 250"
+    static build(style?: OutputStyle): BlinkLightStyle {
+        if (!style) {
+            return null;
+        }
+        const blinkStyleEntry = Object.entries(style).find((entry) => entry[0] === 'blink');
+        if (blinkStyleEntry) {
+            return new BlinkLightStyle(blinkStyleEntry[1] as number, LightState.OFF);
+        } else {
+            return null;
+        }
+    }
+
+    update(): LightState {
+        const startTime = GameClock.getInstance().loopStart;
+        const diff = startTime - (this.lastStart ?? startTime);
+        this.lastStart = startTime;
+        this.remaining -= diff;
+
+        if (this.remaining <= 0) {
+            if (this.currentState === LightState.ON) {
+                this.currentState = LightState.OFF;
+            }
+            else {
+                this.currentState = LightState.ON;
+            }
+            this.remaining = this.interval;
+        }
+
+        return this.currentState;
+    }
+
+}

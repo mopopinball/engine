@@ -1,9 +1,5 @@
-import { DesiredOutputState } from "../desired-output-state";
-import { RuleData } from "../rule-data";
-import { RuleEngine } from "../rule-engine";
 import { ActionType, StateActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
-import { SwitchActionTrigger } from "./switch-action-trigger";
 
 export class StateAction extends Action {
     constructor(private startTargetId: string, private stopTargetId: string

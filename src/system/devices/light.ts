@@ -1,5 +1,6 @@
 import { OutputDevice } from "./output-device";
 import { OutputDeviceType } from "./output-device-type";
+import { Style } from "./styles/style";
 
 export enum LightState {
     OFF,
@@ -11,16 +12,23 @@ export enum LightState {
  * An abstract light.
  */
 export class Light extends OutputDevice {
-    private blinkInterval: NodeJS.Timeout = null;
-    private pulseTimeout: NodeJS.Timeout = null;
+    private styleState?: LightState;
 
-    constructor(id: string, name: string, protected state: LightState) {
+    constructor(
+        id: string,
+        name: string,
+        protected state: LightState,
+        private styles: Style[] = []
+    ) {
         super(id, name, OutputDeviceType.LIGHT);
         this.setState(state);
     }
+
+    setStyles(styles: Style[]): void {
+        this.styles = styles;
+    }
     
     setState(state: LightState, stateParam?: number): void {
-        this.clearTimers();
         this.state = state;
         if (state === LightState.ON) {
             this.on();
@@ -28,16 +36,10 @@ export class Light extends OutputDevice {
         else if (state === LightState.OFF) {
             this.off();
         }
-        else if (state === LightState.BLINK) {
-            this.blink(stateParam);
-        }
-        else {
-            throw new Error('not impl');
-        }
     }
 
     getState(): LightState {
-        return this.state;
+        return this.styleState ?? this.state;
     }
 
     set(): void {
@@ -66,29 +68,13 @@ export class Light extends OutputDevice {
         }
     }
 
-    // pulse(pulseDurationMs: number): void {
-    //     this.on();
-    //     clearTimeout(this.pulseTimeout);
-    //     this.pulseTimeout = setTimeout(() => this.off(), pulseDurationMs);
-    // }
-
-    blink(intervalMs = 1000): void {
-        this.blinkStop();
-        this.blinkInterval = setInterval(() => {
-            this.toggle();
-        }, intervalMs);
-    }
-
-    blinkStop(): void {
-        clearInterval(this.blinkInterval);
-    }
-
-    clearTimers(): void {
-        clearInterval(this.blinkInterval);
-        clearTimeout(this.pulseTimeout);
-    }
-
     getNumber(): number {
         return null;
+    }
+
+    public update(): void {
+        for(const style of this.styles) {
+            this.styleState = style.update() as LightState;
+        }
     }
 }
