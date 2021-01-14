@@ -12,7 +12,7 @@ export enum LightState {
  * An abstract light.
  */
 export class Light extends OutputDevice {
-    private styleState?: LightState;
+    protected styleState?: LightState;
 
     constructor(
         id: string,
@@ -73,8 +73,16 @@ export class Light extends OutputDevice {
     }
 
     public update(): void {
+        const init = this.styleState;
         for(const style of this.styles) {
             this.styleState = style.update() as LightState;
+        }
+        if (init !== this.styleState) {
+            if (this.styleState === LightState.ON) {
+                this.on();
+            } else if (this.styleState === LightState.OFF) {
+                this.off();
+            }
         }
     }
 }
