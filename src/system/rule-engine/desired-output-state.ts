@@ -2,7 +2,7 @@ import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
 import { BlinkLightStyle } from "../devices/styles/blink-light-style";
 import { Style } from "../devices/styles/style";
-import { OutputStateType } from "./schema/rule.schema";
+import { LightOutputState, OutputStateType } from "./schema/rule.schema";
 
 export declare type DesiredOutputStateType = LightState | boolean | string;
 
@@ -98,8 +98,22 @@ export class DesiredOutputState {
                 return {id: this.id, type: this.type, play: this.initialState as boolean};
             case OutputDeviceType.COIL:
                 return {id: this.id, type: this.type, state: this.initialState as boolean};
-            case OutputDeviceType.LIGHT:
-                return {id: this.id, type: this.type, state: this.initialState as LightState};
+            case OutputDeviceType.LIGHT: {
+                const response: LightOutputState = {
+                    id: this.id, type: this.type,
+                    state: this.initialState as LightState
+                };
+                // TODO: Make this better.
+                if (this.styles?.length) {
+                    response.style = {};
+                }
+                this.styles.forEach((s) => {
+                    if (s instanceof BlinkLightStyle) {
+                        response.style['blink'] = s.interval;
+                    }
+                });
+                return response;
+            }
             case OutputDeviceType.DISPLAY:
                 return {id: this.id, type: this.type, state: this.initialState as string};
         }

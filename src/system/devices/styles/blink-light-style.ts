@@ -8,7 +8,7 @@ export class BlinkLightStyle implements Style {
     private remaining = 0;
     private lastStart: number = null;
     
-    constructor(public readonly interval: number, initState: LightState) {
+    constructor(public interval: number, initState: LightState) {
         this.currentState = initState;
         this.remaining = interval;
     }
@@ -44,5 +44,11 @@ export class BlinkLightStyle implements Style {
 
         return this.currentState;
     }
+
+    // toJSON(): OutputStyle {
+    //     return {
+    //         blink: this.interval
+    //     }
+    // }
 
 }
