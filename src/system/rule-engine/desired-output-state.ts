@@ -39,7 +39,7 @@ export class DesiredOutputState {
                     }
 
                     return new DesiredOutputState(
-                        outputState.id, outputState.type, outputState.state
+                        outputState.id, outputState.type, outputState.state, styles
                     );
                 }
             default:
