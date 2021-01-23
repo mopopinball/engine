@@ -20,4 +20,8 @@ export class IdActionTrigger extends ActionTrigger {
             actions: convertedBase.actions
         };
     }
+
+    toString(): string {
+        return `Id trigger ${this.id}`;
+    }
 }

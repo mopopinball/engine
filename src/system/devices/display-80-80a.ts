@@ -99,6 +99,7 @@ export class Sys80or80ADisplay {
         displayState.currentValue = value;
         displayState.initValue = value;
         displayState.styles = styles;
+        displayState.dirty = true;
     }
 
     private _updateStatus(): void {

@@ -14,4 +14,6 @@ export abstract class ActionTrigger {
             actions: this.actions.map((a) => a.toJSON())
         }
     }
+
+    abstract toString(): string;
 }

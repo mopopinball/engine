@@ -57,6 +57,10 @@ export class DataAction extends Action {
             operand: this.operand
         }
     }
+
+    toString(): string {
+        return `Data action: ${this.dataKey} ${this.operation} ${this.operation}`;   
+    }
 }
 
 export enum DataOperation {

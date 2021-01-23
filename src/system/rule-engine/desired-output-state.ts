@@ -1,8 +1,9 @@
 import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
+import { BlinkDisplayStyle } from "../devices/styles/blink-display-style";
 import { BlinkLightStyle } from "../devices/styles/blink-light-style";
 import { Style } from "../devices/styles/style";
-import { LightOutputState, OutputStateType } from "./schema/rule.schema";
+import { DisplayOutputState, LightOutputState, OutputStateType } from "./schema/rule.schema";
 
 export declare type DesiredOutputStateType = LightState | boolean | string;
 
@@ -11,30 +12,39 @@ export class DesiredOutputState {
     private preTempState: DesiredOutputStateType;
     public temp = false;
     
-    static constructFromOutputState(ouputState: OutputStateType): DesiredOutputState {
-        switch(ouputState.type) {
+    static constructFromOutputState(outputState: OutputStateType): DesiredOutputState {
+        switch(outputState.type) {
             case OutputDeviceType.SOUND:
                 return new DesiredOutputState(
-                    ouputState.id, ouputState.type, ouputState.play
+                    outputState.id, outputState.type, outputState.play
                 );
                 case OutputDeviceType.LIGHT: {
+                    // TODO: Make better
                     const styles = [];
-                    const style = BlinkLightStyle.build(ouputState.style);
+                    const style = BlinkLightStyle.build(outputState.style);
                     if (style) {
                         styles.push(style);
                     }
                     
                     return new DesiredOutputState(
-                        ouputState.id, ouputState.type, ouputState.state, styles
+                        outputState.id, outputState.type, outputState.state, styles
                     );
                 }
-                case OutputDeviceType.DISPLAY:
+                case OutputDeviceType.DISPLAY: {
+                    // TODO: Make better
+                    const styles = [];
+                    const style = BlinkDisplayStyle.build(outputState.state, outputState.style);
+                    if (style) {
+                        styles.push(style);
+                    }
+
                     return new DesiredOutputState(
-                        ouputState.id, ouputState.type, ouputState.state
+                        outputState.id, outputState.type, outputState.state
                     );
+                }
             default:
                 return new DesiredOutputState(
-                    ouputState.id, ouputState.type, ouputState.state
+                    outputState.id, outputState.type, outputState.state
                 );
         }
     }
@@ -114,8 +124,23 @@ export class DesiredOutputState {
                 });
                 return response;
             }
-            case OutputDeviceType.DISPLAY:
-                return {id: this.id, type: this.type, state: this.initialState as string};
+            case OutputDeviceType.DISPLAY: {
+                const response: DisplayOutputState = {
+                    id: this.id,
+                    type: this.type,
+                    state: this.initialState as string
+                };
+                // TODO: Make this better.
+                if (this.styles?.length) {
+                    response.style = {};
+                }
+                this.styles.forEach((s) => {
+                    if (s instanceof BlinkDisplayStyle) {
+                        response.style['blink'] = s.interval;
+                    }
+                });
+                return response;
+            }
         }
     }
 }

@@ -53,4 +53,8 @@ export class TimerActionTrigger extends ActionTrigger {
             actions: convertedBase.actions
         };
     }
+
+    toString(): string {
+        return `Timer trigger ${this.id} (${this.valueMs})ms`;
+    }
 }

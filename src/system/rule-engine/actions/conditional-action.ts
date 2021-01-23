@@ -81,4 +81,8 @@ export class ConditionalAction extends Action {
         };
     }
 
+    toString(): string {
+        return `Conditional action: ${this.condition}`;   
+    }
+
 }

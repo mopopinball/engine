@@ -507,7 +507,7 @@ export class Game {
         };
     }
 
-    async _updateDisplays(): Promise<void> {
+    private async _updateDisplays(): Promise<void> {
         if (this.displays.getIsDirty()) {
             await DisplaysPic.getInstance().update(this.displays);
             this.displays.clean();

@@ -196,7 +196,9 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         if (matchingTrigger) {
+            // logger.debug(`Activating trigger ${matchingTrigger}`);
             for(const action of matchingTrigger.actions) {
+                // logger.debug(`Activating action ${action}`)
                 action.handle(
                     RuleEngine.root,
                     this.getInheritedData(),

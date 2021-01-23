@@ -21,5 +21,9 @@ export class SwitchActionTrigger extends ActionTrigger {
             actions: convertedBase.actions
         };
     }
+
+    toString(): string {
+        return `Switch trigger ${this.switchId} (${this.holdIntervalMs}ms)`;
+    }
 }
 

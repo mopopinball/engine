@@ -27,4 +27,6 @@ export abstract class Action extends DirtyNotifier {
     }
     
     public abstract toJSON(): ActionSchemaType;
+
+    public abstract toString(): string;
 }

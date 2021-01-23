@@ -1,7 +1,7 @@
 export class DelayedCallback {
     private timeout: NodeJS.Timeout;
     
-    constructor(private callback: () => void, private delay: number) {
+    constructor(private callback: () => void, public readonly delay: number) {
     }
 
     start(): void {

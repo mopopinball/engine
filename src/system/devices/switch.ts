@@ -74,6 +74,9 @@ export abstract class Switch extends EventEmitter {
     }
 
     public onPress(callback: () => void, holdTime = 0): void {
+        if (this.holdCallbacks.find((hc) => hc.delay === holdTime)) {
+            return;
+        }
         this.holdCallbacks.push(new DelayedCallback(callback, holdTime));
     }
 

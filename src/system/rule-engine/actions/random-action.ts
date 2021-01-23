@@ -57,4 +57,8 @@ export class RandomAction extends Action {
             })
         };
     }
+
+    toString(): string {
+        return `Random action: todo`;   
+    }
 }

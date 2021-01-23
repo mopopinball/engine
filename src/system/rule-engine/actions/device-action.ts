@@ -31,4 +31,8 @@ export class DeviceAction extends Action {
             state: this.state.toJSON()
         }
     }
+
+    toString(): string {
+        return `Device action: ${this.state.id} = ${this.state.getState()}`;
+    }
 }
