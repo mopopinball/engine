@@ -12,7 +12,7 @@ const picPath = '/home/pi/mopo/pics';
 export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
-    private readonly outputDir = '/home/pi/mopo-updatetest/';
+    private readonly outputDir = '/home/pi/mopo/';
 
     private static instance: Update;
 
