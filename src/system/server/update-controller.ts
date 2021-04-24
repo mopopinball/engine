@@ -1,5 +1,6 @@
 import express from 'express';
 import { Board } from '../board';
+import { GithubRelease } from '../github-release';
 import { EVENTS, MessageBroker } from '../messages';
 import { Update } from '../update';
 import { Controller } from "./controller";
@@ -13,6 +14,12 @@ export class UpdateController implements Controller {
                 system: availableUpdate,
                 pics: availablePicUpdate
             });
+        });
+
+        app.post('/update/apply', async (req, res) => {
+            const selectedUpdate = req.body as GithubRelease;
+            await Update.getInstance().applySystemUpdate(selectedUpdate, true);
+            res.send({result: 'ok'});
         });
 
         app.get('/update/ruleEngine/status', (req, res) => {

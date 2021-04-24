@@ -5,6 +5,7 @@ import { InfoMqttMessage } from "../../../system/messages"
 import {ClientDevice} from '../../../system/server/client-device';
 import {DipSwitchState} from '../../../system/dip-switch-state';
 import {GithubRelease} from '../../../system/github-release';
+import {AvailableUpdate} from '../../../system/server/available-update';
 import {UpdateDetails} from '../../../system/server/update-details';
 import { HttpClient } from '@angular/common/http';
 
@@ -25,6 +26,7 @@ export class AppComponent implements OnDestroy {
     switches: any[] = [];
     rows = [0,1,2,3,4,5,6,7,8];
     cols = [1,2,3,4,5,6,7,8];
+    systemUpdateInProgress = false;
 
     constructor(private _mqttService: MqttService, private http: HttpClient) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
@@ -93,11 +95,19 @@ export class AppComponent implements OnDestroy {
     }
 
     checkForUpdate(): void {
-        this.http.post('/update/check', {}).subscribe((update: GithubRelease) => {
+        this.http.post('/update/check', {}).subscribe((update: AvailableUpdate) => {
             this.availableUpdate = {
-                system: update,
-                pics: null
+                system: update.system,
+                pics: update.pics
             };
+        });
+    }
+
+    applySystemUpdate(release: GithubRelease): void {
+        this.systemUpdateInProgress = true;
+        this.http.post('/update/apply', release).subscribe(() => {
+            this.availableUpdate.system = null;
+            this.systemUpdateInProgress = false;
         });
     }
 }

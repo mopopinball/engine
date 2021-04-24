@@ -1,11 +1,14 @@
 <header>
+    <img src="../mopo-logo.svg" width="32px" />
     <div>
-        <h1>{{info?.name}}</h1>
+        <h1>{{info?.name}} Serivce Menu</h1>
         <h2>{{info?.gameName}}</h2>
     </div>
     <div>
         <div>{{info?.version}}<button (click)="checkForUpdate()">Check</button></div>
-        <div *ngIf="availableUpdate">Version {{availableUpdate.system.name}} is available!</div>
+        <div *ngIf="availableUpdate?.system">Version {{availableUpdate.system.name}} is available!
+            <button (click)="applySystemUpdate(availableUpdate.system)" [disabled]="systemUpdateInProgress">Apply</button>
+        </div>
         <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
     </div>
 </header>

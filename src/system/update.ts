@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {x} from 'tar';
-import * as packageManifest from '../../package.json';
+import {version} from '../../package.json';
 // import * as picManifest from '../../pics/package.json';
 import * as semver from 'semver';
 import {logger} from './logger';
@@ -10,9 +10,9 @@ import { existsSync, readFileSync } from 'fs';
 const picPath = '/home/pi/mopo/pics';
 
 export class Update {
-    private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
+    private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
-    private readonly outputDir = '/home/pi/mopo/';
+    private readonly outputDir = '/home/pi/mopo-updatetest/';
 
     private static instance: Update;
 
@@ -28,7 +28,7 @@ export class Update {
     }
 
     getVersion(): string {
-        return packageManifest.version;
+        return version;
     }
 
     getPicVersion(): string {
@@ -63,15 +63,26 @@ export class Update {
         }
     }
 
-    public async applySystemUpdate(release: GithubRelease): Promise<void> {
-        logger.info(`Updating to version ${release.name}...`);
+    public async applySystemUpdate(release: GithubRelease, reset: boolean): Promise<void> {
+        logger.info(`Updating to version ${release.name}. Downloading update...`);
+        const downloadStart = new Date();
         const responseStream = await axios.get(release.tarball_url, {withCredentials: false, responseType: 'stream'});
+        const downloadDuration = (new Date().valueOf()) - downloadStart.valueOf();
+        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting...`);
+        const extractStart = new Date();
         responseStream.data.pipe(
             x({
+                sync: true,
                 strip: 1,
                 C: this.outputDir
               })
         );
+        const extractDone = (new Date().valueOf()) - extractStart.valueOf();
+        logger.info(`Update extracted in ${extractDone}ms.`);
+        if(reset) {
+            logger.info('Restarting Mopo Pinball in 5 seconds.');
+            setTimeout(() => process.exit(), 5000);
+        }
     }
 
     public async downloadPicsUpdate(release: GithubRelease): Promise<void> {
@@ -79,6 +90,7 @@ export class Update {
         const responseStream = await axios.get(release.tarball_url, {withCredentials: false, responseType: 'stream'});
         responseStream.data.pipe(
             x({
+                sync: true,
                 strip: 1,
                 C: picPath
               })

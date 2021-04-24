@@ -1,5 +1,10 @@
 header {
     display: flex;
+
+    img {
+        margin-right: 1em;
+    }
+
     h1, h2, h3 {
         display: inline-block;
     }
