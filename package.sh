@@ -11,12 +11,12 @@ mkdir dist
 # cp -r site/dist/site dist/site
 
 # Install then compile the engine
-npm install --production
+npm install
 tsc
 
 # Install then compile the service menu site
 pushd src/admin
-npm install --production
+npm install
 ng build
 popd
 
