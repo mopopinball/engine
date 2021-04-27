@@ -13,7 +13,7 @@ export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
     private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases'
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
-    private readonly engineOutDir = '/home/pi/mopo-test/';
+    private readonly engineOutDir = '/home/pi/mopo/';
     private readonly serviceMenuDir = '/home/pi/mopo-test/admin'
 
     private static instance: Update;
@@ -74,7 +74,7 @@ export class Update {
             await this.applySystemUpdate(release, reset);
         }
         else if (release.url.indexOf('mopopinball/service-menu') >= 0) {
-            await this.applyServiceMenuUpdate(release, reset);
+            await this.applyServiceMenuUpdate(release);
         }
     }
 
@@ -87,13 +87,9 @@ export class Update {
         }
     }
 
-    private async applyServiceMenuUpdate(release: GithubRelease, reset: boolean): Promise<void> {
+    private async applyServiceMenuUpdate(release: GithubRelease): Promise<void> {
         logger.info(`Updating to Service Menu version ${release.name}.`);
         await this.applyUpdateWorker(release, this.serviceMenuDir);
-        if(reset) {
-            logger.info('Restarting Mopo Pinball in 5 seconds.');
-            setTimeout(() => process.exit(), 5000);
-        }
     }
 
     private async applyUpdateWorker(release: GithubRelease, outDir: string): Promise<void> {
@@ -101,12 +97,12 @@ export class Update {
         const downloadStart = new Date();
         const responseStream = await axios.get(release.assets[0].browser_download_url, {withCredentials: false, responseType: 'stream'});
         const downloadDuration = (new Date().valueOf()) - downloadStart.valueOf();
-        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting...`);
+        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting to ${outDir}...`);
         const extractStart = new Date();
         responseStream.data.pipe(
             x({
                 sync: true,
-                strip: 1,
+                strip: 2,
                 C: outDir
               })
         );
