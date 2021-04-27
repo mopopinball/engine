@@ -11,8 +11,10 @@ const picPath = '/home/pi/mopo/pics';
 
 export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
+    private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases'
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
-    private readonly outputDir = '/home/pi/mopo/';
+    private readonly engineOutDir = '/home/pi/mopo-test/';
+    private readonly serviceMenuDir = '/home/pi/mopo-test/admin'
 
     private static instance: Update;
 
@@ -43,6 +45,10 @@ export class Update {
         return this.isUpdateAvailable(this.engineReleaseUrl, prerelease, this.getVersion());
     }
 
+    public async getAvailableServiceMenuUpdate(prerelease: boolean): Promise<GithubRelease> {
+        return this.isUpdateAvailable(this.serviceMenuReleaseUrl, prerelease, '0.0.0');
+    }
+
     public async getAvailablePicUpdate(prerlease: boolean): Promise<GithubRelease> {
         return this.isUpdateAvailable(this.picsReleaseUrl, prerlease, this.getPicVersion());
     }
@@ -63,10 +69,37 @@ export class Update {
         }
     }
 
-    public async applySystemUpdate(release: GithubRelease, reset: boolean): Promise<void> {
-        logger.info(`Updating to version ${release.name}. Downloading update...`);
+    public async applyUpdate(release: GithubRelease, reset: boolean): Promise<void> {
+        if (release.url.indexOf('mopopinball/engine') >= 0) {
+            await this.applySystemUpdate(release, reset);
+        }
+        else if (release.url.indexOf('mopopinball/service-menu') >= 0) {
+            await this.applyServiceMenuUpdate(release, reset);
+        }
+    }
+
+    private async applySystemUpdate(release: GithubRelease, reset: boolean): Promise<void> {
+        logger.info(`Updating to version ${release.name}.`);
+        await this.applyUpdateWorker(release, this.engineOutDir);
+        if(reset) {
+            logger.info('Restarting Mopo Pinball in 5 seconds.');
+            setTimeout(() => process.exit(), 5000);
+        }
+    }
+
+    private async applyServiceMenuUpdate(release: GithubRelease, reset: boolean): Promise<void> {
+        logger.info(`Updating to Service Menu version ${release.name}.`);
+        await this.applyUpdateWorker(release, this.serviceMenuDir);
+        if(reset) {
+            logger.info('Restarting Mopo Pinball in 5 seconds.');
+            setTimeout(() => process.exit(), 5000);
+        }
+    }
+
+    private async applyUpdateWorker(release: GithubRelease, outDir: string): Promise<void> {
+        logger.info(`Downloading update...`);
         const downloadStart = new Date();
-        const responseStream = await axios.get(release.tarball_url, {withCredentials: false, responseType: 'stream'});
+        const responseStream = await axios.get(release.assets[0].browser_download_url, {withCredentials: false, responseType: 'stream'});
         const downloadDuration = (new Date().valueOf()) - downloadStart.valueOf();
         logger.info(`Update downloaded in ${downloadDuration}ms. Extracting...`);
         const extractStart = new Date();
@@ -74,15 +107,11 @@ export class Update {
             x({
                 sync: true,
                 strip: 1,
-                C: this.outputDir
+                C: outDir
               })
         );
         const extractDone = (new Date().valueOf()) - extractStart.valueOf();
         logger.info(`Update extracted in ${extractDone}ms.`);
-        if(reset) {
-            logger.info('Restarting Mopo Pinball in 5 seconds.');
-            setTimeout(() => process.exit(), 5000);
-        }
     }
 
     public async downloadPicsUpdate(release: GithubRelease): Promise<void> {

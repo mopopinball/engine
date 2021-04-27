@@ -14,12 +14,6 @@ mkdir dist
 npm install
 tsc
 
-# Install then compile the service menu site
-pushd src/admin
-npm install
-ng build
-popd
-
 # TODO: Get the pics from their latest release on GitHub.
 # mkdir dist/pics
 # cp pics/mopo-switches/dist/default/production/mopo-switches.production.hex dist/pics
@@ -41,3 +35,5 @@ cp package.json dist
 cp package-lock.json dist
 rsync -r --verbose src/games/ dist/src/games
 rsync -r --verbose setup/ dist/setup
+
+tar cvzf dist.tar.gz ./dist

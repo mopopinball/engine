@@ -9,16 +9,18 @@ export class UpdateController implements Controller {
     setup(app: express.Express): void {
         app.post('/update/check', async (req, res) => {
             const availableUpdate = await Update.getInstance().getAvailableSystemUpdate(true);
+            const availableServiceMenuUpdate = await Update.getInstance().getAvailableServiceMenuUpdate(true);
             const availablePicUpdate = await Update.getInstance().getAvailablePicUpdate(true);
             res.send({
                 system: availableUpdate,
-                pics: availablePicUpdate
+                pics: availablePicUpdate,
+                serviceMenu: availableServiceMenuUpdate
             });
         });
 
         app.post('/update/apply', async (req, res) => {
             const selectedUpdate = req.body as GithubRelease;
-            await Update.getInstance().applySystemUpdate(selectedUpdate, true);
+            await Update.getInstance().applyUpdate(selectedUpdate, true);
             res.send({result: 'ok'});
         });
 
@@ -36,7 +38,6 @@ export class UpdateController implements Controller {
 
             MessageBroker.getInstance().emit(EVENTS.NEW_RULE_SCHEMA, req.body);
             res.send({});
-            // res.sendStatus(200);
         });
     }
 }

@@ -2,5 +2,6 @@ import { GithubRelease } from "../github-release";
 
 export interface AvailableUpdate {
     system: GithubRelease,
-    pics: GithubRelease
+    pics: GithubRelease,
+    serviceMenu: GithubRelease
 }
