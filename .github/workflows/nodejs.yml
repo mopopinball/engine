@@ -41,13 +41,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Install Angular
-        run: npm install -g @angular/cli@10
       - name: Package
         run: ./package.sh
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.MOPOPACKAGES }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: npm run semantic-release
