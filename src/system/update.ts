@@ -14,7 +14,7 @@ export class Update {
     private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases'
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
     private readonly engineOutDir = '/home/pi/mopo/';
-    private readonly serviceMenuDir = '/home/pi/mopo-test/admin'
+    private readonly serviceMenuDir = '/home/pi/mopo-test/admin/'
 
     private static instance: Update;
 
@@ -97,13 +97,14 @@ export class Update {
         const downloadStart = new Date();
         const responseStream = await axios.get(release.assets[0].browser_download_url, {withCredentials: false, responseType: 'stream'});
         const downloadDuration = (new Date().valueOf()) - downloadStart.valueOf();
-        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting to ${outDir}...`);
+        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting to ${outDir}`);
         const extractStart = new Date();
         responseStream.data.pipe(
             x({
                 sync: true,
                 strip: 2,
-                C: outDir
+                C: outDir,
+                keep: false
               })
         );
         const extractDone = (new Date().valueOf()) - extractStart.valueOf();
