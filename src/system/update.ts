@@ -5,7 +5,9 @@ import {version} from '../../package.json';
 import * as semver from 'semver';
 import {logger} from './logger';
 import { GithubRelease } from './github-release';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, rmdirSync, mkdirSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import * as Rsync from 'rsync';
 
 const picPath = '/home/pi/mopo/pics';
 
@@ -13,8 +15,8 @@ export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
     private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases'
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
-    private readonly engineOutDir = '/home/pi/mopo/';
-    private readonly serviceMenuDir = '/home/pi/mopo-test/admin/'
+    private readonly engineOutDir = '/home/pi/mopo/engine';
+    private readonly serviceMenuDir = '/home/pi/mopo/servicemenu/'
 
     private static instance: Update;
 
@@ -82,6 +84,7 @@ export class Update {
         logger.info(`Updating to version ${release.name}.`);
         await this.applyUpdateWorker(release, this.engineOutDir);
         if(reset) {
+            // TODO: We need to npm install somewhere
             logger.info('Restarting Mopo Pinball in 5 seconds.');
             setTimeout(() => process.exit(), 5000);
         }
@@ -92,23 +95,65 @@ export class Update {
         await this.applyUpdateWorker(release, this.serviceMenuDir);
     }
 
+    private makeTempDir(): string {
+        const uuid = uuidv4();
+        const dir = `/tmp/${uuid}`;
+        mkdirSync(dir);
+        return dir;
+    }
+
     private async applyUpdateWorker(release: GithubRelease, outDir: string): Promise<void> {
         logger.info(`Downloading update...`);
         const downloadStart = new Date();
         const responseStream = await axios.get(release.assets[0].browser_download_url, {withCredentials: false, responseType: 'stream'});
         const downloadDuration = (new Date().valueOf()) - downloadStart.valueOf();
-        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting to ${outDir}`);
+        const tempDir = this.makeTempDir();
+        logger.info(`Update downloaded in ${downloadDuration}ms. Extracting to ${tempDir}`);
+
         const extractStart = new Date();
-        responseStream.data.pipe(
-            x({
-                sync: true,
-                strip: 2,
-                C: outDir,
-                keep: false
-              })
-        );
-        const extractDone = (new Date().valueOf()) - extractStart.valueOf();
-        logger.info(`Update extracted in ${extractDone}ms.`);
+        await this.extractResponse(responseStream, tempDir);
+
+        const source = `${tempDir}/`;
+        const rsyncCommand = Rsync.build({
+            recursive: true,
+            delete: true,
+            exclude: [
+                'hardware-config.json',
+                'gamestate-config.json',
+                'node_modules',
+                'mopo.log'
+            ],
+            source: source,
+            destination: outDir
+        });
+        rsyncCommand.set('verbose');
+
+        logger.info(`Syncing from ${source} to ${outDir} with command: ${rsyncCommand.command()}`);
+
+        return new Promise((resolve) => {
+            rsyncCommand.execute(
+                () => {
+                    const extractDone = (new Date().valueOf()) - extractStart.valueOf();
+                    logger.info(`Update extracted in ${extractDone}ms.`);
+                    rmdirSync(tempDir, { recursive: true });
+                    resolve();
+                },
+                (data) => logger.info(data),
+                (data) => logger.error(data)
+            );
+        });
+    }
+
+    private extractResponse(responseStream, outDir: string): Promise<void> {
+        return new Promise((resolve) => {
+            responseStream.data.pipe(
+                x({
+                    sync: true,
+                    strip: 2,
+                    C: outDir
+                  })
+            ).on('end', () => resolve());
+        });
     }
 
     public async downloadPicsUpdate(release: GithubRelease): Promise<void> {
