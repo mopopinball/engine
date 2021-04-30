@@ -61,7 +61,7 @@ export class Update {
         const candidates: GithubRelease[] = await (await axios.get(releaseUrl)).data;
         
         const releases = candidates.filter((r) =>
-            r.prerelease === prerelease && semver.gt(r.tag_name, currentVersion)
+            r.prerelease === prerelease && semver.gt(r.name, currentVersion)
         );
         
         if (releases.length === 0) {
