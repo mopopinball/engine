@@ -5,9 +5,10 @@ import {version} from '../../package.json';
 import * as semver from 'semver';
 import {logger} from './logger';
 import { GithubRelease } from './github-release';
-import { existsSync, readFileSync, rmdirSync, mkdirSync } from 'fs';
+import { existsSync, readFileSync, mkdirSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import * as Rsync from 'rsync';
+import * as del from 'del';
 
 const picPath = '/home/pi/mopo/pics';
 
@@ -118,8 +119,6 @@ export class Update {
             recursive: true,
             delete: true,
             exclude: [
-                'hardware-config.json',
-                'gamestate-config.json',
                 'node_modules',
                 'mopo.log'
             ],
@@ -135,7 +134,7 @@ export class Update {
                 () => {
                     const extractDone = (new Date().valueOf()) - extractStart.valueOf();
                     logger.info(`Update extracted in ${extractDone}ms.`);
-                    rmdirSync(tempDir, { recursive: true });
+                    del.sync(tempDir);
                     resolve();
                 },
                 (data) => logger.info(data),

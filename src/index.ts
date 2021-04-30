@@ -6,7 +6,7 @@ const hardwareConfigPath = '/home/pi/mopo/hardware-config.json';
 const gamestateConfigPath = '/home/pi/mopo/gamestate-config.json';
 
 if (!existsSync(hardwareConfigPath) || !existsSync(gamestateConfigPath)) {
-    throw new Error('Required config file(s) are missing. Please run ./setup/select-game.');
+    throw new Error('Required config file(s) are missing. Please run /home/pi/mopo/engine/select-game.sh');
 }
 
 new Game(

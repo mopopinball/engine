@@ -20,12 +20,13 @@ export class GameSelector {
         terminal.bold('Select a game:');
 
         // find all game configs.
-        const gamesDir = '/home/pi/mopo/src/games';
+        const gamesDir = '/home/pi/mopo/engine/src/games';
         const gameConfigs: GameOption[] = [];
         const gameDirs = readdirSync(gamesDir);
         for(const gameDir of gameDirs) {
             for(const file of readdirSync(`${gamesDir}/${gameDir}`)) {
-                if (file !== 'hardware-config.json') {
+                // TODO: Fix this check
+                if (file !== 'hardware-config.json' && file !== 'switch-alias.center-targets.json') {
                     const rules = JSON.parse(readFileSync(`${gamesDir}/${gameDir}/${file}`, {encoding: 'utf8'})) as unknown as RuleSchema
                     const entry = {
                         label: `[${gameDir}] ${rules.metadata.name} - ${rules.metadata.description.substr(0, 50)}`,

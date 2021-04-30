@@ -11,7 +11,7 @@ mkdir dist
 # cp -r site/dist/site dist/site
 
 # Install then compile the engine
-npm install
+npm install --frozen-lockfile
 tsc
 
 # TODO: Get the pics from their latest release on GitHub.
@@ -31,6 +31,7 @@ cp flash_sw.sh dist
 cp flash_dr.sh dist
 cp flash_disp.sh dist
 cp debug.sh dist
+cp select-game.sh dist
 cp package.json dist
 cp package-lock.json dist
 rsync -r --verbose src/games/ dist/src/games

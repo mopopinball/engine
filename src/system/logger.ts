@@ -16,7 +16,7 @@ export const logger = createLogger({
 
 if (process.env.NODE_ENV === 'production') {
     logger.add(new transports.File({
-        filename: '/home/pi/mopo/mopo.log',
+        filename: '/home/pi/mopo/engine/mopo.log',
         maxsize: 4194304,
         maxFiles: 5,
         tailable: true

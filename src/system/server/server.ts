@@ -23,7 +23,7 @@ export class Server {
     }
 
     setupWebserverBindings(): void {
-        const staticDir = path.resolve(__dirname + '../../../../admin');
+        const staticDir = path.resolve('/home/pi/mopo/servicemenu');
         logger.info(`Setting static dir to ${staticDir}`);
         const users = {
             admin: Security.getInstance().getPinCode().toString(),
