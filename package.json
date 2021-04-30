@@ -7,7 +7,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "engines": {
-    "node": "10.18.0"
+    "node": ">10"
   },
   "main": "src/game.js",
   "scripts": {
