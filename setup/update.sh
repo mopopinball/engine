@@ -5,8 +5,8 @@ set -eou pipefail
 # UPDATES TO THE LATEST VERSION OF MOPO PINBALL
 echo Updating Mopo Pinball
 
-ENGRELEASE=https://github.com/mopopinball/engine/releases/download/v1.0.0-beta.62/dist.tar.gz
-MENURELEASE=https://github.com/mopopinball/service-menu/releases/download/v1.0.0-beta.6/dist.tar.gz
+ENGRELEASE=https://github.com/mopopinball/engine/releases/download/v1.0.0-beta.63/dist.tar.gz
+MENURELEASE=https://github.com/mopopinball/service-menu/releases/download/v1.0.0-beta.7/dist.tar.gz
 DIR=/tmp/mopo-update
 
 echo Downloading the engine
