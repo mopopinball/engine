@@ -2,6 +2,8 @@
 
 set -eou pipefail
 
+# SETUP SCRIPT FOR THE "pi" USER
+
 # Node and NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
