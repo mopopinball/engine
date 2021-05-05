@@ -4,7 +4,7 @@ import { GithubRelease } from '../github-release';
 import { EVENTS, MessageBroker } from '../messages';
 import { Update } from '../update';
 import { Controller } from "./controller";
-import * as cors from 'cors';
+import cors from 'cors';
 
 export class UpdateController implements Controller {
     setup(app: express.Express): void {
