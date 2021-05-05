@@ -4,6 +4,7 @@ import { GithubRelease } from '../github-release';
 import { EVENTS, MessageBroker } from '../messages';
 import { Update } from '../update';
 import { Controller } from "./controller";
+import * as cors from 'cors';
 
 export class UpdateController implements Controller {
     setup(app: express.Express): void {
@@ -24,13 +25,13 @@ export class UpdateController implements Controller {
             res.send({result: 'ok'});
         });
 
-        app.get('/update/ruleEngine/status', (req, res) => {
+        app.get('/update/ruleEngine/status', cors(), (req, res) => {
             res.send({
                 debugEnabled: Board.getInstance().isDebugEnabled()
             });
         });
 
-        app.post('/update/ruleEngine/schema', (req, res) => {
+        app.post('/update/ruleEngine/schema', cors(), (req, res) => {
             if (!Board.getInstance().isDebugEnabled()) {
                 res.sendStatus(401);
                 return;

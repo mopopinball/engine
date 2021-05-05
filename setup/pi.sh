@@ -35,4 +35,5 @@ cp pgmifcfg.xml ~
 rm -rf picpgm_install
 cd ~
 
-# TODO: Download mopo, npm install it and setup the game.
+# Download Mopo, npm install it and setup the game.
+curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/update.sh | bash

@@ -28,5 +28,3 @@ tar xf menu.tar.gz -C $DIR --strip-components=2
 rm menu.tar.gz
 rsync -r --delete --exclude=node_modules --verbose $DIR/ /home/pi/mopo/servicemenu
 rm -rf $DIR
-echo Installing the service menu...
-npm ci --production --prefix /home/pi/mopo/servicemenu
