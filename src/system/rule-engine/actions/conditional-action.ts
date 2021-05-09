@@ -1,5 +1,6 @@
 import { DataEvaluator } from "../../data-evaluator";
 import { logger } from "../../logger";
+import { RuleEngine } from "../rule-engine";
 import { ActionType, ConditionalActionConditionSchema, ConditionalActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
@@ -42,9 +43,9 @@ export class ConditionalAction extends Action {
         });
 
         if (areConditionsSatasified && this.trueTriggerId) {
-            this.engines.get(this.trueTriggerId).start();
+            this.rootEngine.onTrigger(this.trueTriggerId);
         } else if (this.falseTriggerId) {
-            this.engines.get(this.falseTriggerId).start();
+            this.rootEngine.onTrigger(this.falseTriggerId);
         }
     }
 
