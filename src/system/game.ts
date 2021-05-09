@@ -58,6 +58,7 @@ export class Game {
     private switches: Map<string, PlayfieldSwitch> = new Map();
     private switchAliases: Map<string, string[]> = new Map();
     private switchesByNumber: Map<number, PlayfieldSwitch> = new Map();
+    private switchesById: Map<string, PlayfieldSwitch> = new Map();
     private lamps: Map<string, PlayfieldLamp> = new Map();
     private coils: Map<string, Coil> = new Map();
     private sounds: Map<string, Sound> = new Map();
@@ -145,6 +146,7 @@ export class Game {
         this.ruleEngine.getAllTimerTriggers().forEach((t) => {
             t.eventEmitter.on('tick', () => this.ruleEngine.onTrigger(t.id));
         });
+        RuleEngine.switchesById = this.switchesById;
         this.ruleEngine.start();
         this.engineDirty = true;
         
@@ -342,6 +344,7 @@ export class Game {
             this.switches.set(playfieldSwitch.id, playfieldSwitch);
             // add the PIC convience lookup.
             this.switchesByNumber.set(playfieldSwitch.number, playfieldSwitch);
+            this.switchesById.set(playfieldSwitch.id, playfieldSwitch);
         }
 
         this.lamps.clear();

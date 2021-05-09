@@ -1,3 +1,4 @@
+import { PlayfieldSwitch } from "../devices/playfield-switch";
 import { DirtyNotifier } from "../dirty-notifier";
 import { logger } from "../logger";
 import { Action } from "./actions/action";
@@ -15,6 +16,7 @@ import { ActionType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchem
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
+    static switchesById: Map<string, PlayfieldSwitch>;
     active = false;
     name: string;
     description: string;
@@ -343,6 +345,16 @@ export class RuleEngine extends DirtyNotifier {
     private getTimerTriggers(): TimerActionTrigger[] {
         return this.triggers
             .filter((t) => t.type === TriggerType.TIMER) as TimerActionTrigger[];
+    }
+
+    isSwitchInState(switchId: string, activated: boolean): boolean {
+        const sw = RuleEngine.switchesById.get(switchId);
+        if (sw) {
+            return sw.getActive() === activated;
+        }
+        else {
+            return false;
+        }
     }
 
     toJSON() {

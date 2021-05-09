@@ -92,14 +92,24 @@ export interface StateActionSchema {
     stopTargetId: string;
 }
 
+export interface ConditionalActionDataConditionSchema {
+    conditionType: 'data',
+    dataId: string,
+    operator: Operator,
+    operand: number
+}
+
+export interface ConditionalActionSwitchConditionSchema {
+    conditionType: 'switch',
+    switchId: string,
+    activated: boolean,
+}
+
+export type ConditionalActionConditionSchema = ConditionalActionDataConditionSchema | ConditionalActionSwitchConditionSchema;
+
 export interface ConditionalActionSchema {
     type: ActionType.CONDITION;
-    condition: {
-        conditionType: string,
-        dataId: string,
-        operator: Operator,
-        operand: number
-    };
+    condition: ConditionalActionConditionSchema | ConditionalActionConditionSchema[];
     trueTriggerId: string;
     falseTriggerId: string;
 }

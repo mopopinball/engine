@@ -1,35 +1,47 @@
 import { DataEvaluator } from "../../data-evaluator";
 import { logger } from "../../logger";
-import { ActionType, ConditionalActionSchema } from "../schema/rule.schema";
+import { ActionType, ConditionalActionConditionSchema, ConditionalActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
 export type Operator = '>' | '<' | '<=' | '>=' | '===' | '!=';
 
-export type DataCondition = {
-    conditionType: string,
-    dataId: string,
-    operator: Operator,
-    operand: number
+export interface DataCondition {
+    conditionType: 'data';
+    dataId: string;
+    operator: Operator;
+    operand: number;
 }
 
-export type Condition = DataCondition;
+export interface SwitchCondition {
+    conditionType: 'switch';
+    switchId: string;
+    activated: boolean;
+}
+
+export type Condition = DataCondition | SwitchCondition;
 
 export class ConditionalAction extends Action {
     constructor(
-        private condition: Condition, private trueTriggerId: string, private falseTriggerId: string
+        private conditions: Condition[], private trueTriggerId: string, private falseTriggerId: string
     ) {
         super();
     }
     
     onAction(): void {
-        let result: boolean;
-        switch(this.condition.conditionType) {
-            case 'data':
-                result = this.onData(this.condition);
-                break;
-        }
+        // determine if the action is satasified.
+        const areConditionsSatasified = this.conditions.every((condition) => {
+            switch(condition.conditionType) {
+                case 'data':
+                    return this.onData(condition);
+                    break;
+                case 'switch':
+                    return this.onSwitch(condition);
+                default:
+                    logger.warn(`Cannot process condition type.`);
+            }
+        });
 
-        if (result && this.trueTriggerId) {
+        if (areConditionsSatasified && this.trueTriggerId) {
             this.rootEngine.onTrigger(this.trueTriggerId);
         } else if (this.falseTriggerId) {
             this.rootEngine.onTrigger(this.falseTriggerId);
@@ -44,35 +56,74 @@ export class ConditionalAction extends Action {
         return result;
     }
 
+    onSwitch(switchCondition: SwitchCondition): boolean {
+        logger.debug(`[Conditional Switch Action] Evaluating ${switchCondition.switchId} is ${switchCondition.activated}`);
+        return this.rootEngine.isSwitchInState(switchCondition.switchId, switchCondition.activated);
+    }
+
     static fromJSON(actionSchema: ConditionalActionSchema): ConditionalAction {
+        const conditions: Condition[] = actionSchema.condition instanceof Array ?
+        actionSchema.condition.map((c): Condition => this.createCondition(c)) :
+            [this.createCondition(actionSchema.condition)];
         return new ConditionalAction(
-            {
-                conditionType: actionSchema.condition.conditionType,
-                dataId: actionSchema.condition.dataId,
-                operator: actionSchema.condition.operator,
-                operand: actionSchema.condition.operand
-            },
+            conditions,
             actionSchema.trueTriggerId,
             actionSchema.falseTriggerId
         );
     }
 
+    private static createCondition(c: ConditionalActionConditionSchema): Condition {
+        switch (c.conditionType) {
+            case 'data': 
+                return {
+                    conditionType: c.conditionType,
+                    dataId: c.dataId,
+                    operator: c.operator,
+                    operand: c.operand
+                };
+            case 'switch':
+                return {
+                    conditionType: c.conditionType,
+                    switchId: c.switchId,
+                    activated: c.activated,
+                };
+            default:
+                logger.warn(`Unexpected condition type, skipping.`);
+        }
+        
+    }
+
     toJSON(): ConditionalActionSchema {
         return {
             type: ActionType.CONDITION,
-            condition: {
-                conditionType: this.condition.conditionType,
-                dataId: this.condition.dataId,
-                operator: this.condition.operator,
-                operand: this.condition.operand
-            },
+            condition: this.conditions.map((c) => this.toConditionJson(c)),
             trueTriggerId: this.trueTriggerId,
             falseTriggerId: this.falseTriggerId
         };
     }
 
+    private toConditionJson(condition: Condition): ConditionalActionConditionSchema {
+        switch (condition.conditionType) {
+            case 'data':
+                return {
+                    conditionType: 'data',
+                    dataId: condition.dataId,
+                    operator: condition.operator,
+                    operand: condition.operand
+                };
+            case 'switch':
+                return {
+                    conditionType: 'switch',
+                    switchId: condition.switchId,
+                    activated: condition.activated
+                };
+            default:
+                logger.warn('Cannot serialized condition.');
+        }
+    }
+
     toString(): string {
-        return `Conditional action: ${this.condition}`;   
+        return `Conditional actions: ${this.conditions.map((c) => c.conditionType).join(', ')}`;   
     }
 
 }
