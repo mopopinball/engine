@@ -15,7 +15,7 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 5. On the Pi run the following command
 
 ```
-sudo curl -o- https://todo/setup.sh | bash
+curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/update.sh | bash
 ```
 
 6. Select your game.
