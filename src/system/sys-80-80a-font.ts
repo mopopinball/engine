@@ -1,4 +1,4 @@
-const font = [0, 0, // NUL, SOH
+export const font = [0, 0, // NUL, SOH
     0,
     0,
     0,
@@ -65,7 +65,7 @@ const font = [0, 0, // NUL, SOH
     119, // A
     207, // B
     57, // C
-    0,
+    143, // D
     121, // E
     113, // F
     61, // G
@@ -82,11 +82,11 @@ const font = [0, 0, // NUL, SOH
     49, // R
     109, // S
     129, // T
+    62, // U
     0,
     0,
     0,
-    0,
-    0,
+    110, // Y
     0,
     0,
     0,
@@ -126,5 +126,3 @@ const font = [0, 0, // NUL, SOH
     0,
     0
 ];
-
-module.exports = font;

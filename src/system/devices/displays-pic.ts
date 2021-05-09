@@ -1,7 +1,7 @@
 import { SystemName } from "../game";
 import { Sys80or80ADisplay } from "./display-80-80a";
 import { logger } from "../logger";
-import font from "../sys-80-80a-font";
+import {font} from "../sys-80-80a-font";
 import { Pic } from "./pic";
 
 
@@ -95,7 +95,7 @@ export class DisplaysPic extends Pic {
                 const asciiCode = message.charCodeAt(i);
                 const fontByte = font[asciiCode];
                 if (fontByte === 0 && asciiCode !== 32) {
-                    logger.warn(`Ascii char "${asciiCode}" appears undefined as 0.`);
+                    logger.warn(`Ascii char "${message.charAt(i)}(${asciiCode})" appears undefined as 0.`);
                 }
                 this.buffer[offset + i] = fontByte;
             }

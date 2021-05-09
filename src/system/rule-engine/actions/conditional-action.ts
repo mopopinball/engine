@@ -39,8 +39,9 @@ export class ConditionalAction extends Action {
     onData(dataCondition: DataCondition): boolean {
         const d = this.data.get(dataCondition.dataId);
         const expression = `${d.value} ${dataCondition.operator} ${dataCondition.operand}`;
-        logger.debug(`[Conditional Data Action] Evaluating ${dataCondition.dataId}=${d.value} as "${expression}"`);
-        return DataEvaluator.evaluateBoolean(expression);
+        const result = DataEvaluator.evaluateBoolean(expression);
+        logger.debug(`[Conditional Data Action] Evaluating ${dataCondition.dataId}=${d.value} as "${expression}". Result = ${result}`);
+        return result;
     }
 
     static fromJSON(actionSchema: ConditionalActionSchema): ConditionalAction {
