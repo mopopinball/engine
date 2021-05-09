@@ -7,6 +7,15 @@ export abstract class DataEvaluator {
 
     public static evaluate(expressionString: string, data: Map<string, RuleData>): number {
         const formattedString = DataFormatter.format(expressionString, data);
+        return DataEvaluator.evaluateFormattedString(formattedString);
+    }
+
+    public static evaluateBoolean(formattedString: string): boolean {
+        const sanatizedFormattedString = formattedString.replace('===', '==');
+        return this.evaluateFormattedString(sanatizedFormattedString);
+    }
+
+    private static evaluateFormattedString(formattedString: string) {
         const expression = this.parser.parse(formattedString);
         return expression.evaluate();
     }

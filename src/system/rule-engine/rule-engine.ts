@@ -135,6 +135,7 @@ export class RuleEngine extends DirtyNotifier {
     start(): void {
         // when starting, need to reset any state, or clone it to reset on end?
         this.active = true;
+        logger.debug(`[Start State] ${this.name}`);
         this.devices.forEach((d) => d.reset());
         this.getTimerTriggers()
             .forEach((t: TimerActionTrigger) => t.start());
@@ -145,6 +146,7 @@ export class RuleEngine extends DirtyNotifier {
 
     stop(): void {
         this.active = false;
+        logger.debug(`[Stop State] ${this.name}`);
 
         // non-instant devices which were adjusted by a device action are reset on our stop()/exit.
         this.rollbackActions.forEach((d) => d.rollback());
@@ -196,9 +198,9 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         if (matchingTrigger) {
-            // logger.debug(`Activating trigger ${matchingTrigger}`);
+            logger.debug(`[Handle Trigger] ${matchingTrigger.toString()}`);
             for(const action of matchingTrigger.actions) {
-                // logger.debug(`Activating action ${action}`)
+                logger.debug(`[Handle Action] ${action.toString()}`)
                 action.handle(
                     RuleEngine.root,
                     this.getInheritedData(),

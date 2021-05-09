@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { logger } from "../../logger";
 import { TimerActionTriggerSchema, TriggerType } from "../schema/rule.schema";
 import { ActionTrigger } from "./action-trigger"
 
@@ -19,6 +20,7 @@ export class TimerActionTrigger extends ActionTrigger {
 
     public start(): void {
         this.stop();
+        logger.debug(`[Start Timer Action] ${this.id}`);
         
         if (this.mode === TimerActionTriggerMode.INTERVAL) {
             this.timeout = setInterval(() => this.tick(), this.valueMs);
@@ -28,11 +30,16 @@ export class TimerActionTrigger extends ActionTrigger {
     }
 
     public stop(): void {
+        if (this.timeout) {
+            logger.debug(`[Stop Timer Action] ${this.id}`);
+        }
+
         if (this.mode === TimerActionTriggerMode.INTERVAL) {
             clearInterval(this.timeout);
         } else {
             clearTimeout(this.timeout);
         }
+        this.timeout = null;
     }
 
     private tick(): void {

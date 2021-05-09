@@ -1,3 +1,5 @@
+import { DataEvaluator } from "../../data-evaluator";
+import { logger } from "../../logger";
 import { ActionType, ConditionalActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
@@ -36,22 +38,9 @@ export class ConditionalAction extends Action {
 
     onData(dataCondition: DataCondition): boolean {
         const d = this.data.get(dataCondition.dataId);
-        switch(dataCondition.operator) {
-            case '>':
-                return d.value > dataCondition.operand;
-            case '<':
-                return d.value < dataCondition.operand;
-            case '<=':
-                return d.value <= dataCondition.operand;
-            case '>=':
-                return d.value >= dataCondition.operand;
-            case '===':
-                return d.value === dataCondition.operand;
-            case '!=':
-                return d.value != dataCondition.operand;
-            default:
-                throw new Error('not impl');
-        }
+        const expression = `${d.value} ${dataCondition.operator} ${dataCondition.operand}`;
+        logger.debug(`[Conditional Data Action] Evaluating ${dataCondition.dataId}=${d.value} as "${expression}"`);
+        return DataEvaluator.evaluateBoolean(expression);
     }
 
     static fromJSON(actionSchema: ConditionalActionSchema): ConditionalAction {

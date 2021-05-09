@@ -9,7 +9,7 @@ import {padStart} from 'lodash';
  */
 export abstract class Pic {
     protected i2c1: PromisifiedBus;
-    protected readonly DEBUG = true;
+    protected readonly DEBUG = false;
 
     constructor(private readonly picAddress: number, private name: string) {
     }

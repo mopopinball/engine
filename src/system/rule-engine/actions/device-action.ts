@@ -1,3 +1,4 @@
+import { logger } from "../../logger";
 import { DesiredOutputState } from "../desired-output-state";
 import { ActionType, DeviceActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
@@ -14,6 +15,7 @@ export class DeviceAction extends Action {
         const device = this.devices.get(this.state.id);
         // const requiresRollback = this.state.isInstantState();
         // this.rollback.push(device);
+        // logger.debug(`[Device Action] Setting ${device.id} state to ${this.state.getState()}`);
         device.setState(this.state.getState(), true);
     }
 
