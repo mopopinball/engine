@@ -1,12 +1,13 @@
-import { RuleData } from "../rule-data";
+import { NumberData } from "../rule-data";
 import { DataAction, DataOperation } from "./data-action";
 
 describe('data action', () => {
-    let d0: RuleData = null;
-    const dataMap = new Map<string, RuleData>();
+    let d0: NumberData = null;
+    const dataMap = new Map<string, NumberData>();
 
     beforeEach(() => {
         d0 = {
+            type: 'number',
             id: 'd0',
             value: 10,
             initValue: 10
@@ -97,6 +98,7 @@ describe('data action', () => {
     it('can increment another data item', () => {
         // setup
         dataMap.set('d1', {
+            type: 'number',
             id: 'd1',
             value: 55,
             initValue: 55
@@ -113,6 +115,7 @@ describe('data action', () => {
     it('can evaluate and expression with data', () => {
         // setup
         dataMap.set('d1', {
+            type: 'number',
             id: 'd1',
             value: 55,
             initValue: 55

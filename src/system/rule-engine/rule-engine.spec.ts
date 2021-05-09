@@ -226,6 +226,7 @@ describe('Rules', () => {
 
         function addData(ruleEngine: RuleEngine, id: string, value: number, reset = false): void {
             ruleEngine.data.set(id, {
+                type: null,
                 id: id,
                 value: value,
                 initValue: value,

@@ -1,6 +1,6 @@
 import { DataEvaluator } from "../../data-evaluator";
 import { logger } from "../../logger";
-import { RuleData } from "../rule-data";
+import { NumberData } from "../rule-data";
 import { ActionType, DataActionSchema } from "../schema/rule.schema";
 import { Action } from "./action";
 
@@ -12,9 +12,11 @@ export class DataAction extends Action {
     }
     
     onAction(): void {
+        // Note: We rely here on a config which contains a operand who's value only references NubmerData. If this is not true,
+        // DataEvaluator.evaluate will fail because it will try to evaluate a non-numeric expression.
         const currentOperand: number = typeof this.operand === 'number' ?
             this.operand :
-            DataEvaluator.evaluate(this.operand, this.data);
+            DataEvaluator.evaluate(this.operand, this.data as Map<string, NumberData>);
 
         logger.debug(`[Data Action] Evaluating ${currentOperand} ${this.operation} ${this.getData().value}`);
 
@@ -40,8 +42,8 @@ export class DataAction extends Action {
         }
     }
 
-    private getData(dataKey: string = this.dataKey): RuleData {
-        return this.data.get(dataKey);
+    private getData(dataKey: string = this.dataKey): NumberData {
+        return this.data.get(dataKey) as NumberData;
     }
 
     public static fromJSON(actionSchema: DataActionSchema): DataAction {

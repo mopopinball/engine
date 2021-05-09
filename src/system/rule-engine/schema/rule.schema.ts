@@ -8,7 +8,7 @@ export interface RuleSchema {
     id: string;
     metadata?: RuleMetadata;
     autostart: boolean;
-    data: DataSchema[];
+    data: DataSchemaType[];
     devices: [LightOutputState | CoilOutputState | SoundOutputState],
     triggers: [SwitchActionTriggerSchema],
     children: RuleSchema[]
@@ -19,11 +19,25 @@ export interface RuleMetadata {
     description: string;
 }
 
-export interface DataSchema {
-    id: string;
-    value: number;
+export type DataSchemaType = NumberDataSchema | StringDataSchema;
+
+export interface NumberDataSchema extends DataSchema<number> {
+    type: 'number';
     attributes?: {
         isWholeNumber?: boolean,
+        resetOnStateStop?: boolean
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface StringDataSchema extends DataSchema<string> {
+    type: 'string';
+}
+
+export interface DataSchema<T> {
+    id: string;
+    value: T;
+    attributes?: {
         resetOnStateStop?: boolean
     }
 }

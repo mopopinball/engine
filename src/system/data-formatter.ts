@@ -1,10 +1,10 @@
-import { RuleData } from "./rule-engine/rule-data";
+import { DataItem, NumberData } from "./rule-engine/rule-data";
 
 export abstract class DataFormatter {
     private static readonly re = /\${(\w+)}/g;
 
     // the desired output will be in the format 'string${data}'. Populate that now.
-    public static format(formatString: string, data: Map<string, RuleData>): string {
+    public static format(formatString: string, data: Map<string, DataItem>): string {
         let output = formatString;
         let match;
         do {

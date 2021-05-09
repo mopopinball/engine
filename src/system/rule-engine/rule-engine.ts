@@ -11,8 +11,8 @@ import { StateAction } from "./actions/state-action";
 import { SwitchActionTrigger } from "./actions/switch-action-trigger";
 import { TimerActionTrigger } from "./actions/timer-action-trigger";
 import { DesiredOutputState } from "./desired-output-state";
-import { RuleData } from "./rule-data";
-import { ActionType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TimerActionTriggerSchema, TriggerType } from "./schema/rule.schema";
+import { DataItem, NumberData } from "./rule-data";
+import { ActionType, DataSchemaType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TimerActionTriggerSchema, TriggerType } from "./schema/rule.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -20,7 +20,7 @@ export class RuleEngine extends DirtyNotifier {
     active = false;
     name: string;
     description: string;
-    data: Map<string, RuleData> = new Map();
+    data: Map<string, DataItem> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
     rollbackActions: DeviceAction[] = [];
     triggers: ActionTriggerType[] = [];
@@ -61,12 +61,7 @@ export class RuleEngine extends DirtyNotifier {
 
         if (schema.data) {
             for (const data of schema.data) {
-                engine.data.set(data.id, {
-                    id: data.id,
-                    value: data.value,
-                    initValue: data.value,
-                    attributes: data.attributes
-                });
+                engine.data.set(data.id, this.fromJsonData(data));
             }
         }
 
@@ -250,8 +245,8 @@ export class RuleEngine extends DirtyNotifier {
     }
 
     // compressed data.
-    getData(parentData: Map<string, RuleData> = new Map()): Map<string, RuleData> {
-        let newData: Map<string, RuleData> = new Map();
+    getData(parentData: Map<string, DataItem> = new Map()): Map<string, DataItem> {
+        let newData: Map<string, DataItem> = new Map();
         // copy parent data
         for (const entry of Array.from(parentData.entries())) {
             newData.set(entry[0], entry[1]);
@@ -300,8 +295,8 @@ export class RuleEngine extends DirtyNotifier {
         return this.children.filter((c) => c.active);
     }
 
-    public getInheritedData(): Map<string, RuleData> {
-        const parentData = this.parent ? this.parent.getInheritedData() : new Map<string, RuleData>();
+    public getInheritedData(): Map<string, DataItem> {
+        const parentData = this.parent ? this.parent.getInheritedData() : new Map<string, NumberData>();
 
         // apply our data over our parents
         for(const d of this.data) {
@@ -368,8 +363,15 @@ export class RuleEngine extends DirtyNotifier {
             children: this.children,
             triggers: this.triggers,
             devices: Array.from(this.devices.values()),
-            data: Array.from(this.data.values()).map((d) => {
+            data: Array.from(this.data.values()).map((d) => this.toJsonData(d))
+        };
+    }
+
+    private toJsonData(d: DataItem): DataSchemaType {
+        switch(d.type) {
+            case 'number':
                 return {
+                    type: 'number',
                     id: d.id,
                     value: d.initValue,
                     attributes: {
@@ -377,7 +379,39 @@ export class RuleEngine extends DirtyNotifier {
                         resetOnStateStop: d.attributes?.resetOnStateStop
                     }
                 };
-            })
-        };
+            case 'string':
+                return {
+                    type: 'string',
+                    id: d.id,
+                    value: d.initValue,
+                    attributes: {
+                        resetOnStateStop: d.attributes?.resetOnStateStop
+                    }
+                }
+            default:
+                throw new Error('Could not serialize');
+        }
+    }
+
+    private static fromJsonData(data: DataSchemaType): DataItem {
+        switch(data.type) {
+            case 'number':
+            default: // handle backwards compat.
+                return {
+                    type: 'number',
+                    id: data.id,
+                    value: data.value,
+                    initValue: data.value,
+                    attributes: data.attributes
+                };
+            case 'string':
+                return {
+                    type: 'string',
+                    id: data.id,
+                    value: data.value,
+                    initValue: data.value,
+                    attributes: data.attributes
+                };
+        }
     }
 }

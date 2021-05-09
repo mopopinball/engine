@@ -1,11 +1,11 @@
 import { DataFormatter } from "./data-formatter";
-import { RuleData } from "./rule-engine/rule-data";
+import { NumberData } from "./rule-engine/rule-data";
 import {Parser} from 'expr-eval';
 
 export abstract class DataEvaluator {
     private static parser = new Parser();
 
-    public static evaluate(expressionString: string, data: Map<string, RuleData>): number {
+    public static evaluate(expressionString: string, data: Map<string, NumberData>): number {
         const formattedString = DataFormatter.format(expressionString, data);
         return DataEvaluator.evaluateFormattedString(formattedString);
     }
