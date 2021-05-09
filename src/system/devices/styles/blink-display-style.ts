@@ -28,6 +28,10 @@ export class BlinkDisplayStyle implements Style {
         this.remaining = interval;
     }
 
+    updateInitState(newState: string): void {
+        this.initState = newState;
+    }
+
     update(): string {
         const startTime = GameClock.getInstance().loopStart;
         const diff = startTime - (this.lastStart ?? startTime);

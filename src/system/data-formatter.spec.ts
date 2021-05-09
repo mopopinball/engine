@@ -1,5 +1,9 @@
 import { NumberData } from "./rule-engine/rule-data";
 import { DataFormatter } from "./data-formatter";
+import { DesiredOutputState } from "./rule-engine/desired-output-state";
+import { OutputDeviceType } from "./devices/output-device-type";
+import { BlinkDisplayStyle } from "./devices/styles/blink-display-style";
+import { GameClock } from "./game-clock";
 
 describe('display formatter', () => {
     let data: Map<string, NumberData>;

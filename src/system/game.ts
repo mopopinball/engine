@@ -35,6 +35,7 @@ import { writeFileSync } from "fs";
 import { DataFormatter } from "./data-formatter";
 import { ConfigLoader } from "./config-loader";
 import { GameClock } from "./game-clock";
+import { BlinkDisplayStyle } from "./devices/styles/blink-display-style";
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);
@@ -302,6 +303,11 @@ export class Game {
                     desiredState.getState() as string,
                     data
                 );
+                
+                for(const style of desiredState.styles) {
+                    (style as BlinkDisplayStyle).updateInitState(formattedString);
+                }
+
                 switch(desiredState.id) {
                     case DisplayId.PLAYER1:
                         this.displays.setPlayerDisplay(1, formattedString, desiredState.styles);
