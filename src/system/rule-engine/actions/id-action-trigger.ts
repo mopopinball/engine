@@ -22,6 +22,6 @@ export class IdActionTrigger extends ActionTrigger {
     }
 
     toString(): string {
-        return `Id trigger ${this.id}`;
+        return `[Id Trigger] ${this.id}`;
     }
 }

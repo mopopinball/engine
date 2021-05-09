@@ -42,9 +42,9 @@ export class ConditionalAction extends Action {
         });
 
         if (areConditionsSatasified && this.trueTriggerId) {
-            this.rootEngine.onTrigger(this.trueTriggerId);
+            this.engines.get(this.trueTriggerId).start();
         } else if (this.falseTriggerId) {
-            this.rootEngine.onTrigger(this.falseTriggerId);
+            this.engines.get(this.falseTriggerId).start();
         }
     }
 
