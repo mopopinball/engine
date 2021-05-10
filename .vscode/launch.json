@@ -8,10 +8,10 @@
             "type": "node",
             "request": "attach",
             "name": "Attach to remote",
-            "address": "192.168.1.29",
+            "address": "mopo-derp",
             "port": 9229,
             "localRoot": "${workspaceFolder}/dist/src",
-            "remoteRoot": "/home/pi/mopo/src"
+            "remoteRoot": "/home/pi/mopo/engine/src"
           }
     ]
 }
