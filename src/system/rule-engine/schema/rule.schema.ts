@@ -79,6 +79,7 @@ export enum ActionType {
     DEVICE = 'device',
     STATE = 'state',
     CONDITION = 'condition',
+    NAMED = 'named',
     RANDOM = 'random'
 }
 
@@ -108,9 +109,10 @@ export interface StateActionSchema {
 
 export interface ConditionalActionDataConditionSchema {
     conditionType: 'data',
-    dataId: string,
-    operator: Operator,
-    operand: number
+    dataId?: string,
+    operator?: Operator,
+    operand?: number,
+    expression?: string
 }
 
 export interface ConditionalActionSwitchConditionSchema {
@@ -126,6 +128,11 @@ export interface ConditionalActionSchema {
     condition: ConditionalActionConditionSchema | ConditionalActionConditionSchema[];
     trueTriggerId: string;
     falseTriggerId: string;
+}
+
+export interface NamedTriggerActionSchema {
+    type: ActionType.NAMED;
+    triggerId: string;
 }
 
 export interface RandomActionSchema {
@@ -154,7 +161,7 @@ export interface TimerActionTriggerSchema extends ActionTriggerSchema {
     mode: TimerActionTriggerMode
 }
 
-export type ActionSchemaType = DataActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
+export type ActionSchemaType = DataActionSchema | NamedTriggerActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
 
 export interface ActionTriggerSchema {
     actions: ActionSchemaType[]

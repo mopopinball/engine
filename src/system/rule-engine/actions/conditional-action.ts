@@ -8,9 +8,10 @@ export type Operator = '>' | '<' | '<=' | '>=' | '===' | '!=';
 
 export interface DataCondition {
     conditionType: 'data';
-    dataId: string;
-    operator: Operator;
-    operand: number;
+    dataId?: string;
+    operator?: Operator;
+    operand?: number;
+    expression?: string;
 }
 
 export interface SwitchCondition {
@@ -50,11 +51,20 @@ export class ConditionalAction extends Action {
     }
 
     onData(dataCondition: DataCondition): boolean {
-        const d = this.data.get(dataCondition.dataId);
-        const expression = `${d.value} ${dataCondition.operator} ${dataCondition.operand}`;
+        const expression = this.getDataExpression(dataCondition);
         const result = DataEvaluator.evaluateBoolean(expression);
         logger.debug(`[Conditional Data Action] Evaluating ${dataCondition.dataId}=${d.value} as "${expression}". Result = ${result}`);
         return result;
+    }
+
+    private getDataExpression(dataCondition: DataCondition): string {
+        if (dataCondition.expression) {
+            return dataCondition.expression;
+        }
+        else {
+            const d = this.data.get(dataCondition.dataId);
+            return `${d.value} ${dataCondition.operator} ${dataCondition.operand}`;
+        }
     }
 
     onSwitch(switchCondition: SwitchCondition): boolean {
@@ -80,7 +90,8 @@ export class ConditionalAction extends Action {
                     conditionType: c.conditionType,
                     dataId: c.dataId,
                     operator: c.operator,
-                    operand: c.operand
+                    operand: c.operand,
+                    expression: c.expression
                 };
             case 'switch':
                 return {
@@ -110,7 +121,8 @@ export class ConditionalAction extends Action {
                     conditionType: 'data',
                     dataId: condition.dataId,
                     operator: condition.operator,
-                    operand: condition.operand
+                    operand: condition.operand,
+                    expression: condition.expression
                 };
             case 'switch':
                 return {
