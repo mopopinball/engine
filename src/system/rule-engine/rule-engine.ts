@@ -2,17 +2,19 @@ import { PlayfieldSwitch } from "../devices/playfield-switch";
 import { DirtyNotifier } from "../dirty-notifier";
 import { logger } from "../logger";
 import { Action } from "./actions/action";
-import { ActionTriggerType } from "./actions/action-trigger";
+import { ActionTriggerType } from "./actions/trigger";
 import { ConditionalAction } from "./actions/conditional-action";
 import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
-import { IdActionTrigger } from "./actions/id-action-trigger";
+import { IdTrigger } from "./actions/id-trigger";
 import { StateAction } from "./actions/state-action";
-import { SwitchActionTrigger } from "./actions/switch-action-trigger";
-import { TimerActionTrigger } from "./actions/timer-action-trigger";
+import { SwitchTrigger } from "./actions/switch-trigger";
+import { TimerTrigger } from "./actions/timer-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { DataItem, NumberData } from "./rule-data";
-import { ActionType, DataSchemaType, IdActionTriggerSchema, RuleSchema, SwitchActionTriggerSchema, TimerActionTriggerSchema, TriggerType } from "./schema/rule.schema";
+import { ActionType } from "./schema/actions.schema";
+import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
+import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -68,14 +70,14 @@ export class RuleEngine extends DirtyNotifier {
         return engine;
     }
 
-    public createTrigger(triggerSchema: SwitchActionTriggerSchema | IdActionTriggerSchema | TimerActionTriggerSchema): void {
+    public createTrigger(triggerSchema: TriggerSchemasType): void {
         // First, find or create the incoming trigger.
         let trigger: ActionTriggerType = null;
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
                 trigger = this.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                 if (!trigger) {
-                    trigger = SwitchActionTrigger.fromJSON(triggerSchema);
+                    trigger = SwitchTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -83,7 +85,7 @@ export class RuleEngine extends DirtyNotifier {
             case TriggerType.ID: {
                 trigger = this.getTrigger(triggerSchema.id);
                 if (!trigger) {
-                    trigger = IdActionTrigger.fromJSON(triggerSchema);
+                    trigger = IdTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -91,7 +93,7 @@ export class RuleEngine extends DirtyNotifier {
             case TriggerType.TIMER: {
                 trigger = this.getTrigger(triggerSchema.id);
                 if (!trigger) {
-                    trigger = TimerActionTrigger.fromJSON(triggerSchema);
+                    trigger = TimerTrigger.fromJSON(triggerSchema);
                     this.triggers.push(trigger);
                 }
                 break;
@@ -135,7 +137,7 @@ export class RuleEngine extends DirtyNotifier {
         logger.debug(`[Start State] ${this.id}`);
         this.devices.forEach((d) => d.reset());
         this.getTimerTriggers()
-            .forEach((t: TimerActionTrigger) => t.start());
+            .forEach((t: TimerTrigger) => t.start());
         this.children
             .filter((child) => child.autoStart)
             .map((c) => c.start());
@@ -158,7 +160,7 @@ export class RuleEngine extends DirtyNotifier {
         }
         // 2. Stop any running timer triggers.
         this.getTimerTriggers()
-            .forEach((t: TimerActionTrigger) => t.stop());
+            .forEach((t: TimerTrigger) => t.stop());
 
         this.children
             .map((c) => c.stop());
@@ -216,14 +218,14 @@ export class RuleEngine extends DirtyNotifier {
 
     getSwitchTrigger(switchId: string, holdIntervalMs?: number): ActionTriggerType {
         return this.getSwitchTriggers()
-            .find((trigger: SwitchActionTrigger) =>
+            .find((trigger: SwitchTrigger) =>
                 trigger.switchId === switchId &&
                 trigger.holdIntervalMs == holdIntervalMs
             );
     }
 
-    public getAllHoldSwitchTriggers(): SwitchActionTrigger[] {
-        let holdSws: SwitchActionTrigger[] = this.getSwitchTriggers()
+    public getAllHoldSwitchTriggers(): SwitchTrigger[] {
+        let holdSws: SwitchTrigger[] = this.getSwitchTriggers()
             .filter((trigger) => trigger.holdIntervalMs > 0);
 
         for(const c of this.children) {
@@ -233,15 +235,15 @@ export class RuleEngine extends DirtyNotifier {
         return holdSws;
     }
 
-    public getSwitchTriggers(): SwitchActionTrigger[] {
+    public getSwitchTriggers(): SwitchTrigger[] {
         return this.triggers
-            .filter((trigger) => trigger.type === TriggerType.SWITCH) as SwitchActionTrigger[];
+            .filter((trigger) => trigger.type === TriggerType.SWITCH) as SwitchTrigger[];
     }
 
     getTrigger(triggerId: string): ActionTriggerType {
         return this.triggers
             .filter((trigger) => trigger.type === TriggerType.ID || trigger.type === TriggerType.TIMER)
-            .find((trigger: IdActionTrigger) => trigger.id === triggerId);
+            .find((trigger: IdTrigger) => trigger.id === triggerId);
     }
 
     // compressed data.
@@ -327,8 +329,8 @@ export class RuleEngine extends DirtyNotifier {
         return names;
     }
 
-    getAllTimerTriggers(): TimerActionTrigger[] {
-        let timerTriggers: TimerActionTrigger[] = this.getTimerTriggers();
+    getAllTimerTriggers(): TimerTrigger[] {
+        let timerTriggers: TimerTrigger[] = this.getTimerTriggers();
         
         for(const c of this.children) {
             timerTriggers = timerTriggers.concat(c.getAllTimerTriggers());
@@ -337,9 +339,9 @@ export class RuleEngine extends DirtyNotifier {
         return timerTriggers;
     }
 
-    private getTimerTriggers(): TimerActionTrigger[] {
+    private getTimerTriggers(): TimerTrigger[] {
         return this.triggers
-            .filter((t) => t.type === TriggerType.TIMER) as TimerActionTrigger[];
+            .filter((t) => t.type === TriggerType.TIMER) as TimerTrigger[];
     }
 
     isSwitchInState(switchId: string, activated: boolean): boolean {

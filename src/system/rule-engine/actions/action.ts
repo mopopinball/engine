@@ -2,7 +2,7 @@ import { DirtyNotifier } from "../../dirty-notifier";
 import { DesiredOutputState } from "../desired-output-state";
 import { DataItem, NumberData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
-import { ActionSchemaType } from "../schema/rule.schema";
+import { ActionSchemaType } from "../schema/actions.schema";
 
 export abstract class Action extends DirtyNotifier {
     protected rootEngine: RuleEngine;

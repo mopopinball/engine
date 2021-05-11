@@ -1,7 +1,7 @@
 import { DataEvaluator } from "../../data-evaluator";
 import { logger } from "../../logger";
 import { NumberData } from "../rule-data";
-import { ActionType, DataActionSchema } from "../schema/rule.schema";
+import { ActionType, DataActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 
 export class DataAction extends Action {

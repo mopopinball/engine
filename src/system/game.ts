@@ -11,7 +11,7 @@ import { DisplayId, Sys80or80ADisplay } from "./devices/display-80-80a";
 import { FpsTracker } from "./fps-tracker";
 import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
-import { RuleSchema, TriggerType } from "./rule-engine/schema/rule.schema";
+import { RuleSchema } from "./rule-engine/schema/rule.schema";
 import { SwitchPayload } from "./rule-engine/switch-payload";
 
 import {MessageBroker, EVENTS} from './messages';
@@ -30,7 +30,7 @@ import { Update } from "./update";
 import { OutputDeviceType } from "./devices/output-device-type";
 import { LampRole } from "./devices/lamp-role";
 import { DipSwitchState } from "./dip-switch-state";
-import { SwitchActionTrigger } from "./rule-engine/actions/switch-action-trigger";
+import { SwitchTrigger } from "./rule-engine/actions/switch-trigger";
 import { writeFileSync } from "fs";
 import { DataFormatter } from "./data-formatter";
 import { ConfigLoader } from "./config-loader";
@@ -161,7 +161,7 @@ export class Game {
         ConfigLoader.saveRuleSchema(this.ruleEngine);
     }
 
-    wireUpHoldSwitches(holdSwitcheTriggers: SwitchActionTrigger[]): void {
+    wireUpHoldSwitches(holdSwitcheTriggers: SwitchTrigger[]): void {
         const allSwitches = Array.from(this.switches.values());
         for(const sw of allSwitches) {
             sw.clearHoldCallbacks();

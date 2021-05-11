@@ -1,4 +1,4 @@
-import { ActionType, NamedTriggerActionSchema } from "../schema/rule.schema";
+import { ActionType, NamedTriggerActionSchema} from "../schema/actions.schema";
 import { Action } from "./action";
 
 export class NamedTriggerAction extends Action {

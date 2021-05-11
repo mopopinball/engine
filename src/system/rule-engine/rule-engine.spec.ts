@@ -3,7 +3,7 @@ import { RuleEngine } from "./rule-engine";
 import * as testData from "../../../test-data/parent-child.json";
 import * as actionSiblingData from "../../../test-data/action-sibling.json";
 import { LightState } from "../devices/light";
-import { SwitchActionTrigger } from "./actions/switch-action-trigger";
+import { SwitchTrigger } from "./actions/switch-trigger";
 import { DataAction, DataOperation } from "./actions/data-action";
 
 describe('Rules', () => {
@@ -68,7 +68,7 @@ describe('Rules', () => {
         it('getSwitchTrigger - null vs undefined hold time', () => {
             // setup
             ruleEngine.triggers = [];
-            ruleEngine.triggers.push(new SwitchActionTrigger(
+            ruleEngine.triggers.push(new SwitchTrigger(
                 'sw0',
                 null
             ));
@@ -83,7 +83,7 @@ describe('Rules', () => {
         it('getSwitchTrigger - hold time', () => {
             // setup
             ruleEngine.triggers = [];
-            ruleEngine.triggers.push(new SwitchActionTrigger(
+            ruleEngine.triggers.push(new SwitchTrigger(
                 'sw0',
                 666
             ));
@@ -176,7 +176,7 @@ describe('Rules', () => {
         it('switch can trigger data operation', () => {
             // setup
             ruleEngine.triggers = [];
-            ruleEngine.triggers.push(new SwitchActionTrigger(
+            ruleEngine.triggers.push(new SwitchTrigger(
                 'sw0'
             ));
             ruleEngine.triggers[0].actions.push(

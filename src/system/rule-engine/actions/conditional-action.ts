@@ -1,7 +1,6 @@
 import { DataEvaluator } from "../../data-evaluator";
 import { logger } from "../../logger";
-import { RuleEngine } from "../rule-engine";
-import { ActionType, ConditionalActionConditionSchema, ConditionalActionSchema } from "../schema/rule.schema";
+import { ActionType, ConditionalActionConditionSchema, ConditionalActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 
 export type Operator = '>' | '<' | '<=' | '>=' | '===' | '!=';
@@ -53,7 +52,7 @@ export class ConditionalAction extends Action {
     onData(dataCondition: DataCondition): boolean {
         const expression = this.getDataExpression(dataCondition);
         const result = DataEvaluator.evaluateBoolean(expression);
-        logger.debug(`[Conditional Data Action] Evaluating ${dataCondition.dataId}=${d.value} as "${expression}". Result = ${result}`);
+        logger.debug(`[Conditional Data Action] Evaluating "${expression}". Result = ${result}`);
         return result;
     }
 

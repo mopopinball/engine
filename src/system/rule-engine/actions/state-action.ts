@@ -1,4 +1,4 @@
-import { ActionType, StateActionSchema } from "../schema/rule.schema";
+import { ActionType, StateActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 
 export class StateAction extends Action {

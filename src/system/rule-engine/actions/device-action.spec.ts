@@ -1,7 +1,7 @@
 import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
 import { DesiredOutputState } from "../desired-output-state";
-import { ActionType } from "../schema/rule.schema";
+import { ActionType } from "../schema/actions.schema";
 import { DeviceAction } from "./device-action";
 
 describe('device action', () => {

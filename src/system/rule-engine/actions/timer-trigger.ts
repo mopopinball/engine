@@ -1,19 +1,14 @@
 import { EventEmitter } from "events";
 import { logger } from "../../logger";
-import { TimerActionTriggerSchema, TriggerType } from "../schema/rule.schema";
-import { ActionTrigger } from "./action-trigger"
+import { TimerTriggerMode, TimerTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { Trigger } from "./trigger"
 
-export enum TimerActionTriggerMode {
-    INTERVAL,
-    TIMEOUT
-}
-
-export class TimerActionTrigger extends ActionTrigger {
+export class TimerTrigger extends Trigger {
     readonly type = TriggerType.TIMER;
     public readonly eventEmitter: EventEmitter;
     private timeout: NodeJS.Timeout;
     
-    constructor(public readonly id: string, public valueMs: number, public mode: TimerActionTriggerMode) {
+    constructor(public readonly id: string, public valueMs: number, public mode: TimerTriggerMode) {
         super();
         this.eventEmitter = new EventEmitter();
     }
@@ -22,7 +17,7 @@ export class TimerActionTrigger extends ActionTrigger {
         this.stop();
         logger.debug(`[Start Timer Action] ${this.id}`);
         
-        if (this.mode === TimerActionTriggerMode.INTERVAL) {
+        if (this.mode === TimerTriggerMode.INTERVAL) {
             this.timeout = setInterval(() => this.tick(), this.valueMs);
         } else {
             this.timeout = setTimeout(() => this.tick(), this.valueMs);
@@ -34,7 +29,7 @@ export class TimerActionTrigger extends ActionTrigger {
             logger.debug(`[Stop Timer Action] ${this.id}`);
         }
 
-        if (this.mode === TimerActionTriggerMode.INTERVAL) {
+        if (this.mode === TimerTriggerMode.INTERVAL) {
             clearInterval(this.timeout);
         } else {
             clearTimeout(this.timeout);
@@ -46,11 +41,11 @@ export class TimerActionTrigger extends ActionTrigger {
         this.eventEmitter.emit('tick');
     }
 
-    static fromJSON(triggerSchema: TimerActionTriggerSchema): TimerActionTrigger {
-        return new TimerActionTrigger(triggerSchema.id, triggerSchema.valueMs, triggerSchema.mode);
+    static fromJSON(triggerSchema: TimerTriggerSchema): TimerTrigger {
+        return new TimerTrigger(triggerSchema.id, triggerSchema.valueMs, triggerSchema.mode);
     }
 
-    toJSON(): TimerActionTriggerSchema {
+    toJSON(): TimerTriggerSchema {
         const convertedBase = super.toJSON();
         return {
             type: this.type,

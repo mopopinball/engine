@@ -1,4 +1,4 @@
-import { ActionType, RandomActionSchema } from "../schema/rule.schema";
+import { ActionType, RandomActionSchema} from "../schema/actions.schema";
 import { Action } from "./action";
 
 export interface RandomActionCandidate {

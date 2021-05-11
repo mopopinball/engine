@@ -1,18 +1,18 @@
-import { SwitchActionTriggerSchema, TriggerType } from "../schema/rule.schema";
-import { ActionTrigger } from "./action-trigger";
+import { SwitchTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { Trigger } from "./trigger";
 
-export class SwitchActionTrigger extends ActionTrigger {
+export class SwitchTrigger extends Trigger {
     readonly type = TriggerType.SWITCH;
     
     constructor(readonly switchId: string, public holdIntervalMs?: number) {
         super();
     }
 
-    static fromJSON(triggerSchema: SwitchActionTriggerSchema): SwitchActionTrigger {
-        return new SwitchActionTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+    static fromJSON(triggerSchema: SwitchTriggerSchema): SwitchTrigger {
+        return new SwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
     }
 
-    toJSON(): SwitchActionTriggerSchema {
+    toJSON(): SwitchTriggerSchema {
         const convertedBase = super.toJSON();
         return {
             type: this.type,

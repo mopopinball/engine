@@ -1,18 +1,18 @@
-import { IdActionTriggerSchema, TriggerType } from "../schema/rule.schema";
-import { ActionTrigger } from "./action-trigger";
+import { IdTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { Trigger } from "./trigger";
 
-export class IdActionTrigger extends ActionTrigger {
+export class IdTrigger extends Trigger {
     readonly type = TriggerType.ID;
     
     constructor(public readonly id: string) {
         super();
     }
 
-    static fromJSON(triggerSchema: IdActionTriggerSchema): IdActionTrigger {
-        return new IdActionTrigger(triggerSchema.id);
+    static fromJSON(triggerSchema: IdTriggerSchema): IdTrigger {
+        return new IdTrigger(triggerSchema.id);
     }
 
-    toJSON(): IdActionTriggerSchema {
+    toJSON(): IdTriggerSchema {
         const convertedBase = super.toJSON();
         return {
             type: this.type,
