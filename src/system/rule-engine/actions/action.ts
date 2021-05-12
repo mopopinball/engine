@@ -2,7 +2,7 @@ import { DirtyNotifier } from "../../dirty-notifier";
 import { DesiredOutputState } from "../desired-output-state";
 import { DataItem, NumberData } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
-import { ActionSchemaType } from "../schema/actions.schema";
+import { ActionSchemaType, ActionType } from "../schema/actions.schema";
 
 export abstract class Action extends DirtyNotifier {
     protected rootEngine: RuleEngine;
@@ -10,7 +10,7 @@ export abstract class Action extends DirtyNotifier {
     protected data: Map<string, DataItem>;
     protected devices: Map<string, DesiredOutputState>;
     
-    constructor() {
+    constructor(protected type: ActionType) {
         super();
     }
 

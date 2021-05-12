@@ -15,6 +15,7 @@ import { DataItem, NumberData } from "./rule-data";
 import { ActionType } from "./schema/actions.schema";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
 import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
+import { NamedTriggerAction } from "./actions/named-trigger-action";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -98,6 +99,8 @@ export class RuleEngine extends DirtyNotifier {
                 }
                 break;
             }
+            default:
+                logger.warn('Unexpected trigger type.');
         }
 
         // Second, create this triggers actions.
@@ -118,6 +121,9 @@ export class RuleEngine extends DirtyNotifier {
                 }
                 case ActionType.CONDITION:
                     newAction = ConditionalAction.fromJSON(actionSchema);
+                    break;
+                case ActionType.NAMED:
+                    newAction = NamedTriggerAction.fromJSON(actionSchema);
                     break;
                 default:
                     throw new Error('Not implemented');

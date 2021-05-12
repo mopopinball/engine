@@ -4,7 +4,7 @@ import { Action } from "./action";
 export class NamedTriggerAction extends Action {
     
     constructor(public triggerId: string) {
-        super();
+        super(ActionType.NAMED);
     }
 
     onAction(): void {

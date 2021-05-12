@@ -8,7 +8,7 @@ export class DeviceAction extends Action {
     constructor(
         private state: DesiredOutputState
     ) {
-        super();
+        super(ActionType.DEVICE);
     }
     
     onAction(): void {

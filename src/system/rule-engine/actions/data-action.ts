@@ -8,7 +8,7 @@ export class DataAction extends Action {
     constructor(
         public readonly dataKey: string, public operation: DataOperation, public operand: number | string
     ) {
-        super();
+        super(ActionType.DATA);
     }
     
     onAction(): void {

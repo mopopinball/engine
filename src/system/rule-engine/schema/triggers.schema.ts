@@ -1,6 +1,6 @@
 // ALL TRIGGER SCHEMAS
 
-import { ActionSchemaType } from "./actions.schema";
+import { ActionSchemaType, NamedTriggerActionSchema } from "./actions.schema";
 
 export enum TriggerType {
     SWITCH = 'switch',

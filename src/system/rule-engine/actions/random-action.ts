@@ -9,7 +9,7 @@ export interface RandomActionCandidate {
 
 export class RandomAction extends Action {
     constructor(private candidates: RandomActionCandidate[]) {
-        super();
+        super(ActionType.RANDOM);
     }
 
     public updateWeights(): void {

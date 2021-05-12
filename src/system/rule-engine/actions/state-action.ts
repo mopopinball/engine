@@ -4,7 +4,7 @@ import { Action } from "./action";
 export class StateAction extends Action {
     constructor(private startTargetId: string, private stopTargetId: string
     ) {
-        super();
+        super(ActionType.STATE);
     }
     
     onAction(): void {

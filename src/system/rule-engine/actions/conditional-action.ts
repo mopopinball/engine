@@ -25,7 +25,7 @@ export class ConditionalAction extends Action {
     constructor(
         private conditions: Condition[], private trueTriggerId: string, private falseTriggerId: string
     ) {
-        super();
+        super(ActionType.CONDITION);
     }
     
     onAction(): void {
