@@ -23,7 +23,7 @@ export type Condition = DataCondition | SwitchCondition;
 
 export class ConditionalAction extends Action {
     constructor(
-        private conditions: Condition[], private trueTriggerId: string, private falseTriggerId: string
+        public conditions: Condition[], public trueTriggerId: string, public falseTriggerId: string
     ) {
         super(ActionType.CONDITION);
     }
