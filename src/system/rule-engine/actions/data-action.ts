@@ -23,6 +23,8 @@ export class DataAction extends Action {
             return;
         }
 
+        // DEPRECATED: The above method is preferred.
+
         // Note: We rely here on a config which contains a operand who's value only references NubmerData. If this is not true,
         // DataEvaluator.evaluate will fail because it will try to evaluate a non-numeric expression.
         const currentOperand: number = typeof this.operand === 'number' ?
@@ -77,7 +79,8 @@ export class DataAction extends Action {
     }
 
     toString(): string {
-        return `Data action: ${this.dataKey} ${this.operation} ${this.operation}`;   
+        return this.expression ? `Data action: ${this.dataKey} = ${this.expression}` :
+            `Data action: ${this.dataKey} ${this.operation} ${this.operation}`;   
     }
 }
 

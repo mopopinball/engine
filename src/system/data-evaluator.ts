@@ -1,6 +1,6 @@
 import { DataFormatter } from "./data-formatter";
 import { NumberData } from "./rule-engine/rule-data";
-import {Parser, Value} from 'expr-eval';
+import {Parser} from 'expr-eval';
 
 export abstract class DataEvaluator {
     private static parser = new Parser();
