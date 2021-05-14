@@ -6,12 +6,23 @@ import { Action } from "./action";
 
 export class DataAction extends Action {
     constructor(
-        public readonly dataKey: string, public operation: DataOperation, public operand: number | string
+        public readonly dataKey: string,
+        public operation?: DataOperation, public operand?: number | string,
+        public expression?: string
     ) {
         super(ActionType.DATA);
     }
     
     onAction(): void {
+        if (this.expression) {
+            this.getData().value = DataEvaluator.evaluatePlain(
+                this.expression,
+                // rely on the expression containing variables which reference NumberData
+                this.data as Map<string, NumberData>
+            );
+            return;
+        }
+
         // Note: We rely here on a config which contains a operand who's value only references NubmerData. If this is not true,
         // DataEvaluator.evaluate will fail because it will try to evaluate a non-numeric expression.
         const currentOperand: number = typeof this.operand === 'number' ?
@@ -50,7 +61,8 @@ export class DataAction extends Action {
         return new DataAction(
             actionSchema.dataId, 
             actionSchema.operation, 
-            actionSchema.operand
+            actionSchema.operand,
+            actionSchema.expression
         );
     }
 
@@ -59,7 +71,8 @@ export class DataAction extends Action {
             type: ActionType.DATA,
             dataId: this.dataKey,
             operation: this.operation,
-            operand: this.operand
+            operand: this.operand,
+            expression: this.expression
         }
     }
 

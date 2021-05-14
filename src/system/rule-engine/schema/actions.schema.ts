@@ -16,8 +16,9 @@ export enum ActionType {
 export interface DataActionSchema {
     type: ActionType.DATA;
     dataId: string;
-    operation: DataOperation;
-    operand: number | string;
+    operation?: DataOperation;
+    operand?: number | string;
+    expression?: string;
 }
 
 export interface DeviceActionSchema {

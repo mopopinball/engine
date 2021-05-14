@@ -129,7 +129,7 @@ describe('data action', () => {
         expect(d0.value).toBe(550);
     });
 
-    it('can evaluate and expression with mod data', () => {
+    it('can evaluate an expression with mod data', () => {
         // setup
         const action = new DataAction('d0', DataOperation.ASSIGN, '${d0} % 3');
 
@@ -138,5 +138,22 @@ describe('data action', () => {
 
         // check
         expect(d0.value).toBe(1);
+    });
+
+    it('can evaluate an plain expression', () => {
+        // setup
+        dataMap.set('d1', {
+            type: 'number',
+            id: 'd1',
+            value: 55,
+            initValue: 55
+        });
+        const action = new DataAction('d0', null, null, 'd1 * 10');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(550);
     });
 });
