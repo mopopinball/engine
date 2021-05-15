@@ -166,4 +166,14 @@ describe('data action', () => {
         // check
         expect(d0.value).toBe(0);
     });
+
+    it('does not assign the result of a undefined result', () => {
+        const action = new DataAction('d0', null, null, 'if (2<1, 13)');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(10);
+    });
 });

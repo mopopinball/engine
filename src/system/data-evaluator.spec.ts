@@ -24,4 +24,20 @@ describe('Data Evaluator', () => {
 
         expect(output).toBeTruthy();
     });
+
+    it('evaluates a string if', () => {
+        const expression = 'if(3 > 2, "big", "small")';
+
+        const output = DataEvaluator.evaluatePlain(expression, new Map());
+
+        expect(output).toBe('big');
+    });
+
+    it('evaluates a string if without else', () => {
+        const expression = 'if(3 > 2, "big")';
+
+        const output = DataEvaluator.evaluatePlain(expression, new Map());
+
+        expect(output).toBe('big');
+    });
 });

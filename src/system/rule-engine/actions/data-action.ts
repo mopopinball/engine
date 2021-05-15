@@ -15,11 +15,16 @@ export class DataAction extends Action {
     
     onAction(): void {
         if (this.expression) {
-            this.getData().value = DataEvaluator.evaluatePlain(
+            const result = DataEvaluator.evaluatePlain(
                 this.expression,
                 // rely on the expression containing variables which reference NumberData
                 this.data as Map<string, NumberData>
             );
+            // Only assign the result if it returned a value. This handles "if" cases which may
+            // return undefined for their (typically) false result.
+            if (result !== undefined) {
+                this.getData().value = result;
+            }
             return;
         }
 
