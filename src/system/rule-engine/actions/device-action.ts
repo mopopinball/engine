@@ -6,7 +6,7 @@ import { Action } from "./action";
 export class DeviceAction extends Action {
     // public rollback: DesiredOutputState[] = [];
     constructor(
-        private state: DesiredOutputState
+        public state: DesiredOutputState
     ) {
         super(ActionType.DEVICE);
     }
