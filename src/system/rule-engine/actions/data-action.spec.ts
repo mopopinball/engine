@@ -156,4 +156,14 @@ describe('data action', () => {
         // check
         expect(d0.value).toBe(550);
     });
+
+    it('can evaluate an assignemnt expression', () => {
+        const action = new DataAction('d0', null, null, '0');
+
+        // exercise
+        action.handle(null, dataMap, null);
+
+        // check
+        expect(d0.value).toBe(0);
+    });
 });
