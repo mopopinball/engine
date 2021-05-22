@@ -16,6 +16,7 @@ import { ActionType } from "./schema/actions.schema";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
 import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 import { NamedTriggerAction } from "./actions/named-trigger-action";
+import { RandomAction } from "./actions/random-action";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -124,6 +125,9 @@ export class RuleEngine extends DirtyNotifier {
                     break;
                 case ActionType.NAMED:
                     newAction = NamedTriggerAction.fromJSON(actionSchema);
+                    break;
+                case ActionType.RANDOM:
+                    newAction = RandomAction.fromJSON(actionSchema);
                     break;
                 default:
                     throw new Error('Not implemented');
