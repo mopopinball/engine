@@ -8,7 +8,7 @@ export interface RandomActionCandidate {
 }
 
 export class RandomAction extends Action {
-    constructor(private candidates: RandomActionCandidate[]) {
+    constructor(public candidates: RandomActionCandidate[]) {
         super(ActionType.RANDOM);
     }
 
