@@ -49,6 +49,7 @@ export interface RandomActionSchema {
     type: ActionType.RANDOM;
     candidates: {
         triggerId: string;
+        action: ActionSchemaType;
         weight?: number;
     }[]
 }

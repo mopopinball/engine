@@ -17,6 +17,7 @@ import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
 import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 import { NamedTriggerAction } from "./actions/named-trigger-action";
 import { RandomAction } from "./actions/random-action";
+import { ActionFactory } from "./actions/action-factory";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -107,31 +108,7 @@ export class RuleEngine extends DirtyNotifier {
         // Second, create this triggers actions.
         let newAction: Action = null;
         for (const actionSchema of triggerSchema.actions) {
-            switch (actionSchema.type) {
-                case ActionType.DATA:
-                    newAction = DataAction.fromJSON(actionSchema);
-                    break;
-                case ActionType.DEVICE:
-                    newAction = new DeviceAction(
-                        DesiredOutputState.constructFromOutputState(actionSchema.state)
-                    );
-                    break;
-                case ActionType.STATE: {
-                    newAction = StateAction.fromJSON(actionSchema);
-                    break;
-                }
-                case ActionType.CONDITION:
-                    newAction = ConditionalAction.fromJSON(actionSchema);
-                    break;
-                case ActionType.NAMED:
-                    newAction = NamedTriggerAction.fromJSON(actionSchema);
-                    break;
-                case ActionType.RANDOM:
-                    newAction = RandomAction.fromJSON(actionSchema);
-                    break;
-                default:
-                    throw new Error('Not implemented');
-            }
+            newAction = ActionFactory.create(actionSchema);
 
             trigger.actions.push(newAction);
 

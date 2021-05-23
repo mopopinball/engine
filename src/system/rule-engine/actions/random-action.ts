@@ -1,8 +1,10 @@
 import { ActionType, RandomActionSchema} from "../schema/actions.schema";
 import { Action } from "./action";
+import { ActionFactory } from "./action-factory";
 
 export interface RandomActionCandidate {
-    triggerId: string;
+    triggerId?: string;
+    action?: Action;
     weight?: number;
     derivedWeight?: number;
 }
@@ -10,9 +12,11 @@ export interface RandomActionCandidate {
 export class RandomAction extends Action {
     constructor(public candidates: RandomActionCandidate[]) {
         super(ActionType.RANDOM);
+
+        this.updateWeights();
     }
 
-    public updateWeights(): void {
+    private updateWeights(): void {
         let providedSum = 0;
         this.candidates
             .filter((c) => c.weight > 0)
@@ -30,7 +34,12 @@ export class RandomAction extends Action {
         for(const candidate of this.candidates) {
             weightSum += candidate.weight || candidate.derivedWeight;
             if (rand < weightSum) {
-                this.rootEngine.onTrigger(candidate.triggerId);
+                if (candidate.action) {
+                    candidate.action.onAction();
+                }
+                else {
+                    this.rootEngine.onTrigger(candidate.triggerId);
+                }
             }
         }
     }
@@ -40,6 +49,7 @@ export class RandomAction extends Action {
             actionSchema.candidates.map((c) => {
                 return {
                     triggerId: c.triggerId,
+                    action: c.action ? ActionFactory.create(c.action): null,
                     weight: c.weight
                 };
             })
@@ -52,7 +62,8 @@ export class RandomAction extends Action {
             candidates: this.candidates.map((c) => {
                 return {
                     triggerId: c.triggerId,
-                    weight: c.weight || c.derivedWeight
+                    action: c.action?.toJSON(),
+                    weight: c.weight
                 }
             })
         };
