@@ -40,4 +40,12 @@ describe('Data Evaluator', () => {
 
         expect(output).toBe('big');
     });
+
+    it.skip('evaluates a random number', () => {
+        const expression = 'floor random(10)';
+
+        const output = DataEvaluator.evaluatePlain(expression, new Map());
+
+        expect(output).toBeTruthy();
+    });
 });

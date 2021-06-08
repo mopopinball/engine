@@ -1,14 +1,17 @@
 import { ActionType, RandomActionSchema} from "../schema/actions.schema";
 import { Action } from "./action";
-import { ActionFactory } from "./action-factory";
+import { ConditionClause } from "./condition-clause";
+import { ConditionalClausEvaluator } from "./conditional-clause-evaluator";
 
 export interface RandomActionCandidate {
-    triggerId?: string;
-    action?: Action;
+    clause: ConditionClause;
     weight?: number;
     derivedWeight?: number;
 }
 
+/**
+ * Considers a list of candidates and of those who's clauses are all true, randomally chooses one.
+ */
 export class RandomAction extends Action {
     constructor(public candidates: RandomActionCandidate[]) {
         super(ActionType.RANDOM);
@@ -29,17 +32,17 @@ export class RandomAction extends Action {
     }
 
     onAction(): void {
+        // first determine which candidate's clauses are all true.
+        const evaluator = new ConditionalClausEvaluator(this.rootEngine, this.data);
+        const satasifiedCandidates = this.candidates.filter((c) => evaluator.isSatasified(c.clause));
+
+        // now of these candidates, do the random choosing.
         let weightSum = 0;
         const rand = Math.random();
-        for(const candidate of this.candidates) {
+        for(const candidate of satasifiedCandidates) {
             weightSum += candidate.weight || candidate.derivedWeight;
             if (rand < weightSum) {
-                if (candidate.action) {
-                    candidate.action.onAction();
-                }
-                else {
-                    this.rootEngine.onTrigger(candidate.triggerId);
-                }
+                this.rootEngine.onTrigger(candidate.clause.trueResult.triggerId);
             }
         }
     }
@@ -48,8 +51,7 @@ export class RandomAction extends Action {
         return new RandomAction(
             actionSchema.candidates.map((c) => {
                 return {
-                    triggerId: c.triggerId,
-                    action: c.action ? ActionFactory.create(c.action): null,
+                    clause: ConditionClause.fromJSON(c.clause),
                     weight: c.weight
                 };
             })
@@ -61,8 +63,7 @@ export class RandomAction extends Action {
             type: ActionType.RANDOM,
             candidates: this.candidates.map((c) => {
                 return {
-                    triggerId: c.triggerId,
-                    action: c.action?.toJSON(),
+                    clause: c.clause.toJSON(),
                     weight: c.weight
                 }
             })

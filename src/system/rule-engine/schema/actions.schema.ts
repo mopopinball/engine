@@ -1,6 +1,6 @@
 // ALL ACTION SCHEMAS
 
-import { Operator } from "../actions/conditional-action";
+import { Operator } from "../actions/condition-clause";
 import { DataOperation } from "../actions/data-action";
 import { CoilOutputState, DisplayOutputState, LightOutputState, SoundOutputState } from "./rule.schema";
 
@@ -32,11 +32,22 @@ export interface StateActionSchema {
     stopTargetId: string;
 }
 
+export interface ConditionalResultSchema {
+    triggerId?: string;
+}
+
+export interface ConditionalClauseSchema {
+    conditions: ConditionalActionConditionSchema[],
+    trueResult: ConditionalResultSchema
+}
+
 export interface ConditionalActionSchema {
     type: ActionType.CONDITION;
-    condition: ConditionalActionConditionSchema | ConditionalActionConditionSchema[];
-    trueTriggerId: string;
-    falseTriggerId: string;
+    condition?: ConditionalActionConditionSchema | ConditionalActionConditionSchema[];
+    clauses?: ConditionalClauseSchema[],
+    trueTriggerId?: string;
+    falseTriggerId?: string;
+    falseResult?: ConditionalResultSchema
 }
 
 // Not a "Trigger"
@@ -48,8 +59,7 @@ export interface NamedTriggerActionSchema {
 export interface RandomActionSchema {
     type: ActionType.RANDOM;
     candidates: {
-        triggerId: string;
-        action: ActionSchemaType;
+        clause: ConditionalClauseSchema;
         weight?: number;
     }[]
 }
