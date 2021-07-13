@@ -3,20 +3,14 @@ import { DirtyNotifier } from "../dirty-notifier";
 import { logger } from "../logger";
 import { Action } from "./actions/action";
 import { ActionTriggerType } from "./actions/trigger";
-import { ConditionalAction } from "./actions/conditional-action";
-import { DataAction } from "./actions/data-action";
 import { DeviceAction } from "./actions/device-action";
 import { IdTrigger } from "./actions/id-trigger";
-import { StateAction } from "./actions/state-action";
 import { SwitchTrigger } from "./actions/switch-trigger";
 import { TimerTrigger } from "./actions/timer-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { DataItem, NumberData } from "./rule-data";
-import { ActionType } from "./schema/actions.schema";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
 import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
-import { NamedTriggerAction } from "./actions/named-trigger-action";
-import { RandomAction } from "./actions/random-action";
 import { ActionFactory } from "./actions/action-factory";
 
 export class RuleEngine extends DirtyNotifier {

@@ -16,6 +16,13 @@ export class StateAction extends Action {
         }
     }
 
+    public doesEngineExist(targetId: string): boolean {
+        if(!targetId) {
+            return false;
+        }
+        return this.engines.has(targetId);
+    }
+
     static fromJSON(actionSchema: StateActionSchema): StateAction {
         return new StateAction(
             actionSchema.startTargetId,
