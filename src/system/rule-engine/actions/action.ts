@@ -6,7 +6,6 @@ import { ActionSchemaType, ActionType } from "../schema/actions.schema";
 
 export abstract class Action extends DirtyNotifier {
     protected rootEngine: RuleEngine;
-    protected engines: Map<string, RuleEngine>;
     protected data: Map<string, DataItem>;
     protected devices: Map<string, DesiredOutputState>;
     
@@ -18,12 +17,15 @@ export abstract class Action extends DirtyNotifier {
 
     handle(rootEngine: RuleEngine, data: Map<string, DataItem>, devices: Map<string, DesiredOutputState>): void {
         this.rootEngine = rootEngine;
-        this.engines = this.rootEngine?.getAllEngines() ?? new Map();
         this.data = data;
         this.devices = devices;
 
         this.onAction();
         this.emitDirty();
+    }
+
+    protected getEngines(): Map<string, RuleEngine> {
+        return this.rootEngine?.getAllEngines() ?? new Map();
     }
     
     public abstract toJSON(): ActionSchemaType;

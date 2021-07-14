@@ -9,10 +9,10 @@ export class StateAction extends Action {
     
     onAction(): void {
         if (this.startTargetId) {
-            this.engines.get(this.startTargetId).start();
+            this.getEngines().get(this.startTargetId).start();
         }
         if (this.stopTargetId) {
-            this.engines.get(this.stopTargetId).stop();
+            this.getEngines().get(this.stopTargetId).stop();
         }
     }
 
@@ -20,7 +20,8 @@ export class StateAction extends Action {
         if(!targetId) {
             return false;
         }
-        return this.engines?.has(targetId);
+        this.rootEngine.getAllEngines()
+        return this.getEngines().has(targetId);
     }
 
     static fromJSON(actionSchema: StateActionSchema): StateAction {
