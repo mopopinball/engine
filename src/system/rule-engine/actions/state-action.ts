@@ -20,7 +20,7 @@ export class StateAction extends Action {
         if(!targetId) {
             return false;
         }
-        return this.engines.has(targetId);
+        return this.engines?.has(targetId);
     }
 
     static fromJSON(actionSchema: StateActionSchema): StateAction {
