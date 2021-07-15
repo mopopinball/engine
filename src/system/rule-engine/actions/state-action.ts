@@ -20,7 +20,6 @@ export class StateAction extends Action {
         if(!targetId) {
             return false;
         }
-        this.rootEngine.getAllEngines()
         return this.getEngines().has(targetId);
     }
 
