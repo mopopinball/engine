@@ -10,7 +10,7 @@ import { TimerTrigger } from "./actions/timer-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { DataItem, NumberData } from "./rule-data";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
-import { IdTriggerSchema, SwitchTriggerSchema, TimerTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
+import { TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 import { ActionFactory } from "./actions/action-factory";
 
 export class RuleEngine extends DirtyNotifier {

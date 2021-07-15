@@ -1,3 +1,4 @@
+import { RuleEngine } from "../rule-engine";
 import { ActionType, StateActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 
@@ -20,7 +21,8 @@ export class StateAction extends Action {
         if(!targetId) {
             return false;
         }
-        return this.getEngines().has(targetId);
+        // intentionally calls RuleEngine.root here because super.rootEngine is set in handle().
+        return RuleEngine.root?.getAllEngines().has(targetId);
     }
 
     static fromJSON(actionSchema: StateActionSchema): StateAction {
