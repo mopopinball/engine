@@ -9,7 +9,7 @@ export abstract class Action extends DirtyNotifier {
     protected data: Map<string, DataItem>;
     protected devices: Map<string, DesiredOutputState>;
     
-    constructor(protected type: ActionType) {
+    constructor(public readonly type: ActionType) {
         super();
     }
 

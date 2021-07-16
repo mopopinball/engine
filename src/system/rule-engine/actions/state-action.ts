@@ -3,7 +3,7 @@ import { ActionType, StateActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 
 export class StateAction extends Action {
-    constructor(private startTargetId: string, private stopTargetId: string
+    constructor(public startTargetId: string, public stopTargetId: string
     ) {
         super(ActionType.STATE);
     }
