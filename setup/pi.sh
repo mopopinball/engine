@@ -1,30 +1,33 @@
-    #!/bin/bash
-
-set -eou pipefail
+#!/bin/bash
 
 # SETUP SCRIPT FOR THE "pi" USER
 
 # Node and NVM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+echo Installing Node via nvm.
+ARMV6_NODE_VERSION=10
+ARMV7_NODE_VERSION=12
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-ARM_V6=$(cat /proc/cpuinfo | grep ARMv6)
-ARM_V7=$(cat /proc/cpuinfo | grep ARMv7)
-if [ ${#ARM_V6} -gt 0 ]
+ARM_V6=$(cat /proc/cpuinfo | grep -c ARMv6)
+ARM_V7=$(cat /proc/cpuinfo | grep -c ARMv7)
+if [ $ARM_V6 -gt 0 ]
 then
-    nvm install 10.23.0
-    nvm alias default 10.23.0
-elif [ ${#ARM_V7} -gt 0 ]
+    nvm install $ARMV6_NODE_VERSION
+    nvm alias default $ARMV6_NODE_VERSION
+elif [ $ARM_V7 -gt 0 ]
 then
-    nvm install 12.19.0
-    nvm alias default 12.19.0
+    nvm install $ARMV7_NODE_VERSION
+    nvm alias default $ARMV7_NODE_VERSION
 else
     echo Invalid ARM version
     exit 1
 fi
 
 # PIC programmer
+echo Installing the PIC programmer.
 cd ~
 mkdir picpgm_install
 cd picpgm_install
