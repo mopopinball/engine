@@ -16,6 +16,7 @@ export class TriggerFactory {
         if (deserialized instanceof TimerTrigger || deserialized instanceof IdTrigger) {
             deserialized.id = id;
         }
+        this.actionsFromJson(trigger, deserialized, engine);
         this.createTrigger(deserialized.toJSON(), engine);
     }
 
@@ -52,16 +53,7 @@ export class TriggerFactory {
         }
 
         // Second, create this triggers actions.
-        let newAction: Action = null;
-        for (const actionSchema of triggerSchema.actions) {
-            newAction = ActionFactory.create(actionSchema);
-
-            trigger.actions.push(newAction);
-
-            newAction.onDirty(() => {
-                engine.emitDirty();
-            });
-        }
+        this.actionsFromJson(triggerSchema, trigger, engine);
     }
 
     private static fromJson(triggerSchema: TriggerSchemasType): ActionTriggerType {
@@ -77,6 +69,23 @@ export class TriggerFactory {
             }
             default:
                 logger.warn('Unexpected trigger type.');
+        }
+    }
+
+    private static actionsFromJson(
+        triggerSchema: TriggerSchemasType,
+        trigger: ActionTriggerType,
+        engine: RuleEngine
+    ): void {
+        let newAction: Action = null;
+        for (const actionSchema of triggerSchema.actions) {
+            newAction = ActionFactory.create(actionSchema);
+
+            trigger.actions.push(newAction);
+
+            newAction.onDirty(() => {
+                engine.emitDirty();
+            });
         }
     }
 }
