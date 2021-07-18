@@ -8,7 +8,7 @@ export class TimerTrigger extends Trigger {
     public readonly eventEmitter: EventEmitter;
     private timeout: NodeJS.Timeout;
     
-    constructor(public readonly id: string, public valueMs: number, public mode: TimerTriggerMode) {
+    constructor(public id: string, public valueMs: number, public mode: TimerTriggerMode) {
         super();
         this.eventEmitter = new EventEmitter();
     }

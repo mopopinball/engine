@@ -4,7 +4,7 @@ import { Trigger } from "./trigger";
 export class IdTrigger extends Trigger {
     readonly type = TriggerType.ID;
     
-    constructor(public readonly id: string) {
+    constructor(public id: string) {
         super();
     }
 

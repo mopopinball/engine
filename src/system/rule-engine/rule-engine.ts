@@ -1,7 +1,6 @@
 import { PlayfieldSwitch } from "../devices/playfield-switch";
 import { DirtyNotifier } from "../dirty-notifier";
 import { logger } from "../logger";
-import { Action } from "./actions/action";
 import { ActionTriggerType } from "./actions/trigger";
 import { DeviceAction } from "./actions/device-action";
 import { IdTrigger } from "./actions/id-trigger";
@@ -10,8 +9,8 @@ import { TimerTrigger } from "./actions/timer-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { DataItem, NumberData } from "./rule-data";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
-import { TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
-import { ActionFactory } from "./actions/action-factory";
+import { TriggerType } from "./schema/triggers.schema";
+import { TriggerFactory } from "./trigger-factory";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -50,7 +49,7 @@ export class RuleEngine extends DirtyNotifier {
         if (schema.triggers) {
             for (const trigger of schema.triggers) {
                 try {
-                    engine.createTrigger(trigger);
+                    TriggerFactory.createTrigger(trigger, engine);
                 }
                 catch(e) {
                     // logger.error(e);                    
@@ -65,51 +64,6 @@ export class RuleEngine extends DirtyNotifier {
         }
 
         return engine;
-    }
-
-    public createTrigger(triggerSchema: TriggerSchemasType): void {
-        // First, find or create the incoming trigger.
-        let trigger: ActionTriggerType = null;
-        switch(triggerSchema.type) {
-            case TriggerType.SWITCH: {
-                trigger = this.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
-                if (!trigger) {
-                    trigger = SwitchTrigger.fromJSON(triggerSchema);
-                    this.triggers.push(trigger);
-                }
-                break;
-            }
-            case TriggerType.ID: {
-                trigger = this.getTrigger(triggerSchema.id);
-                if (!trigger) {
-                    trigger = IdTrigger.fromJSON(triggerSchema);
-                    this.triggers.push(trigger);
-                }
-                break;
-            }
-            case TriggerType.TIMER: {
-                trigger = this.getTrigger(triggerSchema.id);
-                if (!trigger) {
-                    trigger = TimerTrigger.fromJSON(triggerSchema);
-                    this.triggers.push(trigger);
-                }
-                break;
-            }
-            default:
-                logger.warn('Unexpected trigger type.');
-        }
-
-        // Second, create this triggers actions.
-        let newAction: Action = null;
-        for (const actionSchema of triggerSchema.actions) {
-            newAction = ActionFactory.create(actionSchema);
-
-            trigger.actions.push(newAction);
-
-            newAction.onDirty(() => {
-                this.emitDirty();
-            });
-        }
     }
 
     start(): void {
@@ -197,7 +151,7 @@ export class RuleEngine extends DirtyNotifier {
         }
     }
 
-    getSwitchTrigger(switchId: string, holdIntervalMs?: number): ActionTriggerType {
+    public getSwitchTrigger(switchId: string, holdIntervalMs?: number): ActionTriggerType {
         return this.getSwitchTriggers()
             .find((trigger: SwitchTrigger) =>
                 trigger.switchId === switchId &&
@@ -396,5 +350,9 @@ export class RuleEngine extends DirtyNotifier {
                     attributes: data.attributes
                 };
         }
+    }
+
+    public emitDirty(): void {
+        super.emitDirty();
     }
 }
