@@ -14,7 +14,7 @@ const picPath = '/home/pi/mopo/pics';
 
 export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
-    private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases'
+    private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases/latest'
     private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
     private readonly engineOutDir = '/home/pi/mopo/engine';
     private readonly serviceMenuDir = '/home/pi/mopo/servicemenu/'
@@ -49,11 +49,18 @@ export class Update {
     }
 
     public async getAvailableServiceMenuUpdate(prerelease: boolean): Promise<GithubRelease> {
-        return this.isUpdateAvailable(this.serviceMenuReleaseUrl, prerelease, '0.0.0');
+        // TODO: Get the real version of the service menu.
+        return this.getLatestRelease(this.serviceMenuReleaseUrl, '0.0.0');
     }
 
     public async getAvailablePicUpdate(prerlease: boolean): Promise<GithubRelease> {
         return this.isUpdateAvailable(this.picsReleaseUrl, prerlease, this.getPicVersion());
+    }
+
+    private async getLatestRelease(releaseUrl: string, currentVersion: string): Promise<GithubRelease> {
+        logger.info(`Running version ${currentVersion}. Checking for update.`);
+        const candidate: GithubRelease = (await axios.get(releaseUrl)).data;
+        return semver.gt(candidate.name, currentVersion) ? candidate : null; 
     }
 
     private async isUpdateAvailable(releaseUrl: string, prerelease: boolean, currentVersion: string): Promise<GithubRelease> {

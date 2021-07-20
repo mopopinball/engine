@@ -10,7 +10,7 @@ export class UpdateController implements Controller {
     setup(app: express.Express): void {
         app.post('/update/check', async (req, res) => {
             const availableUpdate = await Update.getInstance().getAvailableSystemUpdate(true);
-            const availableServiceMenuUpdate = await Update.getInstance().getAvailableServiceMenuUpdate(true);
+            const availableServiceMenuUpdate = await Update.getInstance().getAvailableServiceMenuUpdate(false);
             const availablePicUpdate = await Update.getInstance().getAvailablePicUpdate(true);
             res.send({
                 system: availableUpdate,
