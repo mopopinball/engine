@@ -1,10 +1,10 @@
 import { RuleEngine } from "../rule-engine";
 import { logger } from "../../logger";
 import { DataEvaluator } from "../../data-evaluator";
-import { DataItem } from "../rule-data";
+import { DataItem, NumberData } from "../rule-data";
 import { Condition, ConditionClause, DataCondition, SwitchCondition } from "./condition-clause";
 
-export class ConditionalClausEvaluator {
+export class ConditionalClauseEvaluator {
     constructor(private rootEngine: RuleEngine, private data: Map<string, DataItem>) {}
     
     public isSatasified(clause: ConditionClause): boolean {
@@ -30,8 +30,10 @@ export class ConditionalClausEvaluator {
 
     private onData(dataCondition: DataCondition): boolean {
         const expression = this.getDataExpression(dataCondition);
-        const result = DataEvaluator.evaluateBoolean(expression);
-        logger.debug(`[Conditional Data Action] Evaluating "${expression}". Result = ${result}`);
+        logger.debug(`[Data Condition] Evaluating "${expression}".`);
+        // rely on data being numbers
+        const result = DataEvaluator.evaluateBoolean(expression, this.data as Map<string, NumberData>);
+        logger.debug(`[Data Condition] Result = ${result}`);
         return result;
     }
 

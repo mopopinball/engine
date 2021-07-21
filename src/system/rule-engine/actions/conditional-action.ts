@@ -1,7 +1,7 @@
 import { ActionType, ConditionalActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";
 import { Condition, ConditionClause, ConditionResult } from "./condition-clause";
-import { ConditionalClausEvaluator } from "./conditional-clause-evaluator";
+import { ConditionalClauseEvaluator } from "./conditional-clause-evaluator";
 
 export class ConditionalAction extends Action {
     constructor(public clauses: ConditionClause[], public falseResult?: ConditionResult) {
@@ -9,7 +9,7 @@ export class ConditionalAction extends Action {
     }
     
     onAction(): void {
-        const evaluator = new ConditionalClausEvaluator(this.rootEngine, this.data);
+        const evaluator = new ConditionalClauseEvaluator(this.rootEngine, this.data);
 
         // finds the first clause which is satasified and runs its result.
         for(const clause of this.clauses) {

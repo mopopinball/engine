@@ -1,7 +1,7 @@
 import { ActionType, RandomActionSchema} from "../schema/actions.schema";
 import { Action } from "./action";
 import { ConditionClause } from "./condition-clause";
-import { ConditionalClausEvaluator } from "./conditional-clause-evaluator";
+import { ConditionalClauseEvaluator } from "./conditional-clause-evaluator";
 
 export interface RandomActionCandidate {
     clause: ConditionClause;
@@ -33,7 +33,7 @@ export class RandomAction extends Action {
 
     onAction(): void {
         // first determine which candidate's clauses are all true.
-        const evaluator = new ConditionalClausEvaluator(this.rootEngine, this.data);
+        const evaluator = new ConditionalClauseEvaluator(this.rootEngine, this.data);
         const satasifiedCandidates = this.candidates.filter((c) => evaluator.isSatasified(c.clause));
 
         // now of these candidates, do the random choosing.

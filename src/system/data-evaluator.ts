@@ -1,6 +1,6 @@
 import { DataFormatter } from "./data-formatter";
 import { NumberData } from "./rule-engine/rule-data";
-import {Parser} from 'expr-eval';
+import {Expression, Parser} from 'expr-eval';
 
 export abstract class DataEvaluator {
     private static parser = new Parser();
@@ -12,17 +12,24 @@ export abstract class DataEvaluator {
 
     public static evaluatePlain(expression: string, data: Map<string, NumberData>): number {
         const parsedExpression = this.parser.parse(expression);
+        const values = this.mapData(parsedExpression, data);
+        return parsedExpression.evaluate(values);
+    }
+
+    private static mapData(parsedExpression: Expression, data: Map<string, NumberData>): any {
         const variables = parsedExpression.variables();
         const values = {};
         for (const v of variables) {
             values[v] = data.get(v).value;
         }
-        return parsedExpression.evaluate(values);
+        return values;
     }
 
-    public static evaluateBoolean(formattedString: string): boolean {
-        const sanatizedFormattedString = formattedString.replace('===', '==');
-        return this.evaluateFormattedString(sanatizedFormattedString);
+    public static evaluateBoolean(expression: string, data: Map<string, NumberData>): boolean {
+        const sanatizedExpression = expression.replace('===', '==');
+        const parsedExpression = this.parser.parse(sanatizedExpression);
+        const values = this.mapData(parsedExpression, data);
+        return parsedExpression.evaluate(values);
     }
 
     private static evaluateFormattedString(formattedString: string) {
