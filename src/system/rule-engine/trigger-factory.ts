@@ -10,17 +10,20 @@ import { TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 
 export class TriggerFactory {
 
-    public static copyTrigger(trigger: TriggerSchemasType, id: string, engine: RuleEngine): void {
+    public static copyTrigger(trigger: TriggerSchemasType, id: string, engine: RuleEngine, index: number): void {
         // TODO: inefficient to deserialized/reserialize
         const deserialized = this.fromJson(trigger);
         if (deserialized instanceof TimerTrigger || deserialized instanceof IdTrigger) {
             deserialized.id = id;
         }
+        else if (deserialized instanceof SwitchTrigger) {
+            deserialized.switchId = null; // makes it so that the copied trigger is created as new sw trigger
+        }
         this.actionsFromJson(trigger, deserialized, engine);
-        this.createTrigger(deserialized.toJSON(), engine);
+        this.createTrigger(deserialized.toJSON(), engine, index);
     }
 
-    public static createTrigger(triggerSchema: TriggerSchemasType, engine: RuleEngine): void {
+    public static createTrigger(triggerSchema: TriggerSchemasType, engine: RuleEngine, index = engine.triggers.length): void {
         // First, find or create the incoming trigger.
         let trigger: ActionTriggerType = null;
         switch(triggerSchema.type) {
@@ -28,7 +31,7 @@ export class TriggerFactory {
                 trigger = engine.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                 if (!trigger) {
                     trigger = SwitchTrigger.fromJSON(triggerSchema);
-                    engine.triggers.push(trigger);
+                    engine.triggers.splice(index, 0, trigger);
                 }
                 break;
             }
@@ -36,7 +39,7 @@ export class TriggerFactory {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = IdTrigger.fromJSON(triggerSchema);
-                    engine.triggers.push(trigger);
+                    engine.triggers.splice(index, 0, trigger);
                 }
                 break;
             }
@@ -44,7 +47,7 @@ export class TriggerFactory {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = TimerTrigger.fromJSON(triggerSchema);
-                    engine.triggers.push(trigger);
+                    engine.triggers.splice(index, 0, trigger);
                 }
                 break;
             }
