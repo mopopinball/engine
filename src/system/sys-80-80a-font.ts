@@ -71,23 +71,23 @@ export const font = [0, 0, // NUL, SOH
     61, // G
     118, // H
     137, // I
-    0,
+    30, // J
     240, // K = k
     56, // L
     183, // M
     55, // N
     63, // O
     115, // P
-    0,
+    103, // Q (crappy)
     49, // R
     109, // S
     129, // T
     62, // U
-    0,
-    0,
-    0,
+    184, // V
+    190, // W
+    118, // X
     110, // Y
-    0,
+    91, // Z
     0,
     0,
     0,
@@ -126,3 +126,19 @@ export const font = [0, 0, // NUL, SOH
     0,
     0
 ];
+
+
+/**
+ * Eight segment characters are defined as follows:
+ * TOP=A
+ * TOPRIGHT=B
+ * BOTTOMRIGHT=C
+ * BOTTOM=D
+ * BOTTOMLEFT=E
+ * TOPLEFT=F
+ * HORIZONTALMIDDEL=G
+ * VERTICALMIDDLE=H
+ * 
+ * Which are then applied as bits into a byte as follows:
+ * HGFEDCBA
+ */

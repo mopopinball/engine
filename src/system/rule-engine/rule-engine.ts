@@ -104,6 +104,7 @@ export class RuleEngine extends DirtyNotifier {
     }
 
     public onSwitch(id: string, holdIntervalMs?: number): boolean {
+        // TODO: Might want to activate more then one trigger (eg. switch triggers.)
         const wasSingleActivated = this.activateTrigger(id, TriggerType.SWITCH, holdIntervalMs);
         const wasMultiActivated = this.activateTrigger(id, TriggerType.MULTI_SWITCH, holdIntervalMs);
         return wasSingleActivated || wasMultiActivated;
