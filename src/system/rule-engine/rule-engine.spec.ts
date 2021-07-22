@@ -5,6 +5,7 @@ import * as actionSiblingData from "../../../test-data/action-sibling.json";
 import { LightState } from "../devices/light";
 import { SwitchTrigger } from "./actions/switch-trigger";
 import { DataAction, DataOperation } from "./actions/data-action";
+import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 
 describe('Rules', () => {
     let ruleEngine: RuleEngine = null;
@@ -95,6 +96,24 @@ describe('Rules', () => {
             // check
             expect(trigger).toBeTruthy();
             expect(triggerWithoutHoldTime).toBeFalsy();
+        });
+
+        it('getMultiSwitchTrigger',() => {
+            // setup
+            ruleEngine.triggers = [];
+            ruleEngine.triggers.push(new MultiSwitchTrigger(
+                'multi1',
+                [
+                    {switchId: 'sw0'},
+                    {switchId: 'sw1'}
+                ]
+            ));
+
+            // exercise
+            const trigger = ruleEngine.getMultiSwitchTrigger({switchId: 'sw1'});
+
+            // check
+            expect(trigger).toBeTruthy();
         });
     });
 

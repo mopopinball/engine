@@ -11,6 +11,8 @@ import { DataItem, NumberData } from "./rule-data";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
 import { TriggerType } from "./schema/triggers.schema";
 import { TriggerFactory } from "./trigger-factory";
+import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
+import { SwitchTriggerId } from "./actions/switch-trigger-id";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -102,7 +104,9 @@ export class RuleEngine extends DirtyNotifier {
     }
 
     public onSwitch(id: string, holdIntervalMs?: number): boolean {
-        return this.activateTrigger(id, TriggerType.SWITCH, holdIntervalMs);
+        const wasSingleActivated = this.activateTrigger(id, TriggerType.SWITCH, holdIntervalMs);
+        const wasMultiActivated = this.activateTrigger(id, TriggerType.MULTI_SWITCH, holdIntervalMs);
+        return wasSingleActivated || wasMultiActivated;
     }
 
     public onTrigger(id: string): boolean {
@@ -126,6 +130,9 @@ export class RuleEngine extends DirtyNotifier {
             case TriggerType.SWITCH:
                 matchingTrigger = this.getSwitchTrigger(id, holdIntervalMs);
             break;
+            case TriggerType.MULTI_SWITCH:
+                matchingTrigger = this.getMultiSwitchTrigger({switchId: id, holdIntervalMs: holdIntervalMs});
+                break;
             case TriggerType.ID:
                 matchingTrigger = this.getTrigger(id);
             break;
@@ -159,6 +166,13 @@ export class RuleEngine extends DirtyNotifier {
             );
     }
 
+    public getMultiSwitchTrigger(sw: SwitchTriggerId): ActionTriggerType {
+        return this.getMultiSwitchTriggers()
+            .find((trigger: MultiSwitchTrigger) =>
+                trigger.switches.some((t) => t.switchId === sw.switchId && t.holdIntervalMs == sw.holdIntervalMs)
+            );
+    }
+
     public getAllHoldSwitchTriggers(): SwitchTrigger[] {
         let holdSws: SwitchTrigger[] = this.getSwitchTriggers()
             .filter((trigger) => trigger.holdIntervalMs > 0);
@@ -173,6 +187,11 @@ export class RuleEngine extends DirtyNotifier {
     public getSwitchTriggers(): SwitchTrigger[] {
         return this.triggers
             .filter((trigger) => trigger.type === TriggerType.SWITCH) as SwitchTrigger[];
+    }
+
+    public getMultiSwitchTriggers(): MultiSwitchTrigger[] {
+        return this.triggers
+            .filter((trigger) => trigger.type === TriggerType.MULTI_SWITCH) as MultiSwitchTrigger[];
     }
 
     getTrigger(triggerId: string): ActionTriggerType {

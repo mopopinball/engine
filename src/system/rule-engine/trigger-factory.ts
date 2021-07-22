@@ -2,6 +2,7 @@ import { logger } from "../logger";
 import { Action } from "./actions/action";
 import { ActionFactory } from "./actions/action-factory";
 import { IdTrigger } from "./actions/id-trigger";
+import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTrigger } from "./actions/switch-trigger";
 import { TimerTrigger } from "./actions/timer-trigger";
 import { ActionTriggerType } from "./actions/trigger";
@@ -35,6 +36,14 @@ export class TriggerFactory {
                 }
                 break;
             }
+            case TriggerType.MULTI_SWITCH: {
+                trigger = engine.getTrigger(triggerSchema.id);
+                if (!trigger) {
+                    trigger = MultiSwitchTrigger.fromJSON(triggerSchema);
+                    engine.triggers.splice(index, 0, trigger);
+                }
+                break;
+            }
             case TriggerType.ID: {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
@@ -63,6 +72,9 @@ export class TriggerFactory {
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
                 return SwitchTrigger.fromJSON(triggerSchema);
+            }
+            case TriggerType.MULTI_SWITCH: {
+                return MultiSwitchTrigger.fromJSON(triggerSchema);
             }
             case TriggerType.ID: {
                 return IdTrigger.fromJSON(triggerSchema);

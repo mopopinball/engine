@@ -4,6 +4,7 @@ import { Trigger } from "./trigger";
 export class SwitchTrigger extends Trigger {
     readonly type = TriggerType.SWITCH;
     
+    // todo: use new type
     constructor(public switchId: string, public holdIntervalMs?: number) {
         super();
     }
