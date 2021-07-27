@@ -305,6 +305,7 @@ export class RuleEngine extends DirtyNotifier {
             return sw.getActive() === activated;
         }
         else {
+            logger.warn(`Could not find switch ${switchId}`);
             return false;
         }
     }

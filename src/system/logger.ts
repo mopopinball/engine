@@ -1,7 +1,24 @@
 // import {createLogger, format, transports} from 'winston';
 // import Debug from 'debug';
 import log from 'loglevel';
+import {apply, reg} from 'loglevel-plugin-prefix';
 
+// const colors = {
+//     TRACE: chalk.magenta,
+//     DEBUG: chalk.cyan,
+//     INFO: chalk.blue,
+//     WARN: chalk.yellow,
+//     ERROR: chalk.red,
+//   };
+
+reg(log);
+
+apply(log, {
+    format(level, name, timestamp) {
+      return `[${timestamp}]`;
+    },
+  });
+  
 export const logger = log;
 
 // export const logger = createLogger({

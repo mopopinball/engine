@@ -11,7 +11,7 @@ mkdir dist
 # cp -r site/dist/site dist/site
 
 # Install then compile the engine
-npm install --frozen-lockfile
+npm ci
 tsc
 
 # TODO: Get the pics from their latest release on GitHub.

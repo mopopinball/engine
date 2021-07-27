@@ -36,8 +36,6 @@ export class DataAction extends Action {
             this.operand :
             DataEvaluator.evaluate(this.operand, this.data as Map<string, NumberData>);
 
-        logger.debug(`[Data Action] Evaluating ${currentOperand} ${this.operation} ${this.getData().value}`);
-
         switch(this.operation) {
             case DataOperation.INCREMENT:
                 this.getData().value += currentOperand; 
@@ -84,8 +82,8 @@ export class DataAction extends Action {
     }
 
     toString(): string {
-        return this.expression ? `Data action: ${this.dataKey} = ${this.expression}` :
-            `Data action: ${this.dataKey} ${this.operation} ${this.operation}`;   
+        return this.expression ? `[Data Action] "${this.dataKey} = ${this.expression}"` :
+            `[Data Action]: ${this.dataKey} ${this.operation} ${this.operation}`;   
     }
 }
 

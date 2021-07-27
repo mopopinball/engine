@@ -41,7 +41,7 @@ export class StateAction extends Action {
     }
 
     toString(): string {
-        return `State action: ${this.stopTargetId} -> ${this.startTargetId}`;   
+        return `[State Action]: Stop=${this.stopTargetId} Start=${this.startTargetId}`;   
     }
 
 }

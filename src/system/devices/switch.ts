@@ -6,7 +6,7 @@ import { DelayedCallback } from "../delayed-callback";
  */
 export abstract class Switch extends EventEmitter {
     protected lastActiveTime = 0;
-    protected active: boolean;
+    protected active = false;
     private ack: boolean;
     private holdCallbacks: DelayedCallback[] = [];
 

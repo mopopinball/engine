@@ -25,9 +25,10 @@ export class Server {
     setupWebserverBindings(): void {
         const staticDir = path.resolve('/home/pi/mopo/servicemenu');
         logger.info(`Setting static dir to ${staticDir}`);
+        // TODO: refresh the pin code periodically and update the security/users.
         const users = {
             admin: Security.getInstance().getPinCode().toString(),
-            developer: 'abc123' //todo: Remove this!
+            developer: 'abc123' //TODO: Remove this!
         };
         basicAuth({users})
         app.use(basicAuth({
@@ -40,7 +41,7 @@ export class Server {
 
         this.setupControllers();
 
-        app.listen(port, () => logger.info(`Mopo Pinball admin webserver listening on port ${port}!`));
+        app.listen(port, () => logger.info(`Mopo Pinball service menu listening on port ${port}`));
     }
 
     private setupControllers() {

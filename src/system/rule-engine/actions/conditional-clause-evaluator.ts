@@ -25,15 +25,15 @@ export class ConditionalClauseEvaluator {
                     logger.warn(`Cannot process condition type.`);
             }
         });
+        logger.debug(`[Conditional Clauses] evaluating ${conditions.length} conditions. Satisfied = ${areConditionsSatasified}`);
         return areConditionsSatasified;
     }
 
     private onData(dataCondition: DataCondition): boolean {
         const expression = this.getDataExpression(dataCondition);
-        logger.debug(`[Data Condition] Evaluating "${expression}".`);
         // rely on data being numbers
         const result = DataEvaluator.evaluateBoolean(expression, this.data as Map<string, NumberData>);
-        logger.debug(`[Data Condition] Result = ${result}`);
+        logger.debug(`[Data Condition] evaluated to ${result}`);
         return result;
     }
 
@@ -48,7 +48,8 @@ export class ConditionalClauseEvaluator {
     }
 
     private onSwitch(switchCondition: SwitchCondition): boolean {
-        logger.debug(`[Conditional Switch Action] Evaluating ${switchCondition.switchId} is ${switchCondition.activated}`);
-        return this.rootEngine.isSwitchInState(switchCondition.switchId, switchCondition.activated);
+        const isSwitchInDesiredState = this.rootEngine.isSwitchInState(switchCondition.switchId, switchCondition.activated);
+        logger.debug(`[Switch Condition] evaluating if ${switchCondition.switchId} is ${switchCondition.activated} = ${isSwitchInDesiredState}`);
+        return isSwitchInDesiredState;
     }
 }

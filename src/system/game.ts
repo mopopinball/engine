@@ -13,7 +13,6 @@ import { HardwareCoilSchema, HardwareConfig } from "./hardware-config.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
 import { RuleSchema } from "./rule-engine/schema/rule.schema";
 import { SwitchPayload } from "./rule-engine/switch-payload";
-
 import {MessageBroker, EVENTS} from './messages';
 // const Maintenance = require('./system/maintenance');
 import { SwitchesPic } from "./devices/switches-pic";
@@ -36,6 +35,12 @@ import { DataFormatter } from "./data-formatter";
 import { ConfigLoader } from "./config-loader";
 import { GameClock } from "./game-clock";
 import { BlinkDisplayStyle } from "./devices/styles/blink-display-style";
+import { SERVICE_SWITCH } from "./special-switches";
+import { ServiceMenu } from "./service-menu";
+
+if(process.env.DEBUG) {
+    logger.setLevel('debug');
+}
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);
@@ -229,7 +234,7 @@ export class Game {
         await GpioPin.setupSync();
     }
 
-    onSwitchMatrixEvent(payload: SwitchPayload): void {
+    private onSwitchMatrixEvent(payload: SwitchPayload): void {
         const sw = this.switchesByNumber.get(payload.switch);
         if (!sw) {
             logger.warn(`No switch found: ${payload.switch}`);
@@ -237,6 +242,21 @@ export class Game {
         }
 
         logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
+
+        // Pressing the service button is a special case. It will stop the current game and display
+        // IP info to access the service menu. Pressing it again will restart the game.
+        if (sw.number === SERVICE_SWITCH) {
+            if(this.ruleEngine.active) {
+                this.ruleEngine.stop();
+                // display IP address
+                ServiceMenu.showIp(this.displays);
+            }
+            else {
+                this.ruleEngine.start();
+            }
+            return;
+        }
+
         try {
             // notify the switch object of new on/off state. This starts/stop hold states.
             sw.onChange(payload.activated);

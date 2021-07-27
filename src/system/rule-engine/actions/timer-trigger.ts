@@ -15,7 +15,7 @@ export class TimerTrigger extends Trigger {
 
     public start(): void {
         this.stop();
-        logger.debug(`[Start Timer Action] ${this.id}`);
+        logger.debug(`[Start Timer Action] ${this.id} (${this.valueMs}ms)`);
         
         if (this.mode === TimerTriggerMode.INTERVAL) {
             this.timeout = setInterval(() => this.tick(), this.valueMs);
@@ -26,7 +26,7 @@ export class TimerTrigger extends Trigger {
 
     public stop(): void {
         if (this.timeout) {
-            logger.debug(`[Stop Timer Action] ${this.id}`);
+            logger.debug(`[Stop Timer Action] ${this.id} (${this.valueMs}ms)`);
         }
 
         if (this.mode === TimerTriggerMode.INTERVAL) {
@@ -38,6 +38,7 @@ export class TimerTrigger extends Trigger {
     }
 
     private tick(): void {
+        logger.debug(`[Timer Action] tick ${this.id}`)
         this.eventEmitter.emit('tick');
     }
 
@@ -57,6 +58,6 @@ export class TimerTrigger extends Trigger {
     }
 
     toString(): string {
-        return `Timer trigger ${this.id} (${this.valueMs})ms`;
+        return `[Timer Trigger] ${this.id} (${this.valueMs}ms)`;
     }
 }

@@ -8,7 +8,7 @@ import { Utils } from "./utils";
  */
 export class Security {
     private pinCode: number;
-
+    private system: SystemName;
     private static instance: Security;
 
     public static getInstance(): Security {
@@ -20,7 +20,13 @@ export class Security {
     }
 
     setSystem(system: SystemName): void {
-        if (system === SystemName.SYS80 || system === SystemName.SYS80A) {
+        this.system = system;
+        this.refreshPinCode();
+    }
+
+    // TODO: Call this periodically from somewhere
+    refreshPinCode(): void {
+        if (this.system === SystemName.SYS80 || this.system === SystemName.SYS80A) {
             this.pinCode = Utils.getRandomInteger(1000, 10000);
         }
         else {

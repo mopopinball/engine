@@ -58,6 +58,6 @@ export class ConditionalAction extends Action {
     }
 
     toString(): string {
-        return `Conditional actions: ${this.clauses.map((c) => c.trueResult.triggerId).join(', ')}`;   
+        return `[Conditional Action]: ${this.clauses.map((c) => c.trueResult.triggerId).join(', ')}`;   
     }
 }
