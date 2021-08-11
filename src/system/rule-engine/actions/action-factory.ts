@@ -7,6 +7,7 @@ import { DeviceAction } from "./device-action";
 import { NamedTriggerAction } from "./named-trigger-action";
 import { RandomAction } from "./random-action";
 import { StateAction } from "./state-action";
+import { TimedAction } from "./timed-action";
 
 export class ActionFactory {
     public static create(actionSchema: ActionSchemaType): Action {
@@ -25,6 +26,8 @@ export class ActionFactory {
                 return NamedTriggerAction.fromJSON(actionSchema);
             case ActionType.RANDOM:
                 return RandomAction.fromJSON(actionSchema);
+            case ActionType.TIMED:
+                return TimedAction.fromJSON(actionSchema);
             default:
                 throw new Error('Not implemented');
         }

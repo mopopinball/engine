@@ -13,6 +13,7 @@ import { TriggerType } from "./schema/triggers.schema";
 import { TriggerFactory } from "./trigger-factory";
 import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTriggerId } from "./actions/switch-trigger-id";
+import { TimedAction } from "./actions/timed-action";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -22,7 +23,7 @@ export class RuleEngine extends DirtyNotifier {
     description: string;
     data: Map<string, DataItem> = new Map();
     devices: Map<string, DesiredOutputState> = new Map();
-    rollbackActions: DeviceAction[] = [];
+    rollbackActions: (DeviceAction | TimedAction)[] = [];
     triggers: ActionTriggerType[] = [];
     children: RuleEngine[] = [];
 
@@ -149,6 +150,9 @@ export class RuleEngine extends DirtyNotifier {
                     this.getInheritedDevices()
                 );
                 if (action instanceof DeviceAction && action.requiresRollback()) {
+                    this.rollbackActions.push(action);
+                }
+                else if (action instanceof TimedAction) {
                     this.rollbackActions.push(action);
                 }
             }

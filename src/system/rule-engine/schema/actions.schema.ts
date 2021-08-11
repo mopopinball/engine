@@ -10,7 +10,8 @@ export enum ActionType {
     STATE = 'state',
     CONDITION = 'condition',
     NAMED = 'named',
-    RANDOM = 'random'
+    RANDOM = 'random',
+    TIMED = 'timed'
 }
 
 export interface DataActionSchema {
@@ -24,6 +25,15 @@ export interface DataActionSchema {
 export interface DeviceActionSchema {
     type: ActionType.DEVICE;
     state: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
+}
+
+export interface TimedActionSchema {
+    type: ActionType.TIMED,
+    id: string,
+    steps: {
+        intervalMs: number,
+        actions: ActionSchemaType[]
+    }[]
 }
 
 export interface StateActionSchema {
@@ -64,7 +74,7 @@ export interface RandomActionSchema {
     }[]
 }
 
-export type ActionSchemaType = DataActionSchema | NamedTriggerActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
+export type ActionSchemaType = DataActionSchema | TimedActionSchema | NamedTriggerActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
 
 export type ConditionalActionConditionSchema = ConditionalActionDataConditionSchema | ConditionalActionSwitchConditionSchema;
 
