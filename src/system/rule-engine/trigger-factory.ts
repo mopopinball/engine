@@ -5,7 +5,7 @@ import { IdTrigger } from "./actions/id-trigger";
 import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTrigger } from "./actions/switch-trigger";
 import { TimerTrigger } from "./actions/timer-trigger";
-import { ActionTriggerType } from "./actions/trigger";
+import { TriggerType } from "./actions/trigger";
 import { RuleEngine } from "./rule-engine";
 import { TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
 
@@ -26,7 +26,7 @@ export class TriggerFactory {
 
     public static createTrigger(triggerSchema: TriggerSchemasType, engine: RuleEngine, index = engine.triggers.length): void {
         // First, find or create the incoming trigger.
-        let trigger: ActionTriggerType = null;
+        let trigger: TriggerType = null;
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
                 trigger = engine.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
@@ -68,7 +68,7 @@ export class TriggerFactory {
         this.actionsFromJson(triggerSchema, trigger, engine);
     }
 
-    private static fromJson(triggerSchema: TriggerSchemasType): ActionTriggerType {
+    private static fromJson(triggerSchema: TriggerSchemasType): TriggerType {
         switch(triggerSchema.type) {
             case TriggerType.SWITCH: {
                 return SwitchTrigger.fromJSON(triggerSchema);
@@ -89,7 +89,7 @@ export class TriggerFactory {
 
     private static actionsFromJson(
         triggerSchema: TriggerSchemasType,
-        trigger: ActionTriggerType,
+        trigger: TriggerType,
         engine: RuleEngine
     ): void {
         let newAction: Action = null;

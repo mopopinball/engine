@@ -42,13 +42,7 @@ export class DriverPic extends Pic {
         this.lamps = this._initArray(53);
         this.coils = this._initArray(9);
         this.sounds = this._initArray(4);
-
         this.buffer = Buffer.alloc(9);
-
-        // listen for lamp changes, coil changes and sounds.
-        // MessageBroker.on(EVENTS.OUTPUT_DEVICE_CHANGE, (newStates) => {
-        //     this.onDriverItemChange(newStates);
-        // });
     }
 
     private _initArray(size): Bit[] {
@@ -84,7 +78,6 @@ export class DriverPic extends Pic {
                 }
             }
         });
-
         
         // only 1 sound can play at a time. Find the first sound to play.
         const sound: Sound = newDeviceStates.find((device) => device instanceof Sound) as Sound;

@@ -37,12 +37,12 @@ describe('system 80/80A font', () => {
         // the following test does not assert, its a tool
         it('TOOL: get int representation', () => {
             const result = getIntRepresentation([
-                1, // h
-                0, // g
-                1, // f
+                0, // h
+                1, // g
+                0, // f
                 1, // e
                 0, // d
-                1, // c
+                0, // c
                 1, // b
                 1  // a
             ]);

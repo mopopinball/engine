@@ -5,7 +5,7 @@ import { MultiSwitchTrigger } from "./multi-switch-trigger";
 import { SwitchTrigger } from "./switch-trigger";
 import { TimerTrigger } from "./timer-trigger";
 
-export type ActionTriggerType = SwitchTrigger | MultiSwitchTrigger | IdTrigger | TimerTrigger;
+export type TriggerType = SwitchTrigger | MultiSwitchTrigger | IdTrigger | TimerTrigger;
 
 export abstract class Trigger {
     actions: Action[] = [];
