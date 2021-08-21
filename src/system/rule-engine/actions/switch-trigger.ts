@@ -1,8 +1,8 @@
-import { SwitchTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { SwitchTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
 import { Trigger } from "./trigger";
 
 export class SwitchTrigger extends Trigger {
-    readonly type = TriggerType.SWITCH;
+    readonly type = TriggerTypeEnum.SWITCH;
     
     // todo: use new type
     constructor(public switchId: string, public holdIntervalMs?: number) {

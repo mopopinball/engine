@@ -9,7 +9,7 @@ import { TimerTrigger } from "./actions/timer-trigger";
 import { DesiredOutputState } from "./desired-output-state";
 import { DataItem, NumberData } from "./rule-data";
 import { DataSchemaType, RuleSchema } from "./schema/rule.schema";
-import { TriggerType } from "./schema/triggers.schema";
+import { TriggerTypeEnum } from "./schema/triggers.schema";
 import { TriggerFactory } from "./trigger-factory";
 import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTriggerId } from "./actions/switch-trigger-id";
@@ -106,17 +106,17 @@ export class RuleEngine extends DirtyNotifier {
 
     public onSwitch(id: string, holdIntervalMs?: number): boolean {
         // TODO: Might want to activate more then one trigger (eg. switch triggers.)
-        const wasSingleActivated = this.activateTrigger(id, TriggerType.SWITCH, holdIntervalMs);
-        const wasMultiActivated = this.activateTrigger(id, TriggerType.MULTI_SWITCH, holdIntervalMs);
+        const wasSingleActivated = this.activateTrigger(id, TriggerTypeEnum.SWITCH, holdIntervalMs);
+        const wasMultiActivated = this.activateTrigger(id, TriggerTypeEnum.MULTI_SWITCH, holdIntervalMs);
         return wasSingleActivated || wasMultiActivated;
     }
 
     public onTrigger(id: string): boolean {
-        return this.activateTrigger(id, TriggerType.ID);
+        return this.activateTrigger(id, TriggerTypeEnum.ID);
     }
 
     // TODO: Accepting holdIntervalMs here is crap. Fix?
-    private activateTrigger(id: string, type: TriggerType, holdIntervalMs?: number): boolean {
+    private activateTrigger(id: string, type: TriggerTypeEnum, holdIntervalMs?: number): boolean {
         const childHandled = this.getActiveChildren()
             .map((child) => child.activateTrigger(id, type, holdIntervalMs))
             .reduce((accum, curv) => {
@@ -129,13 +129,13 @@ export class RuleEngine extends DirtyNotifier {
 
         let matchingTrigger: TriggerType = null;
         switch(type) {
-            case TriggerType.SWITCH:
+            case TriggerTypeEnum.SWITCH:
                 matchingTrigger = this.getSwitchTrigger(id, holdIntervalMs);
             break;
-            case TriggerType.MULTI_SWITCH:
+            case TriggerTypeEnum.MULTI_SWITCH:
                 matchingTrigger = this.getMultiSwitchTrigger({switchId: id, holdIntervalMs: holdIntervalMs});
                 break;
-            case TriggerType.ID:
+            case TriggerTypeEnum.ID:
                 matchingTrigger = this.getTrigger(id);
             break;
         }
@@ -191,17 +191,17 @@ export class RuleEngine extends DirtyNotifier {
 
     public getSwitchTriggers(): SwitchTrigger[] {
         return this.triggers
-            .filter((trigger) => trigger.type === TriggerType.SWITCH) as SwitchTrigger[];
+            .filter((trigger) => trigger.type === TriggerTypeEnum.SWITCH) as SwitchTrigger[];
     }
 
     public getMultiSwitchTriggers(): MultiSwitchTrigger[] {
         return this.triggers
-            .filter((trigger) => trigger.type === TriggerType.MULTI_SWITCH) as MultiSwitchTrigger[];
+            .filter((trigger) => trigger.type === TriggerTypeEnum.MULTI_SWITCH) as MultiSwitchTrigger[];
     }
 
     getTrigger(triggerId: string): TriggerType {
         return this.triggers
-            .filter((trigger) => trigger.type === TriggerType.ID || trigger.type === TriggerType.TIMER)
+            .filter((trigger) => trigger.type === TriggerTypeEnum.ID || trigger.type === TriggerTypeEnum.TIMER)
             .find((trigger: IdTrigger) => trigger.id === triggerId);
     }
 
@@ -300,7 +300,7 @@ export class RuleEngine extends DirtyNotifier {
 
     private getTimerTriggers(): TimerTrigger[] {
         return this.triggers
-            .filter((t) => t.type === TriggerType.TIMER) as TimerTrigger[];
+            .filter((t) => t.type === TriggerTypeEnum.TIMER) as TimerTrigger[];
     }
 
     isSwitchInState(switchId: string, activated: boolean): boolean {

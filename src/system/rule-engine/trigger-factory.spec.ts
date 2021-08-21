@@ -1,5 +1,5 @@
 import { RuleEngine } from "./rule-engine";
-import { SwitchTriggerSchema, TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
+import { SwitchTriggerSchema, TriggerSchemasType, TriggerTypeEnum } from "./schema/triggers.schema";
 import { TriggerFactory } from "./trigger-factory";
 
 describe('Trigger Factory', () => {
@@ -12,7 +12,7 @@ describe('Trigger Factory', () => {
     it('copies a switch trigger correctly', () => {
         // setup
         TriggerFactory.createTrigger({
-            type: TriggerType.SWITCH,
+            type: TriggerTypeEnum.SWITCH,
             switchId: 'a',
             actions: []
         } as TriggerSchemasType, engine);

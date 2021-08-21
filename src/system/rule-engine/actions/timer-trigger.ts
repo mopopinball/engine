@@ -1,10 +1,10 @@
 import { EventEmitter } from "events";
 import { logger } from "../../logger";
-import { TimerTriggerMode, TimerTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { TimerTriggerMode, TimerTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
 import { Trigger } from "./trigger"
 
 export class TimerTrigger extends Trigger {
-    readonly type = TriggerType.TIMER;
+    readonly type = TriggerTypeEnum.TIMER;
     public readonly eventEmitter: EventEmitter;
     private timeout: NodeJS.Timeout;
     

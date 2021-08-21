@@ -1,8 +1,8 @@
-import { IdTriggerSchema, TriggerType } from "../schema/triggers.schema";
+import { IdTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
 import { Trigger } from "./trigger";
 
 export class IdTrigger extends Trigger {
-    readonly type = TriggerType.ID;
+    readonly type = TriggerTypeEnum.ID;
     
     constructor(public id: string) {
         super();

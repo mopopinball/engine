@@ -7,7 +7,7 @@ import { SwitchTrigger } from "./actions/switch-trigger";
 import { TimerTrigger } from "./actions/timer-trigger";
 import { TriggerType } from "./actions/trigger";
 import { RuleEngine } from "./rule-engine";
-import { TriggerSchemasType, TriggerType } from "./schema/triggers.schema";
+import { TriggerSchemasType, TriggerTypeEnum } from "./schema/triggers.schema";
 
 export class TriggerFactory {
 
@@ -28,7 +28,7 @@ export class TriggerFactory {
         // First, find or create the incoming trigger.
         let trigger: TriggerType = null;
         switch(triggerSchema.type) {
-            case TriggerType.SWITCH: {
+            case TriggerTypeEnum.SWITCH: {
                 trigger = engine.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
                 if (!trigger) {
                     trigger = SwitchTrigger.fromJSON(triggerSchema);
@@ -36,7 +36,7 @@ export class TriggerFactory {
                 }
                 break;
             }
-            case TriggerType.MULTI_SWITCH: {
+            case TriggerTypeEnum.MULTI_SWITCH: {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = MultiSwitchTrigger.fromJSON(triggerSchema);
@@ -44,7 +44,7 @@ export class TriggerFactory {
                 }
                 break;
             }
-            case TriggerType.ID: {
+            case TriggerTypeEnum.ID: {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = IdTrigger.fromJSON(triggerSchema);
@@ -52,7 +52,7 @@ export class TriggerFactory {
                 }
                 break;
             }
-            case TriggerType.TIMER: {
+            case TriggerTypeEnum.TIMER: {
                 trigger = engine.getTrigger(triggerSchema.id);
                 if (!trigger) {
                     trigger = TimerTrigger.fromJSON(triggerSchema);
@@ -70,16 +70,16 @@ export class TriggerFactory {
 
     private static fromJson(triggerSchema: TriggerSchemasType): TriggerType {
         switch(triggerSchema.type) {
-            case TriggerType.SWITCH: {
+            case TriggerTypeEnum.SWITCH: {
                 return SwitchTrigger.fromJSON(triggerSchema);
             }
-            case TriggerType.MULTI_SWITCH: {
+            case TriggerTypeEnum.MULTI_SWITCH: {
                 return MultiSwitchTrigger.fromJSON(triggerSchema);
             }
-            case TriggerType.ID: {
+            case TriggerTypeEnum.ID: {
                 return IdTrigger.fromJSON(triggerSchema);
             }
-            case TriggerType.TIMER: {
+            case TriggerTypeEnum.TIMER: {
                 return TimerTrigger.fromJSON(triggerSchema);
             }
             default:

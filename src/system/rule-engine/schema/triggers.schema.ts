@@ -3,7 +3,7 @@
 import { MultiSwitchTrigger } from "../actions/multi-switch-trigger";
 import { ActionSchemaType, NamedTriggerActionSchema } from "./actions.schema";
 
-export enum TriggerType {
+export enum TriggerTypeEnum {
     SWITCH = 'switch',
     MULTI_SWITCH = 'multi-switch',
     ID = 'id',
@@ -16,13 +16,13 @@ export enum TimerTriggerMode {
 }
 
 export interface SwitchTriggerSchema extends TriggerSchema {
-    type: TriggerType.SWITCH;
+    type: TriggerTypeEnum.SWITCH;
     holdIntervalMs?: number;
     switchId: string;
 }
 
 export interface MultiSwitchTriggerSchema extends TriggerSchema {
-    type: TriggerType.MULTI_SWITCH,
+    type: TriggerTypeEnum.MULTI_SWITCH,
     id: string,
     switches: {
         holdIntervalMs?: number,
@@ -31,12 +31,12 @@ export interface MultiSwitchTriggerSchema extends TriggerSchema {
 }
 
 export interface IdTriggerSchema extends TriggerSchema {
-    type: TriggerType.ID,
+    type: TriggerTypeEnum.ID,
     id: string
 }
 
 export interface TimerTriggerSchema extends TriggerSchema {
-    type: TriggerType.TIMER,
+    type: TriggerTypeEnum.TIMER,
     id: string,
     valueMs: number;
     mode: TimerTriggerMode
