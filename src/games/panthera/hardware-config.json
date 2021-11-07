@@ -1,0 +1,187 @@
+{
+    "name": "Panthera",
+    "system": "80",
+    "displays": {
+        "p1": {
+            "id": "p1",
+            "name": "Player 1 display"
+        },
+        "p2": {
+            "id": "p2",
+            "name": "Player 2 display"
+        },
+        "p3": {
+            "id": "p3",
+            "name": "Player 3 display"
+        },
+        "p4": {
+            "id": "p4",
+            "name": "Player 4 display"
+        },
+        "b": {
+            "id": "b",
+            "name": "Current ball display"
+        },
+        "c": {
+            "id": "c",
+            "name": "Credits display"
+        }
+    },
+    "devices": {
+        "switches": {
+            "NUMBER_1_YELLOW_DROP_TARGET": {
+                "number": 0,
+                "name": "#1 Yellow Drop Target"
+            },
+            "NUMBER_2_YELLOW_DROP_TARGET": {
+                "number": 1,
+                "name": "#2 Yellow Drop Target"
+            },
+            "NUMBER_3_YELLOW_DROP_TARGET": {
+                "number": 2,
+                "name": "#3 Yellow Drop Target"
+            },
+            "YELLOW_ROLLOVERS": {
+                "number": 3,
+                "name": "Yellow Rollovers (2)"
+            },
+            "BULLSEYE_TARGET": {
+                "number": 4,
+                "name": "Bull's Eye Target"
+            },
+            "NUMBER1_ROLLOVER": {
+                "number": 5,
+                "name": "#1 Rollover"
+            },
+            "NUMBER_1_BLUE_DROP_TARGET": {
+                "number": 10,
+                "name": "#1 Blue Drop Target"
+            },
+            "NUMBER_2_BLUE_DROP_TARGET": {
+                "number": 11,
+                "name": "#2 Blue Drop Target"
+            },
+            "NUMBER_3_BLUE_DROP_TARGET": {
+                "number": 12,
+                "name": "#3 Blue Drop Target"
+            },
+            "BLUE_ROLLOVERS": {
+                "number": 13,
+                "name": "Blue Rollovers (2)"
+            },
+            "ROLLOVER_BUTTONS": {
+                "number": 14,
+                "name": "Rollover Buttons (2)"
+            },
+            "NUMBER2_ROLLOVER": {
+                "number": 15,
+                "name": "#2 Rollovers (2)"
+            },
+            "NUMBER_1_WHITE_DROP_TARGET": {
+                "number": 20,
+                "name": "#1 White Drop Target"
+            },
+            "NUMBER_2_WHITE_DROP_TARGET": {
+                "number": 21,
+                "name": "#2 White Drop Target"
+            },
+            "NUMBER_3_WHITE_DROP_TARGET": {
+                "number": 22,
+                "name": "#3 White Drop Target"
+            },
+            "WHITE_ROLLOVERS": {
+                "number": 23,
+                "name": "White Rollovers (2)"
+            },
+            "POP_BUMPERS": {
+                "number": 24,
+                "name": "Pop Bumpers (2)"
+            },
+            "NUMBER_3_ROLLOVER_AND_SPIN_TARGET": {
+                "number": 25,
+                "name": "#3 Rollover and Spin Target"
+            },
+            "NUMBER_1_GREEN_DROP_TARGET": {
+                "number": 30,
+                "name": "#1 Green Drop Target"
+            },
+            "NUMBER_2_GREEN_DROP_TARGET": {
+                "number": 31,
+                "name": "#2 Green Drop Target"
+            },
+            "NUMBER_3_GREEN_DROP_TARGET": {
+                "number": 32,
+                "name": "#3 Green Drop Target"
+            },
+            "GREEN_ROLLOVERS": {
+                "number": 33,
+                "name": "Green Rollovers (2)"
+            },
+            "TEN_POINTS": {
+                "number": 34,
+                "name": "Ten Points (10)"
+            },
+            "HOLE": {
+                "number": 35,
+                "name": "Hole"
+            },
+            "TILT": {
+                "number": 57,
+                "name": "Tilt"
+            },
+            "OUTHOLE": {
+                "number": 67,
+                "name": "Outhole"
+            }
+        },
+        "lamps": {
+            "GAME_OVER_RELAY": {
+                "number": 0,
+                "role": "coil",
+                "name": "Game Over",
+                "coilType": "relay"
+            },
+            "TILT_RELAY": {
+                "number": 1,
+                "role": "coil",
+                "name": "Tilt",
+                "coilType": "relay"
+            }
+     
+        },
+        "coils": {
+            "COIN_COUNTER_3": {
+                "number": 3,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "COIN_COINTER_4": {
+                "number": 4,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "COIN_COUNTER_7": {
+                "number": 7,
+                "name": "Coin Counter",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "KNOCKER": {
+                "number": 8,
+                "name": "Knocker",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "OUTHOLE": {
+                "number": 9,
+                "name": "Outhole",
+                "coilType": "coil",
+                "durationMs": 100
+            }
+        }
+    },
+    "sounds": {
+    }
+}
