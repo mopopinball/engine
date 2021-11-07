@@ -13,7 +13,6 @@
   "scripts": {
     "fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts",
-    "pretest": "npm run lint",
     "test": "tsc && NODE_ENV=test jest --coverage",
     "tsc": "tsc",
     "semantic-release": "semantic-release"
@@ -59,7 +58,6 @@
     "@types/terminal-kit": "^1.28.2",
     "@typescript-eslint/eslint-plugin": "4.22.0",
     "@typescript-eslint/parser": "4.22.0",
-    "chai": "4.2.0",
     "eslint": "7.25.0",
     "jest": "^26.6.0",
     "semantic-release": "17.4.2",
