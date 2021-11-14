@@ -27,6 +27,7 @@ export class MessageBroker extends EventEmitter {
 
     private constructor() {
         super();
+        logger.info('Connecting to MQTT broker...');
         this.client = connect('mqtt://127.0.0.1:1883');
         this.client.on('message', (messageTopic, message) => this._onMqttMessage(messageTopic, message));
     }

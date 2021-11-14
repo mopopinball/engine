@@ -18,6 +18,9 @@ raspi-config nonint do_hostname $hostname
 raspi-config nonint do_ssh 1
 raspi-config nonint do_i2c 1
 
+systemctl enable ssh
+systemctl start ssh
+
 # Run the following script as the "pi" user.
 curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/pi.sh > ./pi.sh
 chmod +x ./pi.sh
