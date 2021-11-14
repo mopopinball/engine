@@ -48,13 +48,13 @@ export class GameSelector {
                 return;
             }
 
-            const gamestateDest = './gamestate-config.json';
+            const gamestateDest = '/home/pi/mopo/gamestate-config.json';
             if (existsSync(gamestateDest)){
                 unlinkSync(gamestateDest);
             }
             symlinkSync(resolve(gameConfigs[response.selectedIndex].gamestatePath), gamestateDest);
 
-            const hardwareDest = './hardware-config.json';
+            const hardwareDest = '/home/pi/mopo/hardware-config.json';
             if (existsSync(hardwareDest)) {
                 unlinkSync(hardwareDest);
             }

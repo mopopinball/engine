@@ -12,10 +12,14 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 2. Build your CPU!
 3. Burn a Raspberry Pi SD card image
 4. Boot the Raspberry Pi
+5. Conect the Pi to the internet, perferrible over WiFi.
+    * For WiFi, run sudo raspi-config
+    * Set the locale if required (Option 5/L4)
+    * Set the WiFi details (Option 1/S1)
 5. On the Pi run the following command
 
 ```
-curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/update.sh | bash
+sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/update.sh | bash"
 ```
 
 6. Select your game.

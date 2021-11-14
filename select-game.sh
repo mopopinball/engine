@@ -2,4 +2,4 @@
 
 set -e
 
-node ./engine/src/game-selector/index
+node /home/pi/mopo/engine/src/game-selector/index
