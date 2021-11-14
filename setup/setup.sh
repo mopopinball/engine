@@ -46,5 +46,5 @@ read CONFIRM
 if [ $CONFIRM == 'n']; then
     exit 1
 else
-    restart now
+    reboot now
 fi
