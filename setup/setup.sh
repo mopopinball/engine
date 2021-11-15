@@ -8,18 +8,17 @@ apt update
 apt install -y mosquitto uuid figlet
 
 # Automate some settings in raspi-config https://raspberrypi.stackexchange.com/a/66939
-locale=en_US.UTF-8
-layout=us
-raspi-config nonint do_change_locale $locale
-raspi-config nonint do_configure_keyboard $layout
+# raspi-config nonint do_ssh 1
+# raspi-config nonint do_i2c 1
+# locale=en_US.UTF-8
+# raspi-config nonint do_change_locale $locale
+# layout=us
+# raspi-config nonint do_configure_keyboard $layout
 randomid=$(uuid)
 hostname=mopo-${randomid:0:8}
 raspi-config nonint do_hostname $hostname
-raspi-config nonint do_ssh 1
-raspi-config nonint do_i2c 1
 
-systemctl enable ssh
-systemctl start ssh
+# systemctl enable ssh
 
 # Run the following script as the "pi" user.
 curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/pi.sh > ./pi.sh
