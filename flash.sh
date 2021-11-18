@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 echo Select which PIC to program [s]Switches [d]Displays [r]Drivers
 
 read PIC
@@ -8,7 +13,7 @@ read PIC
 echo Stopping Mopo Pinball
 systemctl stop mopo
 
-echo Press [Enter] when the jumpers are installed
+echo Press [Enter] when the JUMPERS are installed
 read
 
 if [ $PIC == 's' ]
@@ -24,7 +29,7 @@ else
     exit 1
 fi
 
-echo Press [Enter] when the jumpers are removed
+echo Press [Enter] when the JUMPERS are removed
 read
 
 echo Starting Mopo Pinball...

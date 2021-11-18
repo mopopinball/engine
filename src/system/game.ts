@@ -83,6 +83,18 @@ export class Game {
         }
 
         // this.maintenance = new Maintenance();
+        if (!DriverPic.getInstance().getInstalledVersion()) {
+            Board.getInstance().setError(true);
+            throw new Error('The Driver PIC is not flashed.');
+        }
+        if (!SwitchesPic.getInstance().getInstalledVersion()) {
+            Board.getInstance().setError(true);
+            throw new Error('The Switches PIC is not flashed.');
+        }
+        if (!DisplaysPic.getInstance().getInstalledVersion()) {
+            Board.getInstance().setError(true);
+            throw new Error('The Displays PIC is not flashed.');
+        }
 
         this.setup();
     }

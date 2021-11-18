@@ -140,12 +140,7 @@ export class DriverPic extends Pic {
         await this.write(this.buffer);
     }
 
-    // async getVersion() {
-    //     // const VERSION_COMMAND = 0x02;
-    //     await this.i2c1.writeByte(PIC_ADDRESS, 0x00, 0x0D);
-    //     const major = await this.i2c1.readByte(PIC_ADDRESS, 0x01);
-    //     // const minor = await this.i2c1.readByte(PIC_ADDRESS, 0x02);
-    //     const minor = 0;
-    //     return `${major}.${minor}`;
-    // }
+    getInstalledVersion(): string {
+        return super.getInstalledVersion('driver');
+    }
 }

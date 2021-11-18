@@ -370,6 +370,10 @@ export class SwitchesPic extends Pic {
         return parity;
     }
 
+    getInstalledVersion(): string {
+        return super.getInstalledVersion('switches');
+    }
+
     // programHex(pathToHex: string): SpawnSyncReturns<string> {
     //     logger.debug('program ic1');
     //     // await gpiop.destroy();

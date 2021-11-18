@@ -126,4 +126,13 @@ export class Board {
         this.piLed.update();
         this.nodeLed.update();
     }
+
+    setError(isError: boolean): void {
+        if (isError) {
+            this.errorLed.on();
+        }
+        else {
+            this.errorLed.off();
+        }
+    }
 }

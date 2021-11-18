@@ -3,11 +3,13 @@ import {openPromisified} from 'i2c-bus';
 import { logger } from "../logger";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import {padStart} from 'lodash';
+import { existsSync, readFileSync } from "fs";
 
 /**
  * An abstract PIC.
  */
 export abstract class Pic {
+    private readonly picPath = '/home/pi/mopo/pics';
     protected i2c1: PromisifiedBus;
     protected readonly DEBUG = false;
 
@@ -49,6 +51,15 @@ export abstract class Pic {
             });
             logger.debug(log);
         }
+    }
+
+    protected getInstalledVersion(pic: string): string {
+        const path = `${this.picPath}/${pic}-version.json`;
+        if (!existsSync(path)) {
+            return null;
+        }
+        const manifest = JSON.parse(readFileSync(path, {encoding: 'utf8'}));
+        return manifest.version;
     }
 
 }

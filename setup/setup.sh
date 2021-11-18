@@ -5,7 +5,13 @@ set -eou pipefail
 # MAIN SETUP SCRIPT FOR MOPO PINBALL
 
 apt update
-apt install -y mosquitto uuid figlet
+apt install -y mosquitto uuid figlet git
+
+git clone https://github.com/WiringPi/WiringPi.git
+pushd WiringPi
+./build
+popd
+gpio -v
 
 # Automate some settings in raspi-config https://raspberrypi.stackexchange.com/a/66939
 # raspi-config nonint do_ssh 1
