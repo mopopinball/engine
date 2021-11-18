@@ -8,6 +8,7 @@ import { Pic } from "./pic";
 import {DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
 import * as pins from '../../pins.json';
 import { DipSwitchState } from "../dip-switch-state";
+import { GpioRegistrator } from "../gpio-registrator";
 
 const PAYLOAD_SIZE_BYTES = 2;
 const LAST_NIBBLE_INDEX = (PAYLOAD_SIZE_BYTES * 2) - 1;
@@ -24,21 +25,21 @@ const COMMS_LOGGING = false;
     // 1 led
     // 1 reset
  */
-export class SwitchesPic extends Pic {
+export class SwitchesPic extends Pic implements GpioRegistrator {
     private static instance: SwitchesPic;
     reading: boolean;
     version: string;
     payload: Buffer;
     nibbleCount: number;
     errorCount: number;
-    private readonly _data0: GpioPin;
-    private readonly _data1: GpioPin;
-    private readonly _data2: GpioPin;
-    private readonly _data3: GpioPin;
-    private readonly _outReady: GpioPin;
-    private readonly _ack: GpioPin;
-    private readonly _retry: GpioPin;
-    private readonly _reset: GpioPin;
+    private _data0: GpioPin;
+    private _data1: GpioPin;
+    private _data2: GpioPin;
+    private _data3: GpioPin;
+    private _outReady: GpioPin;
+    private _ack: GpioPin;
+    private _retry: GpioPin;
+    private _reset: GpioPin;
     private _payloadInProgress: boolean;
     private k1_1: number;
     private k1_2: number;
@@ -68,15 +69,6 @@ export class SwitchesPic extends Pic {
         this.payload = Buffer.alloc(PAYLOAD_SIZE_BYTES);
         this.nibbleCount = -1;
         this.errorCount = 0;
-
-        this._data0 = new GpioPin(pins.IC1_Data0, DIR_IN);
-        this._data1 = new GpioPin(pins.IC1_Data1, DIR_IN);
-        this._data2 = new GpioPin(pins.IC1_Data2, DIR_IN);
-        this._data3 = new GpioPin(pins.IC1_Data3, DIR_IN);
-        this._outReady = new GpioPin(pins.IC1_OUT_RDY, DIR_IN, EDGE_RISING);
-        this._ack = new GpioPin(pins.IC1_ACK, DIR_LOW);
-        this._retry = new GpioPin(pins.IC1_Resend, DIR_LOW);
-        this._reset = new GpioPin(pins.IC1_Reset, DIR_LOW);
 
         // MessageBroker.subscribe('mopo/pic/IC1/update', () => this.programHex());
 
@@ -128,6 +120,17 @@ export class SwitchesPic extends Pic {
         //     }
         // });
         logger.debug('Switches PIC setup complete.');
+    }
+
+    registerGpioPins(): void {
+        this._data0 = new GpioPin(pins.IC1_Data0, DIR_IN);
+        this._data1 = new GpioPin(pins.IC1_Data1, DIR_IN);
+        this._data2 = new GpioPin(pins.IC1_Data2, DIR_IN);
+        this._data3 = new GpioPin(pins.IC1_Data3, DIR_IN);
+        this._outReady = new GpioPin(pins.IC1_OUT_RDY, DIR_IN, EDGE_RISING);
+        this._ack = new GpioPin(pins.IC1_ACK, DIR_LOW);
+        this._retry = new GpioPin(pins.IC1_Resend, DIR_LOW);
+        this._reset = new GpioPin(pins.IC1_Reset, DIR_LOW);
     }
 
     async setup(): Promise<void> {

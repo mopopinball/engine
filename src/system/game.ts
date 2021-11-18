@@ -83,23 +83,11 @@ export class Game {
         }
 
         // this.maintenance = new Maintenance();
-        if (!DriverPic.getInstance().getInstalledVersion()) {
-            Board.getInstance().setError(true);
-            throw new Error('The Driver PIC is not flashed.');
-        }
-        if (!SwitchesPic.getInstance().getInstalledVersion()) {
-            Board.getInstance().setError(true);
-            throw new Error('The Switches PIC is not flashed.');
-        }
-        if (!DisplaysPic.getInstance().getInstalledVersion()) {
-            Board.getInstance().setError(true);
-            throw new Error('The Displays PIC is not flashed.');
-        }
 
         this.setup();
     }
 
-    setup(): void {
+    async setup(): Promise<void> {
         // Load our hardware config.
         this._loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
@@ -109,6 +97,10 @@ export class Game {
             throw new Error('Unexpected system type.');
         }
 
+        await this.setupHardware();
+        
+        this.board.start();
+
         // init our instance variables.
         // setting system initializes the pin code used by server.
         Security.getInstance().setSystem(this.hardwareConfig.system);
@@ -117,8 +109,6 @@ export class Game {
         
         this.name = this.gameStateConfig.metadata.name;
         this.fpsTracker = new FpsTracker();
-
-        this.board = Board.getInstance();
 
         // wire up the rules, and listen for new rules.
         this.onNewRuleSchema(this.gameStateConfig);
@@ -148,12 +138,10 @@ export class Game {
             this.onClientDeviceUpdate(clientDevice);
         });
 
-        this.setupHardware().then(() => {
-            SwitchesPic.getInstance().reset();
-            this.board.start();
-            logger.debug('Starting game loop.');
-            this.gameLoop();
-        });
+        SwitchesPic.getInstance().reset();
+        // this.board.start();
+        logger.debug('Starting game loop!');
+        this.gameLoop();
     }
 
     onNewRuleSchema(ruleSchema: RuleSchema): void {
@@ -239,11 +227,31 @@ export class Game {
     }
 
     private async setupHardware(): Promise<void> {
-        MessageBroker.getInstance().on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
+        Board.getInstance().registerGpioPins();
+        SwitchesPic.getInstance().registerGpioPins();
+        await GpioPin.setupSync();
+
+        // MessageBroker.getInstance().on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
+        
+        this.board = Board.getInstance();
+        
+        logger.info('Checking PIC versions...');
+        if (!DriverPic.getInstance().getInstalledVersion()) {
+            this.board.setError(true);
+            throw new Error('The Driver PIC is not flashed.');
+        }
+        if (!SwitchesPic.getInstance().getInstalledVersion()) {
+            this.board.setError(true);
+            throw new Error('The Switches PIC is not flashed.');
+        }
+        if (!DisplaysPic.getInstance().getInstalledVersion()) {
+            this.board.setError(true);
+            throw new Error('The Displays PIC is not flashed.');
+        }
+        
         await SwitchesPic.getInstance().setup();
         await DriverPic.getInstance().setup();
         await DisplaysPic.getInstance().setup();
-        await GpioPin.setupSync();
     }
 
     private onSwitchMatrixEvent(payload: SwitchPayload): void {
@@ -568,6 +576,10 @@ export class Game {
         // else {
         //     logger.info(`Pic ${versionMessage.pic} is running version ${versionMessage.version}`);
         // }
+    }
+
+    exit(): void {
+        this.board?.exit();
     }
 }
 

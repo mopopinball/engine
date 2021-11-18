@@ -15,11 +15,12 @@ import { EVENTS, MessageBroker } from "./messages";
 import { LightState } from './devices/light';
 import { DipSwitchState } from './dip-switch-state';
 import { BlinkLightStyle } from './devices/styles/blink-light-style';
+import { GpioRegistrator } from './gpio-registrator';
 
 /**
  * Manages board IO including status LEDs and dip switch settings.
  */
-export class Board {
+export class Board implements GpioRegistrator {
     private static instance: Board;
     private dipState: DipSwitchState;
     private s1_2: BoardSwitch;
@@ -40,12 +41,28 @@ export class Board {
     }
     
     private constructor() {
-        this.errorLed = new StatusLed('D2', pins.D2_Error_Led);
-        this.piLed = new StatusLed('D3', pins.D3_Pi_Led);
-        this.nodeLed = new StatusLed('D4', pins.D4_Node_Led);
+        logger.info('Constructing Board instance.')
+        
         this.shutdownInterval = null;
 
         MessageBroker.getInstance().on(EVENTS.WAN_DOWN, () => this.onWanDown());
+
+        MessageBroker.getInstance().on(EVENTS.IC1_DIPS, (state: DipSwitchState) => this.publishDipState(state));
+    }
+
+    registerGpioPins(): void {
+        this.errorLed = new StatusLed('D2', pins.D2_Error_Led);
+        this.piLed = new StatusLed('D3', pins.D3_Pi_Led);
+        this.nodeLed = new StatusLed('D4', pins.D4_Node_Led);
+
+        this.s1_2 = new BoardSwitch('S1_2', pins.S1_2_Phat_Sound, true);
+        this.s1_2.on('change', () => this.publishDipState());
+        this.s1_6 = new BoardSwitch('S1_6', pins.S1_6, true); // shares the same pin as S3.
+        this.s1_6.on('change', () => this.publishDipState());
+        this.s1_7 = new BoardSwitch('S1_7', pins.S1_7_Debug, true);
+        this.s1_7.on('change', () => this.publishDipState());
+        this.s1_8 = new BoardSwitch('S1_8', pins.S1_8_Wps, true);
+        this.s1_8.on('change', () => this.publishDipState());
 
         const resetSwitch = new BoardSwitch('S3', pins.S3_Shutdown, true);
         resetSwitch.on('change', (value) => {
@@ -58,25 +75,6 @@ export class Board {
                 clearInterval(this.shutdownInterval);
             }
         });
-        // resetSwitch.onPress(() => {}, 3000);
-
-        // const wpsSwitch = new BoardSwitch('S1_8', pins.S1_8_Wps, true);
-        // MessageBroker.getInstance().on(wpsSwitch.id, (value) => {
-        //     logger.debug(`WPS: ${value[0]}`);
-        //     // todo, poll for new ip
-        // });
-
-
-        // setup listeners for all dip switches
-        this.s1_2 = new BoardSwitch('S1_2', pins.S1_2_Phat_Sound, true);
-        this.s1_2.on('change', () => this.publishDipState());
-        this.s1_6 = new BoardSwitch('S1_6', pins.S1_6, true); // shares the same pin as S3.
-        this.s1_6.on('change', () => this.publishDipState());
-        this.s1_7 = new BoardSwitch('S1_7', pins.S1_7_Debug, true);
-        this.s1_7.on('change', () => this.publishDipState());
-        this.s1_8 = new BoardSwitch('S1_8', pins.S1_8_Wps, true);
-        this.s1_8.on('change', () => this.publishDipState());
-        MessageBroker.getInstance().on(EVENTS.IC1_DIPS, (state: DipSwitchState) => this.publishDipState(state));
     }
 
     private publishDipState(ic1State?: DipSwitchState): void {
@@ -134,5 +132,11 @@ export class Board {
         else {
             this.errorLed.off();
         }
+    }
+
+    exit(): void {
+        this.piLed.off();
+        this.nodeLed.off();
+        this.errorLed.off();
     }
 }

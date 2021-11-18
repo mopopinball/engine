@@ -35,7 +35,8 @@ export class GpioPin {
     }
 
     static async setupSync(): Promise<void> {
-        logger.info('Setting up all gpio pins.');
+        logger.info(`Setting up ${GpioPin.instances.length} GPIO pins.`);
+        GpioPin.instances.sort((a, b) => a.pinNumber > b.pinNumber ? 1 : -1);
         for (let i = 0; i < GpioPin.instances.length; i++) {
             try {
                 await GpioPin.instances[i].setup();

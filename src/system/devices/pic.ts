@@ -14,6 +14,7 @@ export abstract class Pic {
     protected readonly DEBUG = false;
 
     constructor(private readonly picAddress: number, private name: string) {
+        logger.info(`Constructing ${name} PIC.`);
     }
 
     async setup(): Promise<void> {
