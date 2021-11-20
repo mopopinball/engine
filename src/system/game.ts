@@ -236,17 +236,29 @@ export class Game {
         this.board = Board.getInstance();
         
         logger.info('Checking PIC versions...');
-        if (!DriverPic.getInstance().getInstalledVersion()) {
+        const driverVersion = DriverPic.getInstance().getInstalledVersion();
+        if (!driverVersion) {
             this.board.setError(true);
             throw new Error('The Driver PIC is not flashed.');
         }
-        if (!SwitchesPic.getInstance().getInstalledVersion()) {
+        else {
+            logger.info(`Driver PIC is running version ${driverVersion}`)
+        }
+        const swVersion = SwitchesPic.getInstance().getInstalledVersion();
+        if (!swVersion) {
             this.board.setError(true);
             throw new Error('The Switches PIC is not flashed.');
         }
-        if (!DisplaysPic.getInstance().getInstalledVersion()) {
+        else {
+            logger.info(`Switches PIC is running version ${swVersion}`)
+        }
+        const displaysVer = DisplaysPic.getInstance().getInstalledVersion();
+        if (!displaysVer) {
             this.board.setError(true);
             throw new Error('The Displays PIC is not flashed.');
+        }
+        else {
+            logger.info(`Displays PIC is running version ${displaysVer}`);
         }
         
         await SwitchesPic.getInstance().setup();
