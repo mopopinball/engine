@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
-fi
-
 echo Select which PIC to program [s]Switches [d]Displays [r]Drivers
 
 read PIC

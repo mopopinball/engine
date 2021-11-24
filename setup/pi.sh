@@ -28,15 +28,33 @@ fi
 
 # PIC programmer
 echo Installing the PIC programmer.
+# cd ~
+# mkdir picpgm_install
+# cd picpgm_install
+# wget http://picpgm.picprojects.net/download/picpgm-2.9.1.0-linux-armhf.tar.gz
+# tar xzvf picpgm-2.9.1.0-linux-armhf.tar.gz
+# sudo ./install.sh
+# cp pgmifcfg.xml ~
+# rm -rf picpgm_install
+# cd ~
+cd /tmp
+wget http://wiki.kewl.org/downloads/pickle-4.20.tgz 
+tar zxf pickle-4.20.tgz 
+cd pickle-4.20/
+make
+sudo make install
+
 cd ~
-mkdir picpgm_install
-cd picpgm_install
-wget http://picpgm.picprojects.net/download/picpgm-2.9.1.0-linux-armhf.tar.gz
-tar xzvf picpgm-2.9.1.0-linux-armhf.tar.gz
-sudo ./install.sh
-cp pgmifcfg.xml ~
-rm -rf picpgm_install
-cd ~
+cat > .pickle <<EOF
+DEVICE=RPI2
+SLEEP=1
+BITRULES=0x4F00
+VPP=24
+# set PGM = -1 if not used, otherwise use the correct pin number below
+PGM=-1
+PGC=23
+PGD=27
+EOF
 
 # Download Mopo, npm install it and setup the game.
 mkdir -p /home/pi/mopo/engine
