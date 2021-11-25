@@ -146,25 +146,248 @@
                 "role": "coil",
                 "name": "Tilt",
                 "coilType": "relay"
+            },
+            "COIN_LOCKOUT": {
+                "number": 2,
+                "name": "Coin Lockout",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "SAME_PLAYER_SHOOTS_AGAIN": {
+                "number": 3,
+                "name": "Same Player Shoots Again"
+            },
+            "PLAYER_1": {
+                "number": 4,
+                "name": "Player 1"
+            },
+            "PLAYER_2": {
+                "number": 5,
+                "name": "Player 2"
+            },
+            "PLAYER_3": {
+                "number": 6,
+                "name": "Player 3"
+            },
+            "PLAYER_4": {
+                "number": 7,
+                "name": "Player 4"
+            },
+            "HIGH_GAME_TO_DATE": {
+                "number": 10,
+                "name": "High Game To Date"
+            },
+            "GAME_OVER": {
+                "number": 11,
+                "name": "Game Over"
+            },
+            "NUMBER1_YELLOW_DROPTARGET": {
+                "number": 12,
+                "name": "#1 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER1_BLUE_DROPTARGET": {
+                "number": 13,
+                "name": "#1 Blue Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER1_WHITE_DROPTARGET": {
+                "number": 14,
+                "name": "#1 White Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER1_GREEN_DROPTARGET": {
+                "number": 15,
+                "name": "#1 Green Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER2_YELLOW_DROPTARGET": {
+                "number": 16,
+                "name": "#2 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER2_BLUE_DROPTARGET": {
+                "number": 17,
+                "name": "#2 Blue Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER2_WHITE_DROPTARGET": {
+                "number": 18,
+                "name": "#2 White Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER2_GREEN_DROPTARGET": {
+                "number": 19,
+                "name": "#2 Green Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER3_YELLOW_DROPTARGET": {
+                "number": 20,
+                "name": "#3 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER3_BLUE_DROPTARGET": {
+                "number": 21,
+                "name": "#3 Blue Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER3_WHITE_DROPTARGET": {
+                "number": 22,
+                "name": "#3 White Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "NUMBER3_GREEN_DROPTARGET": {
+                "number": 23,
+                "name": "#3 Green Drop Target",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "2X": {
+                "number": 24,
+                "name": "2X"
+            },
+            "3X": {
+                "number": 25,
+                "name": "3X"
+            },
+            "4X": {
+                "number": 26,
+                "name": "4X"
+            },
+            "5X": {
+                "number": 27,
+                "name": "5X"
+            },
+            "NUMBER1_ROLLOVER": {
+                "number": 28,
+                "name": "#1 Rollover"
+            },
+            "NUMBER2_ROLLOVER": {
+                "number": 29,
+                "name": "#2 Rollover (2)"
+            },
+            "NUMBER3_ROLLOVER": {
+                "number": 30,
+                "name": "#3 Rollover and Spin Target"
+            },
+            "TWENTY_THOUSAND_AND_SCORE_BONUS": {
+                "number": 31,
+                "name": "20,000 and Score Bonus"
+            },
+            "1000_BONUE": {
+                "number": 32,
+                "name": "1000 Bonus"
+            },
+            "2000_BONUS": {
+                "number": 33,
+                "name": "2000 Bonus"
+            },
+            "3000_BONUS": {
+                "number": 34,
+                "name": "3000 Bonus"
+            },
+            "4000_BONUS": {
+                "number": 35,
+                "name": "4000 Bonus"
+            },
+            "5000_BONUS": {
+                "number": 36,
+                "name": "5000 Bonus"
+            },
+            "6000_BONUS": {
+                "number": 37,
+                "name": "6000 Bonus"
+            },
+            "7000_BONUS": {
+                "number": 38,
+                "name": "7000 Bonus"
+            },
+            "8000_BONUS": {
+                "number": 39,
+                "name": "8000 Bonus"
+            },
+            "9000_BONUS": {
+                "number": 40,
+                "name": "9000 Bonus"
+            },
+            "10000_BONUS": {
+                "number": 41,
+                "name": "10,000 Bonus"
+            },
+            "EXTRA_BALL": {
+                "number": 42,
+                "name": "Extra Ball"
+            },
+            "SPECIAL": {
+                "number": 43,
+                "name": "Special"
+            },
+            "YELLOW_DROP_TARGETS": {
+                "number": 44,
+                "name": "Yellow Drop Targets (3)"
+            },
+            "BLUE_DROP_TARGETS": {
+                "number": 45,
+                "name": "Blue Drop Targets (3)"
+            },
+            "WHITE_DROP_TARGETS": {
+                "number": 46,
+                "name": "White Drop Targets (3)"
+            },
+            "GREEN_DROP_TARGETS": {
+                "number": 47,
+                "name": "Green Drop Targets (3)"
+            },
+            "YELLOW_ROLLOVERS": {
+                "number": 48,
+                "name": "Yellow Rollovers"
+            },
+            "BLUE_ROLLOVERS": {
+                "number": 49,
+                "name": "Blue Rollovers"
+            },
+            "WHITE_ROLLOVERS": {
+                "number": 50,
+                "name": "White Rollovers"
+            },
+            "GREEN_ROLLOVERS": {
+                "number": 51,
+                "name": "Green Rollovers"
             }
-     
         },
         "coils": {
-            "COIN_COUNTER_3": {
-                "number": 3,
-                "name": "Coin Counter",
+            "NUMBER3_TARGET_RESET": {
+                "number": 1,
+                "name": "#3 Target Bank Reset",
                 "coilType": "coil",
                 "durationMs": 50
             },
-            "COIN_COINTER_4": {
-                "number": 4,
-                "name": "Coin Counter",
+            "NUMBER1_TARGET_RESET": {
+                "number": 2,
+                "name": "#1 Target Bank Reset",
                 "coilType": "coil",
                 "durationMs": 50
             },
-            "COIN_COUNTER_7": {
-                "number": 7,
-                "name": "Coin Counter",
+            "NUMBER2_GARGET_RESET": {
+                "number": 5,
+                "name": "#2 Target Bank Reset",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "HOLE_KICKER": {
+                "number": 6,
+                "name": "Hole Kicker",
                 "coilType": "coil",
                 "durationMs": 50
             },
