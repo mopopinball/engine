@@ -19,7 +19,6 @@ import { SwitchesPic } from "./devices/switches-pic";
 import { logger } from "./logger";
 import { GpioPin } from "./devices/gpio-pin";
 import { Board } from "./board";
-import { PicVersionMessage } from "./devices/pic-version-message";
 import { Server } from "./server/server";
 import { Security } from "./security";
 import { ClientDevice } from "./server/client-device";
@@ -89,7 +88,7 @@ export class Game {
 
     async setup(): Promise<void> {
         // Load our hardware config.
-        this._loadConfig();
+        this.loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
             this.displays = new Sys80or80ADisplay();
         }
@@ -166,7 +165,7 @@ export class Game {
         ConfigLoader.saveRuleSchema(this.ruleEngine);
     }
 
-    wireUpHoldSwitches(holdSwitcheTriggers: SwitchTrigger[]): void {
+    private wireUpHoldSwitches(holdSwitcheTriggers: SwitchTrigger[]): void {
         const allSwitches = Array.from(this.switches.values());
         for(const sw of allSwitches) {
             sw.clearHoldCallbacks();
@@ -182,7 +181,7 @@ export class Game {
         }
     }
 
-    setupSwitchAliases(): void {
+    private setupSwitchAliases(): void {
         // load all the schemas and invert them so they can be looked up by incoming matrix ids.
         const schemas = ConfigLoader.loadAllSwitchAliases();
         for(const schema of schemas) {
@@ -207,7 +206,7 @@ export class Game {
         this.switchAliases.get(switchId).push(aliasId);
     }
 
-    onClientDeviceUpdate(clientDevice: ClientDevice): void {
+    private onClientDeviceUpdate(clientDevice: ClientDevice): void {
         const device = this.outputDevices.find((od) => od.id === clientDevice.id);
         if (device) {
             if (clientDevice.isOn) {
@@ -231,8 +230,6 @@ export class Game {
         SwitchesPic.getInstance().registerGpioPins();
         await GpioPin.setupSync();
 
-        // MessageBroker.getInstance().on(EVENTS.PIC_VERSION, (version) => this.onPicVersion(version));
-        
         this.board = Board.getInstance();
         
         logger.info('Checking PIC versions...');
@@ -385,7 +382,7 @@ export class Game {
         this.engineDirty = false;
     }
 
-    _loadConfig(): void {
+    private loadConfig(): void {
         logger.debug('Loading config');
 
         // Map switches to obj/dict for direct lookup.
@@ -575,21 +572,6 @@ export class Game {
         }
     }
 
-    onPicVersion(versionMessage: PicVersionMessage): void {
-        logger.debug(`Pic ${versionMessage.pic} version: ${versionMessage.version}`);
-        MessageBroker.getInstance()
-            .publishRetain(`mopo/pic/${versionMessage.pic}/version`, versionMessage.version);
-        // const config = Config.read();
-        // const expectedVersion = config.pics[versionMessage.pic].version;
-        // if (semver.lt(versionMessage.version, expectedVersion)) {
-        // eslint-disable-next-line max-len
-        //     logger.warn(`Pic ${versionMessage.pic} is not running the current version ${expectedVersion}. Its running ${versionMessage.version} Please flash ${versionMessage.pic}.`);
-        // }
-        // else {
-        //     logger.info(`Pic ${versionMessage.pic} is running version ${versionMessage.version}`);
-        // }
-    }
-
     exit(): void {
         this.board?.exit();
     }
@@ -599,4 +581,9 @@ export enum SystemName {
     SYS80 = '80',
     SYS80A = '80a',
     SYS80B = '80b'
+}
+
+export enum LisyBoardVersion {
+    FIVE_POINT_ONE = '5.1',
+    SIX_POIN_ZERO = '6.0'
 }

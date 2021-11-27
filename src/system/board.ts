@@ -16,6 +16,7 @@ import { LightState } from './devices/light';
 import { DipSwitchState } from './dip-switch-state';
 import { BlinkLightStyle } from './devices/styles/blink-light-style';
 import { GpioRegistrator } from './gpio-registrator';
+import { LisyBoardVersion } from './game';
 
 /**
  * Manages board IO including status LEDs and dip switch settings.
@@ -40,8 +41,8 @@ export class Board implements GpioRegistrator {
         return Board.instance;
     }
     
-    private constructor() {
-        logger.info('Constructing Board instance.')
+    private constructor(private readonly version: LisyBoardVersion = LisyBoardVersion.FIVE_POINT_ONE) {
+        logger.info(`Constructing Board instance version ${this.version}.`);
         
         this.shutdownInterval = null;
 
