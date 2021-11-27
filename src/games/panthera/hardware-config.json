@@ -155,22 +155,27 @@
             },
             "SAME_PLAYER_SHOOTS_AGAIN": {
                 "number": 3,
+                "role": "lamp",
                 "name": "Same Player Shoots Again"
             },
             "PLAYER_1": {
                 "number": 4,
+                "role": "lamp",
                 "name": "Player 1"
             },
             "PLAYER_2": {
                 "number": 5,
+                "role": "lamp",
                 "name": "Player 2"
             },
             "PLAYER_3": {
                 "number": 6,
+                "role": "lamp",
                 "name": "Player 3"
             },
             "PLAYER_4": {
                 "number": 7,
+                "role": "lamp",
                 "name": "Player 4"
             },
             "HIGH_GAME_TO_DATE": {
@@ -179,6 +184,7 @@
             },
             "GAME_OVER": {
                 "number": 11,
+                "role": "lamp",
                 "name": "Game Over"
             },
             "NUMBER1_YELLOW_DROPTARGET": {
@@ -255,114 +261,142 @@
             },
             "2X": {
                 "number": 24,
+                "role": "lamp",
                 "name": "2X"
             },
             "3X": {
                 "number": 25,
+                "role": "lamp",
                 "name": "3X"
             },
             "4X": {
                 "number": 26,
+                "role": "lamp",
                 "name": "4X"
             },
             "5X": {
                 "number": 27,
+                "role": "lamp",
                 "name": "5X"
             },
             "NUMBER1_ROLLOVER": {
                 "number": 28,
+                "role": "lamp",
                 "name": "#1 Rollover"
             },
             "NUMBER2_ROLLOVER": {
                 "number": 29,
+                "role": "lamp",
                 "name": "#2 Rollover (2)"
             },
             "NUMBER3_ROLLOVER": {
                 "number": 30,
+                "role": "lamp",
                 "name": "#3 Rollover and Spin Target"
             },
             "TWENTY_THOUSAND_AND_SCORE_BONUS": {
                 "number": 31,
+                "role": "lamp",
                 "name": "20,000 and Score Bonus"
             },
             "1000_BONUE": {
                 "number": 32,
+                "role": "lamp",
                 "name": "1000 Bonus"
             },
             "2000_BONUS": {
                 "number": 33,
+                "role": "lamp",
                 "name": "2000 Bonus"
             },
             "3000_BONUS": {
                 "number": 34,
+                "role": "lamp",
                 "name": "3000 Bonus"
             },
             "4000_BONUS": {
                 "number": 35,
+                "role": "lamp",
                 "name": "4000 Bonus"
             },
             "5000_BONUS": {
                 "number": 36,
+                "role": "lamp",
                 "name": "5000 Bonus"
             },
             "6000_BONUS": {
                 "number": 37,
+                "role": "lamp",
                 "name": "6000 Bonus"
             },
             "7000_BONUS": {
                 "number": 38,
+                "role": "lamp",
                 "name": "7000 Bonus"
             },
             "8000_BONUS": {
                 "number": 39,
+                "role": "lamp",
                 "name": "8000 Bonus"
             },
             "9000_BONUS": {
                 "number": 40,
+                "role": "lamp",
                 "name": "9000 Bonus"
             },
             "10000_BONUS": {
                 "number": 41,
+                "role": "lamp",
                 "name": "10,000 Bonus"
             },
             "EXTRA_BALL": {
                 "number": 42,
+                "role": "lamp",
                 "name": "Extra Ball"
             },
             "SPECIAL": {
                 "number": 43,
+                "role": "lamp",
                 "name": "Special"
             },
             "YELLOW_DROP_TARGETS": {
                 "number": 44,
+                "role": "lamp",
                 "name": "Yellow Drop Targets (3)"
             },
             "BLUE_DROP_TARGETS": {
                 "number": 45,
+                "role": "lamp",
                 "name": "Blue Drop Targets (3)"
             },
             "WHITE_DROP_TARGETS": {
                 "number": 46,
+                "role": "lamp",
                 "name": "White Drop Targets (3)"
             },
             "GREEN_DROP_TARGETS": {
                 "number": 47,
+                "role": "lamp",
                 "name": "Green Drop Targets (3)"
             },
             "YELLOW_ROLLOVERS": {
                 "number": 48,
+                "role": "lamp",
                 "name": "Yellow Rollovers"
             },
             "BLUE_ROLLOVERS": {
                 "number": 49,
+                "role": "lamp",
                 "name": "Blue Rollovers"
             },
             "WHITE_ROLLOVERS": {
                 "number": 50,
+                "role": "lamp",
                 "name": "White Rollovers"
             },
             "GREEN_ROLLOVERS": {
                 "number": 51,
+                "role": "lamp",
                 "name": "Green Rollovers"
             }
         },

@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "name": "Panthera: Test",
+        "description": "Testing"
+    },
+    "id": "root",
+    "autostart": true,
+    "children": [],
+    "devices": []
+}

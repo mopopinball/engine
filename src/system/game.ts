@@ -207,6 +207,7 @@ export class Game {
     }
 
     private onClientDeviceUpdate(clientDevice: ClientDevice): void {
+        logger.info(`Device update received from Service Menu: ${clientDevice.id}`);
         const device = this.outputDevices.find((od) => od.id === clientDevice.id);
         if (device) {
             if (clientDevice.isOn) {

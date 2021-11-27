@@ -2,7 +2,7 @@
 set -e
 
 gpio unexportall
-p16 lvp program  -p pics/mopo-switches.production.hex
+p16 lvp program pics/mopo-switches.production.hex
 
 # Record the flashing
 mkdir -p /home/pi/mopo/pics
