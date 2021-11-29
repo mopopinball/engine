@@ -8,7 +8,6 @@ import * as pins from '../pins.json';
 // const spawn = require('child_process').spawnSync;
 
 import { BoardSwitch } from "./devices/board-switch";
-import OutputDeviceCollection from './devices/output-device-collection';
 import { StatusLed } from "./devices/status-led";
 import { logger } from './logger';
 import { EVENTS, MessageBroker } from "./messages";

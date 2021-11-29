@@ -1,6 +1,3 @@
-import { OutputDeviceType } from "../../devices/output-device-type";
-import { DesiredOutputState } from "../desired-output-state";
-import { DeviceAction } from "./device-action";
 import { RandomAction } from "./random-action";
 
 describe('random action', () => {

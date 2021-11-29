@@ -1,7 +1,6 @@
 // ALL TRIGGER SCHEMAS
 
-import { MultiSwitchTrigger } from "../actions/multi-switch-trigger";
-import { ActionSchemaType, NamedTriggerActionSchema } from "./actions.schema";
+import { ActionSchemaType } from "./actions.schema";
 
 export enum TriggerTypeEnum {
     SWITCH = 'switch',

@@ -1,7 +1,6 @@
 import { BytesWritten, PromisifiedBus } from "i2c-bus";
 import {openPromisified} from 'i2c-bus';
 import { logger } from "../logger";
-import { spawnSync, SpawnSyncReturns } from "child_process";
 import {padStart} from 'lodash';
 import { existsSync, readFileSync } from "fs";
 

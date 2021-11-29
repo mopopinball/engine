@@ -1,5 +1,4 @@
 import { DataEvaluator } from "../../data-evaluator";
-import { logger } from "../../logger";
 import { NumberData } from "../rule-data";
 import { ActionType, DataActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";

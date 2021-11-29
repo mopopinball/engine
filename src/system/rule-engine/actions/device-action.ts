@@ -1,4 +1,3 @@
-import { logger } from "../../logger";
 import { DesiredOutputState } from "../desired-output-state";
 import { ActionType, DeviceActionSchema } from "../schema/actions.schema";
 import { Action } from "./action";

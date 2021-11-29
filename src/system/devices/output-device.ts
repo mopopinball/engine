@@ -1,5 +1,4 @@
 import { DirtyNotifier } from "../dirty-notifier";
-import { logger } from "../logger";
 import { OutputDeviceType } from "./output-device-type";
 
 /**

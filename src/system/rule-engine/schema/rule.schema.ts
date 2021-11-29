@@ -1,6 +1,6 @@
 import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
-import { TriggerSchema, TriggerSchemasType } from "./triggers.schema";
+import { TriggerSchemasType } from "./triggers.schema";
 
 export interface RuleSchema {
     id: string;

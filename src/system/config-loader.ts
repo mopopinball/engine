@@ -1,5 +1,5 @@
 import { HardwareConfig } from "./hardware-config.schema";
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { RuleSchema } from "./rule-engine/schema/rule.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
 import { SwitchAliasSchema } from "./switch-alias.schema";

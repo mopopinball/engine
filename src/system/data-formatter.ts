@@ -1,4 +1,4 @@
-import { DataItem, NumberData } from "./rule-engine/rule-data";
+import { DataItem } from "./rule-engine/rule-data";
 
 export abstract class DataFormatter {
     private static readonly re = /\${(\w+)}/g;

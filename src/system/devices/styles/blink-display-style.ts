@@ -1,5 +1,4 @@
 import { GameClock } from "../../game-clock";
-import { DesiredOutputStateType } from "../../rule-engine/desired-output-state";
 import { OutputStyle } from "../../rule-engine/schema/rule.schema";
 import { Style } from "./style";
 
