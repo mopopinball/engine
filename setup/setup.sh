@@ -36,10 +36,12 @@ export NVM_DIR="/home/pi/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Allow node to start webserver on port 80
-setcap 'cap_net_bind_service=+ep' $(nvm which current)
+FOUND_NODE=$(nvm which current)
+setcap 'cap_net_bind_service=+ep' $FOUND_NODE
 
 # Create systemd service
 cp /home/pi/mopo/engine/setup/mopo.service /lib/systemd/system/mopo.service
+sed -i 's/NODE_PATH/$FOUND_NODE/g' /lib/systemd/system/mopo.service
 
 # Setup mosquitto with MQTT, web sockets, etc.
 cp /home/pi/mopo/engine/setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf

@@ -5,7 +5,7 @@ Documentation=https://github.com/mopopinball
 [Service]
 Type=simple
 User=pi
-ExecStart=/home/pi/.nvm/versions/node/v10.23.0/bin/node /home/pi/mopo/engine/src/index.js
+ExecStart=NODE_PATH /home/pi/mopo/engine/src/index.js
 Environment=NODE_ENV=production
 Restart=always
 

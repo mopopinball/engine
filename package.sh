@@ -7,7 +7,7 @@ mkdir dist
 
 # Install then compile the engine
 npm ci
-tsc
+npm run tsc
 
 # TODO: Get the pics from their latest release on GitHub.
 # mkdir dist/pics
