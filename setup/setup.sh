@@ -39,6 +39,15 @@ export NVM_DIR="/home/pi/.nvm"
 FOUND_NODE=$(nvm which current)
 setcap 'cap_net_bind_service=+ep' $FOUND_NODE
 
+# PIC programmer
+echo Installing the PIC programmer.
+mkdir /tmp/picpgm_install
+cd /tmp/picpgm_install
+wget http://picpgm.picprojects.net/download/picpgm-2.9.3.1-linux-armhf.tar.gz
+tar xzvf picpgm-2.9.3.1-linux-armhf.tar.gz
+./install.sh
+sudo -H -u pi cp /home/pi/mopo/engine/setup/pgmifcfg.xml /home/pi/pgmifcfg.xml
+
 # Create systemd service
 cp /home/pi/mopo/engine/setup/mopo.service /lib/systemd/system/mopo.service
 sed -i 's/NODE_PATH/$FOUND_NODE/g' /lib/systemd/system/mopo.service
