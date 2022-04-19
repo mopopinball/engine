@@ -20,9 +20,6 @@ npm run tsc
 # cp -r setup/ dist/setup
 
 # Copy additional items to the dist folder.
-cp flash_sw.sh dist
-cp flash_dr.sh dist
-cp flash_disp.sh dist
 cp flash.sh dist
 cp debug.sh dist
 cp select-game.sh dist
