@@ -60,6 +60,10 @@ figlet Mopo Pinball >> /etc/motd
 
 systemctl enable mopo
 
+# cleanup
+rm /home/pi/pi.sh
+rm /home/pi/setup.sh
+
 echo "The system must now restart. [Y/n]? "
 read CONFIRM
 if [ $CONFIRM == 'n']; then

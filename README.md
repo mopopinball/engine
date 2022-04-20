@@ -27,10 +27,6 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 5. On the Pi run the following command (capitalization matters):
 
 ```
-sudo sh -c "curl https://git.io/JMn80 | bash"
-```
-or
-```
 sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/setup.sh | bash"
 ```
 
