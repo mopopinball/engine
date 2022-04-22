@@ -55,14 +55,12 @@ sed -i 's/NODE_PATH/$FOUND_NODE/g' /lib/systemd/system/mopo.service
 # Setup mosquitto with MQTT, web sockets, etc.
 cp /home/pi/mopo/engine/setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
 
-figlet Mopo Pinball >> /etc/motd
-'See https://github.com/mopopinball for documentation.' >> /etc/motd
+cp /home/pi/mopo/engine/setup/motd /etc/motd
 
 systemctl enable mopo
 
 # cleanup
 rm /home/pi/pi.sh
-rm /home/pi/setup.sh
 
 echo "The system must now restart. [Y/n]? "
 read CONFIRM
