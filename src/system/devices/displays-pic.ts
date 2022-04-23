@@ -22,6 +22,7 @@ const SYSTEM_80B = 2;
  * 1 status display, 4 bytes
  */
 export class DisplaysPic extends Pic {
+    private readonly bufferFormat = '[ffffffff][eeeeeeee][dddddddd][cccccccc][bbbbbbbb][aaaaaaaa][llllllll][kkkkkkkk][jjjjjjjj][iiiiiiii][hhhhhhhh][gggggggg]';
     private static instance;
     setSystemBuffer: Buffer;
     buffer: Buffer;
@@ -76,7 +77,7 @@ export class DisplaysPic extends Pic {
             this.setBuffer(25, displayState.status.currentValue);
         }
 
-        this.logBuffer(this.buffer);
+        this.logBuffer(this.bufferFormat, this.buffer);
 
         // Perform the I2C write.
         try {

@@ -179,7 +179,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
         if (COMMS_LOGGING) {
             // eslint-disable-next-line max-len
             logger.debug(`Nibble ${this.nibbleCount} = ${nibble}.`);
-            this.logBuffer(this.payload);
+            this.logBuffer('', this.payload);
         }
 
         if (this.nibbleCount === LAST_NIBBLE_INDEX) {
@@ -250,9 +250,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
     }
 
     _onVersionPayload(): void {
-        if (this.DEBUG) {
-            logger.debug('Got a Version payload');
-        }
+        logger.debug('Got a Version payload');
         const major = this.payload[0] & 0x3F;
         const minor = this.payload[1] >>> 4;
         this.version = `${major}.${minor}.0`;
@@ -261,9 +259,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
 
     // [01KKKKKW][WWWLCCCC] K = switch K1, W = switch S1
     _onDipPayload(): void {
-        if (this.DEBUG) {
-            logger.debug('Got a DIP payload');
-        }
+        logger.debug('Got a DIP payload');
         const byte0 = byte.read(this.payload[0] as UInt8);
         this.k1_1 = byte0[2];
         this.k1_2 = byte0[3];
@@ -281,9 +277,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
 
     // [10SSSRRR][T000CCCC] S=strobe, R=return, T=activated
     _onSwitchMatrixPayload(): void {
-        if (this.DEBUG) {
-            logger.debug('Got a switch matrix payload');
-        }
+        logger.debug('Got a switch matrix payload');
         const strobe = (this.payload[0] & 0x38) >>> 3;
         const ret = this.payload[0] & 0x07;
         const switchState = this.payload[1] >>> 7;
