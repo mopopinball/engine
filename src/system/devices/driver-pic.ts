@@ -21,6 +21,7 @@ const PIC_ADDRESS = 0x41;
  * [LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]
  */
 export class DriverPic extends Pic {
+    private readonly bufferFormat = '[LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]';
     private static instance: DriverPic;
     i2c1: PromisifiedBus;
 
@@ -59,7 +60,7 @@ export class DriverPic extends Pic {
      * @return {boolean} True if the update was successfull, false otherwise.
      */
     async update(newDeviceStates: OutputDevice[]): Promise<boolean> {
-        if (!newDeviceStates || newDeviceStates.length === 0) {
+        if (!newDeviceStates?.length) {
             return false;
         }
 
@@ -89,7 +90,7 @@ export class DriverPic extends Pic {
             this.sounds[3] = soundBits[4];
             this.lamps[10 - 1] = soundBits[3];
             // eslint-disable-next-line max-len
-            // logger.debug(`Sound bits: S1=${this.sounds[0]}, S2=${this.sounds[1]}, S4=${this.sounds[2]}, S8=${this.sounds[3]}, S16=${this.lamps[9 - 1]}`);
+            logger.debug(`Sound bits: S1=${this.sounds[0]}, S2=${this.sounds[1]}, S4=${this.sounds[2]}, S8=${this.sounds[3]}, S16=${this.lamps[9 - 1]}`);
         }
         else if (sound && !sound.isOn) {
             // trigger the interrupt to play the prev loaded sound. Putting all lines high
@@ -106,8 +107,7 @@ export class DriverPic extends Pic {
             0
         );
 
-        // logger.debug('[LLLLLLLL][LSLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLLLL][LLLLLCCC][CCCCCCSS][SS000000]')
-        // this.logBuffer(this.buffer);
+        this.logBuffer(this.bufferFormat, this.buffer);
 
         // Perform the I2C write.
         try {
@@ -115,9 +115,7 @@ export class DriverPic extends Pic {
             return true;
         }
         catch (e) {
-            if (this.DEBUG) {
-                logger.error(e);
-            }
+            logger.error(e);
             return false;
         }
     }
@@ -134,9 +132,7 @@ export class DriverPic extends Pic {
         // this.i2c1.close();
 
         // init all low
-        if (this.DEBUG) {
-            logger.debug('Sending initial state zeros');
-        }
+        logger.debug(`${this.name}: Sending initial state zeros`);
         await this.write(this.buffer);
     }
 

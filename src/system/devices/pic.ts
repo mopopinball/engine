@@ -10,16 +10,15 @@ import { existsSync, readFileSync } from "fs";
 export abstract class Pic {
     private readonly picPath = '/home/pi/mopo/pics';
     protected i2c1: PromisifiedBus;
-    protected readonly DEBUG = false;
 
-    constructor(private readonly picAddress: number, private name: string) {
+    constructor(private readonly picAddress: number, protected readonly name: string) {
         logger.info(`Constructing ${name} PIC.`);
     }
 
     async setup(): Promise<void> {
         this.i2c1 = await this.openConnection();
         const addresses = await this.scan();
-        logger.debug(`${this.name}: Found i2c devices: ${JSON.stringify(addresses)}`);
+        logger.info(`${this.name}: Found I2C devices: ${JSON.stringify(addresses)}. Our address: ${this.picAddress}`);
     }
 
     async openConnection(): Promise<PromisifiedBus> {
@@ -43,8 +42,9 @@ export abstract class Pic {
         return padStart((dec >>> 0).toString(2), size, '0');
     }
 
-    protected logBuffer(buffer: Buffer): void {
-        if (this.DEBUG) {
+    protected logBuffer(format: string, buffer: Buffer): void {
+        if (logger.getLevel() <= logger.levels.DEBUG) {
+            logger.debug(format);
             let log = '';
             buffer.forEach((b) => {
                 log += `[${this.dec2bin(b, 8)}]`;
