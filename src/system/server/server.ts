@@ -13,6 +13,8 @@ const port = 80;
  * Web server.
  */
 export class Server {
+    private server: any;
+
     start(): void {
         // Our process starts via systemd potentially before networking is ready. Wait some time
         // and then start our webserver.
@@ -41,7 +43,8 @@ export class Server {
 
         this.setupControllers();
 
-        app.listen(port, () => logger.info(`Mopo Pinball service menu listening on port ${port}`));
+        this.server = app.listen(port, () => logger.info(`Mopo Pinball service menu listening on port ${port}`));
+        this.server.setTimeout(5 * 60 * 1000); // 5 minutes
     }
 
     private setupControllers() {
