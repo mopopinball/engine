@@ -16,9 +16,9 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
     * Burn the `Raspberry Pi OS Lite (32-bit)` option to an SD card.
 3. Boot the Raspberry Pi
 4. On new images, set the following config on boot:
-    * Keyboard Layout (Typically choose *English (US)*)
-    * New username: *pi* (REQUIRED)
-    * Password: (Typically *raspberry*, but can be anything)
+    * Keyboard Layout (Typically choose **English (US)**)
+    * New username: **pi** (REQUIRED)
+    * Password: (Typically **raspberry**, but can be anything)
 5. Change some `raspi-config` settings
     * run `sudo raspi-config`
     * Set the WLAN country
