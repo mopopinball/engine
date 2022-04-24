@@ -50,7 +50,7 @@ sudo -H -u pi cp /home/pi/mopo/engine/setup/pgmifcfg.xml /home/pi/pgmifcfg.xml
 
 # Create systemd service
 cp /home/pi/mopo/engine/setup/mopo.service /lib/systemd/system/mopo.service
-sed -i 's/NODE_PATH/$FOUND_NODE/g' /lib/systemd/system/mopo.service
+sed -i "s/NODE_PATH/$FOUND_NODE/g" /lib/systemd/system/mopo.service
 
 # Setup mosquitto with MQTT, web sockets, etc.
 cp /home/pi/mopo/engine/setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
