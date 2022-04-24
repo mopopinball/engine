@@ -43,13 +43,13 @@ export abstract class Pic {
     }
 
     protected logBuffer(format: string, buffer: Buffer): void {
-        if (logger.getLevel() <= logger.levels.DEBUG) {
-            logger.debug(format);
+        if (logger.getLevel() <= logger.levels.TRACE) {
+            logger.trace(format);
             let log = '';
             buffer.forEach((b) => {
                 log += `[${this.dec2bin(b, 8)}]`;
             });
-            logger.debug(log);
+            logger.trace(log);
         }
     }
 
