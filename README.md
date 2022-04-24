@@ -15,16 +15,20 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
     * Go to https://www.raspberrypi.com/software/ and download the Raspberry Pi Imager
     * Burn the `Raspberry Pi OS Lite (32-bit)` option to an SD card.
 3. Boot the Raspberry Pi
-4. Change some `raspi-config` settings
+4. On new images, set the following config on boot:
+    * Keyboard Layout (Typically choose *English (US)*)
+    * New username: *pi* (REQUIRED)
+    * Password: (Typically *raspberry*, but can be anything)
+5. Change some `raspi-config` settings
     * run `sudo raspi-config`
-    * Set the WLAN country (Option 5/L4)
-    * Set the Keyboard Local (Option 5/L3/Generic 104key PC/English (US)/Default)
-    * Enable I2C (Option 3/P5)
+    * Set the WLAN country
+    * Enable I2C
     * (Optional) Enable SSH (Option 3/P2)
-5. Conect the Pi to the internet, perferribly over WiFi.
+    * Expand the filesystem
+6. Conect the Pi to the internet, perferribly over WiFi.
     * For WiFi, run `sudo raspi-config`
     * Set the WiFi details (Option 1/S1)
-5. On the Pi run the following command (capitalization matters):
+7. On the Pi run the following command (capitalization matters):
 
 ```
 sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/setup.sh | bash"

@@ -16,15 +16,9 @@ gpio -v
 # Automate some settings in raspi-config https://raspberrypi.stackexchange.com/a/66939
 # raspi-config nonint do_ssh 1
 # raspi-config nonint do_i2c 1
-# locale=en_US.UTF-8
-# raspi-config nonint do_change_locale $locale
-# layout=us
-# raspi-config nonint do_configure_keyboard $layout
 randomid=$(uuid)
 hostname=mopo-${randomid:0:8}
 raspi-config nonint do_hostname $hostname
-
-# systemctl enable ssh
 
 # SSH seems to have issues quite often (TODO: confirm prevalence), try to correct it.
 # See https://discourse.osmc.tv/t/solved-ssh-connection-sometimes-hangs/76504/4 for more info.
@@ -41,6 +35,7 @@ export NVM_DIR="/home/pi/.nvm"
 
 # Allow node to start webserver on port 80
 FOUND_NODE=$(nvm which current)
+echo "Using node at $FOUND_NODE"
 setcap 'cap_net_bind_service=+ep' $FOUND_NODE
 
 # PIC programmer
@@ -54,7 +49,7 @@ sudo -H -u pi cp /home/pi/mopo/engine/setup/pgmifcfg.xml /home/pi/pgmifcfg.xml
 
 # Create systemd service
 cp /home/pi/mopo/engine/setup/mopo.service /lib/systemd/system/mopo.service
-sed -i "s/NODE_PATH/$FOUND_NODE/g" /lib/systemd/system/mopo.service
+sed -i "s|NODEPATH|$FOUND_NODE|g" /lib/systemd/system/mopo.service
 
 # Setup mosquitto with MQTT, web sockets, etc.
 cp /home/pi/mopo/engine/setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
@@ -66,10 +61,4 @@ systemctl enable mopo
 # cleanup
 rm /home/pi/pi.sh
 
-echo "The system must now restart. [Y/n]? "
-read CONFIRM
-if [ $CONFIRM == 'n']; then
-    exit 1
-else
-    reboot now
-fi
+reboot now
