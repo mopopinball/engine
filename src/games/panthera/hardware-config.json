@@ -191,73 +191,73 @@
                 "number": 12,
                 "name": "#1 Yellow Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER1_BLUE_DROPTARGET": {
                 "number": 13,
                 "name": "#1 Blue Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER1_WHITE_DROPTARGET": {
                 "number": 14,
                 "name": "#1 White Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER1_GREEN_DROPTARGET": {
                 "number": 15,
                 "name": "#1 Green Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER2_YELLOW_DROPTARGET": {
                 "number": 16,
                 "name": "#2 Yellow Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER2_BLUE_DROPTARGET": {
                 "number": 17,
                 "name": "#2 Blue Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER2_WHITE_DROPTARGET": {
                 "number": 18,
                 "name": "#2 White Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER2_GREEN_DROPTARGET": {
                 "number": 19,
                 "name": "#2 Green Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER3_YELLOW_DROPTARGET": {
                 "number": 20,
                 "name": "#3 Yellow Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER3_BLUE_DROPTARGET": {
                 "number": 21,
                 "name": "#3 Blue Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER3_WHITE_DROPTARGET": {
                 "number": 22,
                 "name": "#3 White Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "NUMBER3_GREEN_DROPTARGET": {
                 "number": 23,
                 "name": "#3 Green Drop Target",
                 "role": "coil",
-                "coilType": "relay"
+                "coilType": "coil"
             },
             "2X": {
                 "number": 24,
