@@ -5,13 +5,33 @@ import { EVENTS, MessageBroker } from '../messages';
 import { Update } from '../update';
 import { Controller } from "./controller";
 import cors from 'cors';
+import { logger } from '../logger';
 
 export class UpdateController implements Controller {
     setup(app: express.Express): void {
         app.post('/update/check', async (req, res) => {
-            const availableUpdate = await Update.getInstance().getAvailableSystemUpdate(true);
-            const availableServiceMenuUpdate = await Update.getInstance().getAvailableServiceMenuUpdate(false);
-            const availablePicUpdate = await Update.getInstance().getAvailablePicUpdate(true);
+            let availableUpdate: GithubRelease = null;
+            let availableServiceMenuUpdate: GithubRelease = null;
+            let availablePicUpdate: GithubRelease = null;
+            try {
+                availableUpdate = await Update.getInstance().getAvailableSystemUpdate(true);
+            }
+            catch(e) {
+                logger.error(e);
+            }
+            try {
+                availableServiceMenuUpdate = await Update.getInstance().getAvailableServiceMenuUpdate(false);
+            }
+            catch(e) {
+                logger.error(e);
+            }
+            try {
+                availablePicUpdate = await Update.getInstance().getAvailablePicUpdate(true);
+            }
+            catch(e) {
+                logger.error(e);
+            }
+
             res.send({
                 system: availableUpdate,
                 pics: availablePicUpdate,
