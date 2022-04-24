@@ -9,6 +9,7 @@ import { existsSync, readFileSync, mkdirSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import * as Rsync from 'rsync';
 import * as del from 'del';
+import { execSync } from 'child_process';
 
 const picPath = '/home/pi/mopo/pics';
 
@@ -92,7 +93,9 @@ export class Update {
         logger.info(`Updating to version ${release.name}.`);
         await this.applyUpdateWorker(release, this.engineOutDir);
         if(reset) {
-            // TODO: We need to npm install somewhere
+            logger.info('Installing system update');
+            execSync(`npm ci --prefix ${this.engineOutDir} --production`);
+            
             logger.info('Restarting Mopo Pinball in 5 seconds.');
             setTimeout(() => process.exit(), 5000);
         }
