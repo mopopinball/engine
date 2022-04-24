@@ -144,7 +144,7 @@ export class Update {
                 () => {
                     const extractDone = (new Date().valueOf()) - extractStart.valueOf();
                     logger.info(`Update extracted in ${extractDone}ms.`);
-                    del.sync(tempDir);
+                    del.sync(tempDir, {force: true});
                     resolve();
                 },
                 (data) => logger.info(data),
