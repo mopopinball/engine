@@ -46,26 +46,26 @@ export class Update {
     }
 
     public async getAvailableSystemUpdate(prerelease: boolean): Promise<GithubRelease> {
-        return this.isUpdateAvailable(this.engineReleaseUrl, prerelease, this.getVersion());
+        return this.isUpdateAvailable('System', this.engineReleaseUrl, prerelease, this.getVersion());
     }
 
     public async getAvailableServiceMenuUpdate(prerelease: boolean): Promise<GithubRelease> {
         // TODO: Get the real version of the service menu.
-        return this.getLatestRelease(this.serviceMenuReleaseUrl, '0.0.0');
+        return this.getLatestRelease('Service Menu', this.serviceMenuReleaseUrl, '0.0.0');
     }
 
     public async getAvailablePicUpdate(prerlease: boolean): Promise<GithubRelease> {
-        return this.isUpdateAvailable(this.picsReleaseUrl, prerlease, this.getPicVersion());
+        return this.isUpdateAvailable('Pics', this.picsReleaseUrl, prerlease, this.getPicVersion());
     }
 
-    private async getLatestRelease(releaseUrl: string, currentVersion: string): Promise<GithubRelease> {
-        logger.info(`Running version ${currentVersion}. Checking for update.`);
+    private async getLatestRelease(componentName: string, releaseUrl: string, currentVersion: string): Promise<GithubRelease> {
+        logger.info(`Running ${componentName} version ${currentVersion}. Checking for update.`);
         const candidate: GithubRelease = (await axios.get(releaseUrl)).data;
         return semver.gt(candidate.name, currentVersion) ? candidate : null; 
     }
 
-    private async isUpdateAvailable(releaseUrl: string, prerelease: boolean, currentVersion: string): Promise<GithubRelease> {
-        logger.info(`Running version ${currentVersion}. Checking for update.`);
+    private async isUpdateAvailable(componentName: string, releaseUrl: string, prerelease: boolean, currentVersion: string): Promise<GithubRelease> {
+        logger.info(`Running ${componentName} version ${currentVersion}. Checking for update.`);
         const candidates: GithubRelease[] = await (await axios.get(releaseUrl)).data;
         
         const releases = candidates.filter((r) =>
