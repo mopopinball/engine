@@ -8,7 +8,7 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
 
 ## Getting Started
 
-1. Build you CPU
+1. Build your CPU
     * Visit https://lisy.dev to buy unpopulated CPU boards and read other hardware documentation.
     * Build your CPU, or have a PCB manufacturer do it for you!
 2. Burn a Raspberry Pi SD card image
