@@ -277,12 +277,11 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
 
     // [10SSSRRR][T000CCCC] S=strobe, R=return, T=activated
     _onSwitchMatrixPayload(): void {
-        logger.debug('Got a switch matrix payload');
         const strobe = (this.payload[0] & 0x38) >>> 3;
         const ret = this.payload[0] & 0x07;
         const switchState = this.payload[1] >>> 7;
         const switchNum = (strobe * 10) + ret;
-        // logger.debug(`MATRIX: ${strobe} ${ret} = ${switchNum} in ${switchState}`);
+        logger.trace(`[Switch Matrix payload]: ${strobe} ${ret} = ${switchNum} in ${switchState}`);
         // the switch matrix is active electrically low, so invert switchState
         this.sendMessage(EVENTS.MATRIX, {
             switch: switchNum,
