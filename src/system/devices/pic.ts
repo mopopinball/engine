@@ -8,7 +8,8 @@ import { existsSync, readFileSync } from "fs";
  * An abstract PIC.
  */
 export abstract class Pic {
-    private readonly picPath = '/home/pi/mopo/pics';
+    public static readonly picPathInstalled = '/home/pi/mopo/pics/installed';
+    public static readonly picPathAvailable = '/home/pi/mopo/pics/available';
     protected i2c1: PromisifiedBus;
 
     constructor(private readonly picAddress: number, protected readonly name: string) {
@@ -54,7 +55,7 @@ export abstract class Pic {
     }
 
     protected getInstalledVersion(pic: string): string {
-        const path = `${this.picPath}/${pic}-version.json`;
+        const path = `${Pic.picPathInstalled}/${pic}-version.json`;
         if (!existsSync(path)) {
             return null;
         }

@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Rsync from 'rsync';
 import * as del from 'del';
 import { execSync } from 'child_process';
+import { Pic } from './devices/pic';
 
-const picPath = '/home/pi/mopo/pics';
 
 export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
@@ -38,10 +38,11 @@ export class Update {
     }
 
     getPicVersion(): string {
-        if (!existsSync(picPath)) {
+        const path = `${Pic.picPathAvailable}/package.json`;
+        if (!existsSync(path)) {
             return '0.0.0';
         }
-        const picPackage = JSON.parse(readFileSync(picPath + '/package.json', {encoding: 'utf8'}));
+        const picPackage = JSON.parse(readFileSync(path, {encoding: 'utf8'}));
         return picPackage.version;
     }
 
@@ -106,6 +107,11 @@ export class Update {
         await this.applyUpdateWorker(release, this.serviceMenuDir);
     }
 
+    private async applyPicsUpdate(release: GithubRelease): Promise<void> {
+        logger.info(`Updating to Pics version ${release.name}.`);
+        await this.applyUpdateWorker(release, Pic.picPathAvailable);
+    }
+
     private makeTempDir(): string {
         const uuid = uuidv4();
         const dir = `/tmp/${uuid}`;
@@ -165,16 +171,16 @@ export class Update {
         });
     }
 
-    public async downloadPicsUpdate(release: GithubRelease): Promise<void> {
-        logger.info(`Downloading pics version ${release.name}...`);
-        const responseStream = await axios.get(release.tarball_url, {withCredentials: false, responseType: 'stream'});
-        responseStream.data.pipe(
-            x({
-                sync: true,
-                strip: 1,
-                C: picPath
-              })
-        );
-    }
+    // public async downloadPicsUpdate(release: GithubRelease): Promise<void> {
+    //     logger.info(`Downloading pics version ${release.name}...`);
+    //     const responseStream = await axios.get(release.tarball_url, {withCredentials: false, responseType: 'stream'});
+    //     responseStream.data.pipe(
+    //         x({
+    //             sync: true,
+    //             strip: 1,
+    //             C: picPath
+    //           })
+    //     );
+    // }
 
 }

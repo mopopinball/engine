@@ -36,5 +36,5 @@ rm -rf $DIR
 mkdir $DIR
 tar xf pics.tar.gz -C $DIR --strip-components=4
 rm pics.tar.gz
-rsync -r --delete --exclude=node_modules --verbose $DIR/ /home/pi/mopo/engine/pics
+rsync -r --delete --exclude=node_modules --verbose $DIR/ /home/pi/mopo/pics/available
 rm -rf $DIR

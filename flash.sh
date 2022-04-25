@@ -23,19 +23,19 @@ pushd /home/pi
 
 if [ $PIC == 's' ]
 then
-    picpgm -p /home/pi/mopo/engine/pics/mopo-switches.production.hex
-    cp /home/pi/mopo/engine/pics/switches-version.json /home/pi/mopo/pics/switches-version.json
-    chown pi /home/pi/mopo/pics/switches-version.json
+    picpgm -p /home/pi/mopo/pics/available/mopo-switches.production.hex
+    cp /home/pi/mopo/pics/available/switches-version.json /home/pi/mopo/pics/installed/switches-version.json
+    chown pi /home/pi/mopo/pics/installed/switches-version.json
 elif [ $PIC == 'd' ]
 then
-    picpgm -p /home/pi/mopo/engine/pics/mopo-displays.production.hex
-    cp /home/pi/mopo/engine/pics/displays-version.json /home/pi/mopo/pics/displays-version.json
-    chown pi /home/pi/mopo/pics/displays-version.json
+    picpgm -p /home/pi/mopo/pics/available/mopo-displays.production.hex
+    cp /home/pi/mopo/pics/available/displays-version.json /home/pi/mopo/pics/installed/displays-version.json
+    chown pi /home/pi/mopo/pics/installed/displays-version.json
 elif [ $PIC == 'r' ]
 then
-    picpgm -p /home/pi/mopo/engine/pics/mopo-driver.production.hex
-    cp /home/pi/mopo/engine/pics/driver-version.json /home/pi/mopo/pics/driver-version.json
-    chown pi /home/pi/mopo/pics/driver-version.json
+    picpgm -p /home/pi/mopo/pics/available/mopo-driver.production.hex
+    cp /home/pi/mopo/pics/available/driver-version.json /home/pi/mopo/pics/installed/driver-version.json
+    chown pi /home/pi/mopo/pics/installed/driver-version.json
 else
     exit 1
 fi

@@ -273,6 +273,7 @@ export class Game {
 
         // Pressing the service button is a special case. It will stop the current game and display
         // IP info to access the service menu. Pressing it again will restart the game.
+        // It will also display the service menu pin code.
         if (sw.number === SERVICE_SWITCH) {
             if(this.ruleEngine.active) {
                 this.ruleEngine.stop();
