@@ -14,8 +14,6 @@ read PIC
 echo Stopping Mopo Pinball
 systemctl stop mopo
 
-mkdir -p /home/pi/mopo/pics
-
 echo Press [Enter] when the JUMPERS are installed
 read
 
