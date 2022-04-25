@@ -95,7 +95,7 @@ export class Update {
         await this.applyUpdateWorker(release, this.engineOutDir);
         if(reset) {
             logger.info('Installing system update');
-            execSync(`npm ci --prefix ${this.engineOutDir} --production`);
+            execSync(`npm ci --prefix ${this.engineOutDir} --production`, {shell: '/bin/bash'});
             
             logger.info('Restarting Mopo Pinball in 5 seconds.');
             setTimeout(() => process.exit(), 5000);
