@@ -3,6 +3,7 @@ Description=Mopo Pinball
 Documentation=https://github.com/mopopinball
 
 [Service]
+WorkingDirectory=/home/pi/mopo/engine
 Type=simple
 User=pi
 ExecStart=NODEPATH /home/pi/mopo/engine/src/index.js
