@@ -9,6 +9,9 @@ mkdir dist
 npm ci
 npm run tsc
 
+find dist -name '*.spec.*' -delete
+rm -rf dist/test-data
+
 # TODO: Get the pics from their latest release on GitHub.
 # mkdir dist/pics
 # cp pics/mopo-switches/dist/default/production/mopo-switches.production.hex dist/pics
