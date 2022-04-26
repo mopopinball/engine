@@ -16,7 +16,7 @@ import { Pic } from './devices/pic';
 export class Update {
     private readonly engineReleaseUrl = 'https://api.github.com/repos/mopopinball/engine/releases';
     private readonly serviceMenuReleaseUrl = 'https://api.github.com/repos/mopopinball/service-menu/releases/latest'
-    private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/auto-update/releases';
+    private readonly picsReleaseUrl = 'https://api.github.com/repos/mopopinball/pics/releases';
     private readonly engineOutDir = '/home/pi/mopo/engine';
     private readonly serviceMenuDir = '/home/pi/mopo/servicemenu/'
 
