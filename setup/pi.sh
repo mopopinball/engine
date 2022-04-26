@@ -63,3 +63,5 @@ mkdir -p /home/pi/mopo/pics/available
 # Download Mopo, npm install it and setup the game.
 mkdir -p /home/pi/mopo/engine
 curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/update.sh | bash
+
+/home/pi/mopo/engine/select-game.sh
