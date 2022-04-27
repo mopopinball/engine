@@ -32,8 +32,9 @@ sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup
 ```
 
 7. Select the game to use
-8. Flash the PICs
-    * Run `sudo /home/pi/mopo/engine/flash.sh`
+8. Run the following commands
+    * `/home/pi/mopo/engine/select-game.sh`
+    * `sudo /home/pi/mopo/engine/flash.sh` (once for each PIC)
 
 ## Hardware Support
 
