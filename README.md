@@ -15,26 +15,25 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
     * Go to https://www.raspberrypi.com/software/ and download the Raspberry Pi Imager
     * Burn the `Raspberry Pi OS Lite (32-bit)` option to an SD card.
 3. Boot the Raspberry Pi
+    * Strongly recommend the `Raspberry Pi Zero 2 W`
 4. On new images, set the following config on boot:
     * Keyboard Layout (Typically choose `English (US)`)
     * New username: `pi` (REQUIRED)
     * Password: (Typically `raspberry`, but can be anything)
 5. Change some `raspi-config` settings
     * run `sudo raspi-config`
-    * Set the WLAN country
+    * Set the WLAN (country, name/password)
     * Enable I2C
-    * (Optional) Enable SSH (Option 3/P2)
-    * Expand the filesystem
+    * Enable SSH (Recommended. Makes step 6 easier.)
 6. On the Pi run the following command (capitalization matters):
 
 ```
 sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/setup.sh | bash"
 ```
 
-7. Reboot
-8. Run post-setup tasks
-    * Select game by running `/home/pi/mopo/engine/select-game.sh`
-    * Flash PICs by running `/home/pi/mopo/engine/flash.sh`
+7. Select the game to use
+8. Flash the PICs
+    * Run `sudo /home/pi/mopo/engine/flash.sh`
 
 ## Hardware Support
 
