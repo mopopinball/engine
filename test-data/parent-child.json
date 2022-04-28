@@ -1,0 +1,66 @@
+{
+    "id": "root",
+    "autostart": true,
+    "data": [
+        {
+            "id": "d0",
+            "value": 13
+        }
+    ],
+    "devices": [
+        {
+            "id": "SHOOT_AGAIN",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "L4",
+            "type": "light",
+            "state": 1
+        }, {
+            "id": "p1",
+            "type": "display",
+            "state": "Mopo"
+        }
+    ],
+    "triggers": [{
+        "type": "switch",
+        "switchId": "sw0",
+        "actions": [{
+            "type": "data",
+            "dataId": "d0",
+            "operation": 0,
+            "operand": 5
+        }, {
+            "type": "device",
+            "state": {
+                "id": "L4",
+                "type": "light",
+                "state": 2
+            }
+        }]
+    }, {
+        "type": "switch",
+        "switchId": "sw1",
+        "actions": [{
+            "type": "state",
+            "startTargetId": "attractMode"
+        }]
+    }],
+    "children": [
+        {
+            "id": "attractMode",
+            "autostart": true,
+            "triggers": [],
+            "data": [],
+            "children": [],
+            "devices": [
+                {
+                    "id": "L4",
+                    "type": "light",
+                    "state": 2
+                }
+            ]
+        }
+    ]
+}

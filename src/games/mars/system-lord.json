@@ -1,0 +1,89 @@
+{
+    "metadata": {
+        "name": "Mars: System Lord",
+        "description": "Build your fleet and battle against Mars across multiple modes."
+    },
+    "id": "root",
+    "autostart": true,
+    "children": [{
+        "id": "attract",
+        "autostart": true,
+        "devices": [{
+            "id": "GAME_OVER",
+            "type": "light",
+            "state": 1
+        }, {
+            "id": "HIT_1",
+            "type": "sound",
+            "play": true
+        },
+        {
+            "id": "HIGH_GAME_TO_DATE",
+            "type": "light",
+            "state": 2
+        }],
+        "triggers": [{
+            "type": "switch",
+            "switchId": "REPLAY",
+            "actions": [{
+                "type": "state",
+                "startTargetId": "play",
+                "stopTargetId": "attract"
+            }]
+        }]
+    }, {
+        "id": "play",
+        "autostart": false,
+        "devices": [
+            {
+                "id": "GAME_OVER_RELAY",
+                "type": "coil",
+                "state": true
+            },
+        {
+            "id": "CAN_YOU_SURVIVE",
+            "type": "sound",
+            "play": true
+        }],
+        "triggers": [{
+            "type": "switch",
+            "switchId": "PLAY_TEST",
+            "actions": [{
+                "type": "state",
+                "startTargetId": "attract",
+                "stopTargetId": "play"    
+            }]
+        }]
+    }],
+    "devices": [{
+        "id": "GAME_OVER",
+        "type": "light",
+        "state": 0
+    },
+    {
+        "id": "GAME_OVER_RELAY",
+        "type": "coil",
+        "state": false
+    },
+    {
+        "id": "HIGH_GAME_TO_DATE",
+        "type": "light",
+        "state": 0
+    }, {
+        "id": "SHOOT_AGAIN",
+        "type": "light",
+        "state": 0
+    }, {
+        "id": "CAN_YOU_SURVIVE",
+        "type": "sound",
+        "play": false
+    }, {
+        "id": "HIT_1",
+        "type": "sound",
+        "play": false
+    }, {
+        "id": "TILT_RELAY",
+        "type": "coil",
+        "state": false
+    }]
+}

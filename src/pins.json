@@ -1,0 +1,18 @@
+{
+    "S1_2_Phat_Sound": 19,
+    "S1_6": 31,
+    "S1_7_Debug": 33,
+    "S1_8_Wps": 29,
+    "S3_Shutdown": 31,
+    "D2_Error_Led": 23,
+    "D3_Pi_Led": 18,
+    "D4_Node_Led": 16,
+    "IC1_Data0": 36,
+    "IC1_Data1": 32,
+    "IC1_Data2": 38,
+    "IC1_Data3": 21,
+    "IC1_OUT_RDY": 26,
+    "IC1_ACK": 24,
+    "IC1_Resend": 22,
+    "IC1_Reset": 11
+}

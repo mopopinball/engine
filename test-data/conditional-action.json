@@ -1,0 +1,98 @@
+{
+    "id": "root",
+    "autostart": true,
+    "data": [
+        {
+            "id": "d0",
+            "value": 13
+        }
+    ],
+    "devices": [
+        {
+            "id": "SHOOT_AGAIN",
+            "type": "lamp",
+            "number": 13,
+            "role": "lamp",
+            "name": "SHOOT_AGAIN",
+            "state": 0
+        },
+        {
+            "id": "L1",
+            "type": "lamp",
+            "number": 1,
+            "role": "lamp",
+            "name": "lamp 1",
+            "state": 1
+        }
+    ],
+    "actions": [
+        {
+            "id": "a0",
+            "type": "data",
+            "switchId": "sw0",
+            "dataId": "d0",
+            "operation": 0,
+            "operand": 5
+        },
+        {
+            "id": "a1",
+            "type": "device",
+            "switchId": "sw0",
+            "deviceId": "L1",
+            "state": 2
+        },
+        {
+            "id": "a2",
+            "type": "state",
+            "switchId": "sw1",
+            "childId": "attractMode",
+            "state": true,
+            "next": [
+                "a3"
+            ]
+        },
+        {
+            "id": "a3",
+            "type": "condition",
+            "statement": [
+                "data",
+                "d0",
+                ">",
+                "50"
+            ],
+            "trueResult": "a4",
+            "falseResult": "a5"
+        },
+        {
+            "id": "a4",
+            "type": "state",
+            "childId": "attractMode",
+            "state": true
+        },
+        {
+            "id": "a5",
+            "type": "state",
+            "childId": "attractMode",
+            "state": false
+        }
+    ],
+    "children": [
+        {
+            "id": "attractMode",
+            "autostart": true,
+            "actions": [],
+            "data": [],
+            "children": [],
+            "devices": [
+                {
+                    "id": "L1",
+                    "type": "lamp",
+                    "number": 1,
+                    "role": "lamp",
+                    "name": "lamp 1",
+                    "state": 2
+                }
+            ]
+        }
+    ]
+}

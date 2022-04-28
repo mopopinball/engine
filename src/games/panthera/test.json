@@ -1,0 +1,315 @@
+{
+    "id": "root",
+    "autostart": true,
+    "metadata": {},
+    "children": [],
+    "triggers": [],
+    "devices": [
+        {
+            "id": "NUMBER3_TARGET_RESET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER1_TARGET_RESET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER2_GARGET_RESET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "HOLE_KICKER",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "KNOCKER",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "OUTHOLE",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "p1",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "p2",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "p3",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "p4",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "b",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "c",
+            "type": "display",
+            "state": ""
+        },
+        {
+            "id": "GAME_OVER_RELAY",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "TILT_RELAY",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "COIN_LOCKOUT",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "SAME_PLAYER_SHOOTS_AGAIN",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "PLAYER_1",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "PLAYER_2",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "PLAYER_3",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "PLAYER_4",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "GAME_OVER",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "NUMBER1_YELLOW_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER1_BLUE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER1_WHITE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER1_GREEN_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER2_YELLOW_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER2_BLUE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER2_WHITE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER2_GREEN_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER3_YELLOW_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER3_BLUE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER3_WHITE_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "NUMBER3_GREEN_DROPTARGET",
+            "type": "coil",
+            "state": false
+        },
+        {
+            "id": "2X",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "3X",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "4X",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "5X",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "NUMBER1_ROLLOVER",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "NUMBER2_ROLLOVER",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "NUMBER3_ROLLOVER",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "TWENTY_THOUSAND_AND_SCORE_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "1000_BONUE",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "2000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "3000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "4000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "5000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "6000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "7000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "8000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "9000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "10000_BONUS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "EXTRA_BALL",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "SPECIAL",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "YELLOW_DROP_TARGETS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "BLUE_DROP_TARGETS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "WHITE_DROP_TARGETS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "GREEN_DROP_TARGETS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "YELLOW_ROLLOVERS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "BLUE_ROLLOVERS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "WHITE_ROLLOVERS",
+            "type": "light",
+            "state": 0
+        },
+        {
+            "id": "GREEN_ROLLOVERS",
+            "type": "light",
+            "state": 0
+        }
+    ],
+    "data": []
+}

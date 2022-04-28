@@ -1,0 +1,9 @@
+<Config>
+    <PgmIf name="GPIO Programmer (Raspberry Pi)" typ="LVP" connection="GPIO">
+        <PinCfg name="MCLR" pin="24" invert="0" />
+        <PinCfg name="PGM" pin="11" invert="0" />
+        <PinCfg name="CLK" pin="23" invert="0" />
+        <PinCfg name="DOUT" pin="27" invert="0" />
+        <PinCfg name="DIN" pin="26" invert="0" />
+    </PgmIf>
+</Config>

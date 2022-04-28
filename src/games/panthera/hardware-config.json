@@ -1,0 +1,444 @@
+{
+    "name": "Panthera",
+    "system": "80",
+    "displays": {
+        "p1": {
+            "id": "p1",
+            "name": "Player 1 display"
+        },
+        "p2": {
+            "id": "p2",
+            "name": "Player 2 display"
+        },
+        "p3": {
+            "id": "p3",
+            "name": "Player 3 display"
+        },
+        "p4": {
+            "id": "p4",
+            "name": "Player 4 display"
+        },
+        "b": {
+            "id": "b",
+            "name": "Current ball display"
+        },
+        "c": {
+            "id": "c",
+            "name": "Credits display"
+        }
+    },
+    "devices": {
+        "switches": {
+            "NUMBER_1_YELLOW_DROP_TARGET": {
+                "number": 0,
+                "name": "#1 Yellow Drop Target"
+            },
+            "NUMBER_2_YELLOW_DROP_TARGET": {
+                "number": 1,
+                "name": "#2 Yellow Drop Target"
+            },
+            "NUMBER_3_YELLOW_DROP_TARGET": {
+                "number": 2,
+                "name": "#3 Yellow Drop Target"
+            },
+            "YELLOW_ROLLOVERS": {
+                "number": 3,
+                "name": "Yellow Rollovers (2)"
+            },
+            "BULLSEYE_TARGET": {
+                "number": 4,
+                "name": "Bull's Eye Target"
+            },
+            "NUMBER1_ROLLOVER": {
+                "number": 5,
+                "name": "#1 Rollover"
+            },
+            "NUMBER_1_BLUE_DROP_TARGET": {
+                "number": 10,
+                "name": "#1 Blue Drop Target"
+            },
+            "NUMBER_2_BLUE_DROP_TARGET": {
+                "number": 11,
+                "name": "#2 Blue Drop Target"
+            },
+            "NUMBER_3_BLUE_DROP_TARGET": {
+                "number": 12,
+                "name": "#3 Blue Drop Target"
+            },
+            "BLUE_ROLLOVERS": {
+                "number": 13,
+                "name": "Blue Rollovers (2)"
+            },
+            "ROLLOVER_BUTTONS": {
+                "number": 14,
+                "name": "Rollover Buttons (2)"
+            },
+            "NUMBER2_ROLLOVER": {
+                "number": 15,
+                "name": "#2 Rollovers (2)"
+            },
+            "NUMBER_1_WHITE_DROP_TARGET": {
+                "number": 20,
+                "name": "#1 White Drop Target"
+            },
+            "NUMBER_2_WHITE_DROP_TARGET": {
+                "number": 21,
+                "name": "#2 White Drop Target"
+            },
+            "NUMBER_3_WHITE_DROP_TARGET": {
+                "number": 22,
+                "name": "#3 White Drop Target"
+            },
+            "WHITE_ROLLOVERS": {
+                "number": 23,
+                "name": "White Rollovers (2)"
+            },
+            "POP_BUMPERS": {
+                "number": 24,
+                "name": "Pop Bumpers (2)"
+            },
+            "NUMBER_3_ROLLOVER_AND_SPIN_TARGET": {
+                "number": 25,
+                "name": "#3 Rollover and Spin Target"
+            },
+            "NUMBER_1_GREEN_DROP_TARGET": {
+                "number": 30,
+                "name": "#1 Green Drop Target"
+            },
+            "NUMBER_2_GREEN_DROP_TARGET": {
+                "number": 31,
+                "name": "#2 Green Drop Target"
+            },
+            "NUMBER_3_GREEN_DROP_TARGET": {
+                "number": 32,
+                "name": "#3 Green Drop Target"
+            },
+            "GREEN_ROLLOVERS": {
+                "number": 33,
+                "name": "Green Rollovers (2)"
+            },
+            "TEN_POINTS": {
+                "number": 34,
+                "name": "Ten Points (10)"
+            },
+            "HOLE": {
+                "number": 35,
+                "name": "Hole"
+            },
+            "TILT": {
+                "number": 57,
+                "name": "Tilt"
+            },
+            "OUTHOLE": {
+                "number": 67,
+                "name": "Outhole"
+            }
+        },
+        "lamps": {
+            "GAME_OVER_RELAY": {
+                "number": 0,
+                "role": "coil",
+                "name": "Game Over",
+                "coilType": "relay"
+            },
+            "TILT_RELAY": {
+                "number": 1,
+                "role": "coil",
+                "name": "Tilt",
+                "coilType": "relay"
+            },
+            "COIN_LOCKOUT": {
+                "number": 2,
+                "name": "Coin Lockout",
+                "role": "coil",
+                "coilType": "relay"
+            },
+            "SAME_PLAYER_SHOOTS_AGAIN": {
+                "number": 3,
+                "role": "lamp",
+                "name": "Same Player Shoots Again"
+            },
+            "PLAYER_1": {
+                "number": 4,
+                "role": "lamp",
+                "name": "Player 1"
+            },
+            "PLAYER_2": {
+                "number": 5,
+                "role": "lamp",
+                "name": "Player 2"
+            },
+            "PLAYER_3": {
+                "number": 6,
+                "role": "lamp",
+                "name": "Player 3"
+            },
+            "PLAYER_4": {
+                "number": 7,
+                "role": "lamp",
+                "name": "Player 4"
+            },
+            "HIGH_GAME_TO_DATE": {
+                "number": 10,
+                "name": "High Game To Date"
+            },
+            "GAME_OVER": {
+                "number": 11,
+                "role": "lamp",
+                "name": "Game Over"
+            },
+            "NUMBER1_YELLOW_DROPTARGET": {
+                "number": 12,
+                "name": "#1 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER1_BLUE_DROPTARGET": {
+                "number": 13,
+                "name": "#1 Blue Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER1_WHITE_DROPTARGET": {
+                "number": 14,
+                "name": "#1 White Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER1_GREEN_DROPTARGET": {
+                "number": 15,
+                "name": "#1 Green Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER2_YELLOW_DROPTARGET": {
+                "number": 16,
+                "name": "#2 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER2_BLUE_DROPTARGET": {
+                "number": 17,
+                "name": "#2 Blue Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER2_WHITE_DROPTARGET": {
+                "number": 18,
+                "name": "#2 White Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER2_GREEN_DROPTARGET": {
+                "number": 19,
+                "name": "#2 Green Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER3_YELLOW_DROPTARGET": {
+                "number": 20,
+                "name": "#3 Yellow Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER3_BLUE_DROPTARGET": {
+                "number": 21,
+                "name": "#3 Blue Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER3_WHITE_DROPTARGET": {
+                "number": 22,
+                "name": "#3 White Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "NUMBER3_GREEN_DROPTARGET": {
+                "number": 23,
+                "name": "#3 Green Drop Target",
+                "role": "coil",
+                "coilType": "coil"
+            },
+            "2X": {
+                "number": 24,
+                "role": "lamp",
+                "name": "2X"
+            },
+            "3X": {
+                "number": 25,
+                "role": "lamp",
+                "name": "3X"
+            },
+            "4X": {
+                "number": 26,
+                "role": "lamp",
+                "name": "4X"
+            },
+            "5X": {
+                "number": 27,
+                "role": "lamp",
+                "name": "5X"
+            },
+            "NUMBER1_ROLLOVER": {
+                "number": 28,
+                "role": "lamp",
+                "name": "#1 Rollover"
+            },
+            "NUMBER2_ROLLOVER": {
+                "number": 29,
+                "role": "lamp",
+                "name": "#2 Rollover (2)"
+            },
+            "NUMBER3_ROLLOVER": {
+                "number": 30,
+                "role": "lamp",
+                "name": "#3 Rollover and Spin Target"
+            },
+            "TWENTY_THOUSAND_AND_SCORE_BONUS": {
+                "number": 31,
+                "role": "lamp",
+                "name": "20,000 and Score Bonus"
+            },
+            "1000_BONUE": {
+                "number": 32,
+                "role": "lamp",
+                "name": "1000 Bonus"
+            },
+            "2000_BONUS": {
+                "number": 33,
+                "role": "lamp",
+                "name": "2000 Bonus"
+            },
+            "3000_BONUS": {
+                "number": 34,
+                "role": "lamp",
+                "name": "3000 Bonus"
+            },
+            "4000_BONUS": {
+                "number": 35,
+                "role": "lamp",
+                "name": "4000 Bonus"
+            },
+            "5000_BONUS": {
+                "number": 36,
+                "role": "lamp",
+                "name": "5000 Bonus"
+            },
+            "6000_BONUS": {
+                "number": 37,
+                "role": "lamp",
+                "name": "6000 Bonus"
+            },
+            "7000_BONUS": {
+                "number": 38,
+                "role": "lamp",
+                "name": "7000 Bonus"
+            },
+            "8000_BONUS": {
+                "number": 39,
+                "role": "lamp",
+                "name": "8000 Bonus"
+            },
+            "9000_BONUS": {
+                "number": 40,
+                "role": "lamp",
+                "name": "9000 Bonus"
+            },
+            "10000_BONUS": {
+                "number": 41,
+                "role": "lamp",
+                "name": "10,000 Bonus"
+            },
+            "EXTRA_BALL": {
+                "number": 42,
+                "role": "lamp",
+                "name": "Extra Ball"
+            },
+            "SPECIAL": {
+                "number": 43,
+                "role": "lamp",
+                "name": "Special"
+            },
+            "YELLOW_DROP_TARGETS": {
+                "number": 44,
+                "role": "lamp",
+                "name": "Yellow Drop Targets (3)"
+            },
+            "BLUE_DROP_TARGETS": {
+                "number": 45,
+                "role": "lamp",
+                "name": "Blue Drop Targets (3)"
+            },
+            "WHITE_DROP_TARGETS": {
+                "number": 46,
+                "role": "lamp",
+                "name": "White Drop Targets (3)"
+            },
+            "GREEN_DROP_TARGETS": {
+                "number": 47,
+                "role": "lamp",
+                "name": "Green Drop Targets (3)"
+            },
+            "YELLOW_ROLLOVERS": {
+                "number": 48,
+                "role": "lamp",
+                "name": "Yellow Rollovers"
+            },
+            "BLUE_ROLLOVERS": {
+                "number": 49,
+                "role": "lamp",
+                "name": "Blue Rollovers"
+            },
+            "WHITE_ROLLOVERS": {
+                "number": 50,
+                "role": "lamp",
+                "name": "White Rollovers"
+            },
+            "GREEN_ROLLOVERS": {
+                "number": 51,
+                "role": "lamp",
+                "name": "Green Rollovers"
+            }
+        },
+        "coils": {
+            "NUMBER3_TARGET_RESET": {
+                "number": 1,
+                "name": "#3 Target Bank Reset",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "NUMBER1_TARGET_RESET": {
+                "number": 2,
+                "name": "#1 Target Bank Reset",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "NUMBER2_GARGET_RESET": {
+                "number": 5,
+                "name": "#2 Target Bank Reset",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "HOLE_KICKER": {
+                "number": 6,
+                "name": "Hole Kicker",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "KNOCKER": {
+                "number": 8,
+                "name": "Knocker",
+                "coilType": "coil",
+                "durationMs": 50
+            },
+            "OUTHOLE": {
+                "number": 9,
+                "name": "Outhole",
+                "coilType": "coil",
+                "durationMs": 100
+            }
+        }
+    },
+    "sounds": {
+    }
+}
