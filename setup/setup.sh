@@ -26,7 +26,7 @@ raspi-config nonint do_hostname $hostname
 echo 'IPQoS cs0 cs0' >> /etc/ssh/sshd_config
 
 # Run the following script as the "pi" user.
-curl https://raw.githubusercontent.com/mopopinball/engine/beta/setup/pi.sh > ./pi.sh
+curl https://raw.githubusercontent.com/mopopinball/engine/master/setup/pi.sh > ./pi.sh
 chmod +x ./pi.sh
 sudo -H -u pi ./pi.sh
 
