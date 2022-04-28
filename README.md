@@ -1,5 +1,7 @@
 # Mopo Pinball - (Mo)dern (Po)wer Pinball
 
+[![semantic-release: node](https://img.shields.io/badge/semantic--release-node-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
 A modern pinball engine built for modern hardware to revive old Gottlieb pinball machines. Revived machines have new rules and other modern capabilies not possible on 1980s hardware. CPUs are powered by a Raspberry Pi and the engine is build for Node in Typescript.
 
 ## Special Thanks to [LISY](https://lisy.dev)
