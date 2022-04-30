@@ -21,6 +21,9 @@ randomid=$(uuid)
 hostname=mopo-${randomid:0:8}
 raspi-config nonint do_hostname $hostname
 
+# allow pi user to shutdown/reboot
+echo 'pi ALL=NOPASSWD: /sbin/halt, /sbin/reboot, /sbin/poweroff' >> /etc/sudoers
+
 # SSH seems to have issues quite often (TODO: confirm prevalence), try to correct it.
 # See https://discourse.osmc.tv/t/solved-ssh-connection-sometimes-hangs/76504/4 for more info.
 echo 'IPQoS cs0 cs0' >> /etc/ssh/sshd_config
