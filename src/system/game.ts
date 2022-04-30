@@ -72,20 +72,23 @@ export class Game {
     server: Server;
 
     constructor(private hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
-        if (!hardwareConfig || !gameStateConfig) {
-            throw new Error('Required config not provided');
-        }
-        if (!hardwareConfig.system) {
-            throw new Error('No system defined');
-        }
-
-        // this.maintenance = new Maintenance();
-
         this.setup();
     }
 
     async setup(): Promise<void> {
+        await this.setupHardware();
+        
+        this.board.start();
+
         // Load our hardware config.
+        if (!this.hardwareConfig || !this.gameStateConfig) {
+            this.board.setError(true);
+            throw new Error('Required config file(s) are missing. Please run /home/pi/mopo/engine/select-game.sh');
+        }
+        if (!this.hardwareConfig.system) {
+            throw new Error('No system defined');
+        }
+
         this.loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
             this.displays = new Sys80or80ADisplay();
@@ -93,10 +96,6 @@ export class Game {
         else {
             throw new Error('Unexpected system type.');
         }
-
-        await this.setupHardware();
-        
-        this.board.start();
 
         // init our instance variables.
         // setting system initializes the pin code used by server.

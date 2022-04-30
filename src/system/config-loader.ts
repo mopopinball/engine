@@ -1,5 +1,5 @@
 import { HardwareConfig } from "./hardware-config.schema";
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { RuleSchema } from "./rule-engine/schema/rule.schema";
 import { RuleEngine } from "./rule-engine/rule-engine";
 import { SwitchAliasSchema } from "./switch-alias.schema";
@@ -8,12 +8,17 @@ const hardwareConfigPath = '/home/pi/mopo/hardware-config.json';
 const gamestateConfigPath = '/home/pi/mopo/gamestate-config.json';
 
 export abstract class ConfigLoader {
-
     public static loadHardwareConfig(): HardwareConfig {
+        if (!existsSync(hardwareConfigPath)) {
+            return null;
+        }
         return this.loadFile<HardwareConfig>(hardwareConfigPath);
     }
 
     public static loadRuleSchema(): RuleSchema {
+        if (!existsSync(gamestateConfigPath)) {
+            return null;
+        }
         return this.loadFile<RuleSchema>(gamestateConfigPath);
     }
 
