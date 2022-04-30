@@ -53,6 +53,11 @@
                 "number": 5,
                 "name": "#1 Rollover"
             },
+            "PLAY_TEST": {
+                "number": 7,
+                "name": "Play/Test",
+                "qualifiesPlayfield": false
+            },
             "NUMBER_1_BLUE_DROP_TARGET": {
                 "number": 10,
                 "name": "#1 Blue Drop Target"
