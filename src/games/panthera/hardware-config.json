@@ -383,26 +383,6 @@
                 "number": 47,
                 "role": "lamp",
                 "name": "Green Drop Targets (3)"
-            },
-            "YELLOW_ROLLOVERS": {
-                "number": 48,
-                "role": "lamp",
-                "name": "Yellow Rollovers"
-            },
-            "BLUE_ROLLOVERS": {
-                "number": 49,
-                "role": "lamp",
-                "name": "Blue Rollovers"
-            },
-            "WHITE_ROLLOVERS": {
-                "number": 50,
-                "role": "lamp",
-                "name": "White Rollovers"
-            },
-            "GREEN_ROLLOVERS": {
-                "number": 51,
-                "role": "lamp",
-                "name": "Green Rollovers"
             }
         },
         "coils": {
