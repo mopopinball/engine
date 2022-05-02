@@ -130,6 +130,10 @@
                 "number": 35,
                 "name": "Hole"
             },
+            "START": {
+                "number": 47,
+                "name": "Start"
+            },
             "TILT": {
                 "number": 57,
                 "name": "Tilt"
