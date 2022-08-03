@@ -72,20 +72,23 @@ export class Game {
     server: Server;
 
     constructor(private hardwareConfig: HardwareConfig, private gameStateConfig: RuleSchema) {
-        if (!hardwareConfig || !gameStateConfig) {
-            throw new Error('Required config not provided');
-        }
-        if (!hardwareConfig.system) {
-            throw new Error('No system defined');
-        }
-
-        // this.maintenance = new Maintenance();
-
         this.setup();
     }
 
     async setup(): Promise<void> {
+        await this.setupHardware();
+        
+        this.board.start();
+
         // Load our hardware config.
+        if (!this.hardwareConfig || !this.gameStateConfig) {
+            this.board.setError(true);
+            throw new Error('Required config file(s) are missing. Please run /home/pi/mopo/engine/select-game.sh');
+        }
+        if (!this.hardwareConfig.system) {
+            throw new Error('No system defined');
+        }
+
         this.loadConfig();
         if (this.hardwareConfig.system === SystemName.SYS80 || this.hardwareConfig.system === SystemName.SYS80A) {
             this.displays = new Sys80or80ADisplay();
@@ -93,10 +96,6 @@ export class Game {
         else {
             throw new Error('Unexpected system type.');
         }
-
-        await this.setupHardware();
-        
-        this.board.start();
 
         // init our instance variables.
         // setting system initializes the pin code used by server.
@@ -176,6 +175,29 @@ export class Game {
                 () => this.ruleEngine.onSwitch(matchingSw.id, hs.holdIntervalMs),
                 hs.holdIntervalMs
             );
+        }
+
+        // wire up a special hold for the service switch safe power down
+        const serviceSwitch = allSwitches.find((s) => s.number === SERVICE_SWITCH);
+        serviceSwitch?.onPress(() => this.safePowerDown(), 3000);
+    }
+
+    private safePowerDown(): void {
+        logger.info('Shutting down');
+
+        this.ruleEngine.stop();
+
+        ServiceMenu.shutdown(this.displays);
+    }
+
+    private onServiceSwitchPress(): void {
+        if(this.ruleEngine.active) {
+            this.ruleEngine.stop();
+            // display IP address
+            ServiceMenu.showIp(this.displays);
+        }
+        else {
+            this.ruleEngine.start();
         }
     }
 
@@ -271,26 +293,19 @@ export class Game {
 
         logger.info(`${sw.name}(${sw.number})=${payload.activated}`);
 
-        // Pressing the service button is a special case. It will stop the current game and display
-        // IP info to access the service menu. Pressing it again will restart the game.
-        // It will also display the service menu pin code.
-        if (sw.number === SERVICE_SWITCH) {
-            if(this.ruleEngine.active) {
-                this.ruleEngine.stop();
-                // display IP address
-                ServiceMenu.showIp(this.displays);
-            }
-            else {
-                this.ruleEngine.start();
-            }
-            return;
-        }
-
         try {
             // notify the switch object of new on/off state. This starts/stop hold states.
             sw.onChange(payload.activated);
+
             // if the switch is active, process it.
             if (sw.getActive()) {
+                // Pressing the service button is a special case. It will stop the current game and display
+                // IP info to access the service menu. Pressing it again will restart the game.
+                // It will also display the service menu pin code.
+                if (sw.number === SERVICE_SWITCH) {
+                    return this.onServiceSwitchPress();
+                }
+
                 this.ruleEngine.onSwitch(sw.id);
 
                 // check if this switch is part of a switch alias. If so, fire everything in the alias.

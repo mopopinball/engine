@@ -63,18 +63,6 @@ export class Board implements GpioRegistrator {
         this.s1_7.on('change', () => this.publishDipState());
         this.s1_8 = new BoardSwitch('S1_8', pins.S1_8_Wps, true);
         this.s1_8.on('change', () => this.publishDipState());
-
-        const resetSwitch = new BoardSwitch('S3', pins.S3_Shutdown, true);
-        resetSwitch.on('change', (value) => {
-            // logger.debug(`Shutdown SW: ${value}`);
-            // todo: confirm: this implements a "hold for 3 seconds"? if so, move to switch and test.
-            if (value) {
-                this.shutdownInterval = setTimeout(() => this.onShutdownCommand(), 3000);
-            }
-            else {
-                clearInterval(this.shutdownInterval);
-            }
-        });
     }
 
     private publishDipState(ic1State?: DipSwitchState): void {
@@ -107,12 +95,8 @@ export class Board implements GpioRegistrator {
         // TODO: How will this work in (corporate?) locations when now WPS button is present/accessable.
     }
 
-    onShutdownCommand(): void {
-        logger.info('Shutting down system.');
-        // TODO
+    shutdown(): void {
         this.piLed.setStyles([new BlinkLightStyle(250, LightState.OFF)]);
-        // const resp = spawn('shutdown', ['now'], {stdio: 'pipe', encoding: 'utf-8'});
-        // logger.debug(JSON.stringify(resp));
     }
 
     isDebugEnabled(): boolean {

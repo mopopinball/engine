@@ -53,6 +53,11 @@
                 "number": 5,
                 "name": "#1 Rollover"
             },
+            "PLAY_TEST": {
+                "number": 7,
+                "name": "Play/Test",
+                "qualifiesPlayfield": false
+            },
             "NUMBER_1_BLUE_DROP_TARGET": {
                 "number": 10,
                 "name": "#1 Blue Drop Target"
@@ -124,6 +129,10 @@
             "HOLE": {
                 "number": 35,
                 "name": "Hole"
+            },
+            "START": {
+                "number": 47,
+                "name": "Start"
             },
             "TILT": {
                 "number": 57,
@@ -378,26 +387,6 @@
                 "number": 47,
                 "role": "lamp",
                 "name": "Green Drop Targets (3)"
-            },
-            "YELLOW_ROLLOVERS": {
-                "number": 48,
-                "role": "lamp",
-                "name": "Yellow Rollovers"
-            },
-            "BLUE_ROLLOVERS": {
-                "number": 49,
-                "role": "lamp",
-                "name": "Blue Rollovers"
-            },
-            "WHITE_ROLLOVERS": {
-                "number": 50,
-                "role": "lamp",
-                "name": "White Rollovers"
-            },
-            "GREEN_ROLLOVERS": {
-                "number": 51,
-                "role": "lamp",
-                "name": "Green Rollovers"
             }
         },
         "coils": {
