@@ -30,7 +30,7 @@
     "expr-eval": "^2.0.2",
     "express": "4.17.1",
     "express-basic-auth": "^1.2.0",
-    "i2c-bus": "5.1.0",
+    "i2c-bus": "^5.2.3",
     "ip": "^1.1.5",
     "lodash": "^4.17.15",
     "loglevel": "^1.7.1",
