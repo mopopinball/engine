@@ -2,7 +2,14 @@ FROM node:12
 
 WORKDIR /app
 
-COPY test.js /app
-# RUN npm ci
-CMD node test.js
+RUN apt update
+RUN apt install -y mosquitto
 
+COPY package* ./
+RUN npm ci
+
+COPY . .
+
+npm run tsc
+
+CMD node dist/src/index.js
