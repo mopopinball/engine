@@ -1,14 +1,15 @@
-FROM node:12
+FROM node:18
+RUN apt-get update
 
 WORKDIR /app
 
-# RUN apt-get update
-# RUN apt-get install -y mosquitto
+# RUN apt-get install -y apt-transport-https && apt-get -y update
 
-RUN npm -v
+RUN apt-get install -y mosquitto
+COPY setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
 
 COPY package* ./
-RUN npm install
+RUN npm ci --omit=dev
 
 COPY . .
 
