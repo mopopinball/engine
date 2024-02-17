@@ -9,7 +9,7 @@ RUN apt-get install -y mosquitto
 COPY setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
 
 COPY package* ./
-RUN npm ci --omit=dev
+RUN npm ci --no-fund --no-audit
 
 COPY . .
 
