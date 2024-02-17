@@ -29,7 +29,16 @@ This project is made possible by the [LISY](https://lisy.dev) project! LISY prov
     * Enable SSH (Recommended. Makes step 6 easier.)
 6. On the Pi run the following command (capitalization matters):
 
+```shell
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo reboot now
+sudo docker pull ghcr.io/mopopinball/engine:master
+sudo docker run -d --privileged --restart always ghcr.io/mopopinball/engine:master
 ```
+
+```
+# OLD
 sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/master/setup/setup.sh | bash"
 ```
 

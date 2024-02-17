@@ -2,11 +2,13 @@ FROM node:12
 
 WORKDIR /app
 
-# RUN apt update
-# RUN apt install -y mosquitto
+# RUN apt-get update
+# RUN apt-get install -y mosquitto
+
+RUN npm -v
 
 COPY package* ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 
