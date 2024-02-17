@@ -10,6 +10,6 @@ RUN npm ci
 
 COPY . .
 
-npm run tsc
+RUN npm run tsc
 
 CMD node dist/src/index.js
