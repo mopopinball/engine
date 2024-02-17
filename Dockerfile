@@ -2,8 +2,8 @@ FROM node:12
 
 WORKDIR /app
 
-RUN apt-get update
-RUN apt-get install -y mosquitto
+# RUN apt update
+# RUN apt install -y mosquitto
 
 COPY package* ./
 RUN npm ci
