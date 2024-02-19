@@ -28,8 +28,9 @@ export class Server {
         const staticDir = path.resolve('/app/servicemenu');
         logger.info(`Setting static dir to ${staticDir}`);
         // TODO: refresh the pin code periodically and update the security/users.
+        const pinCode = Security.getInstance().hasPinCode() ? Security.getInstance().getPinCode().toString() : 'admin';
         const users = {
-            admin: Security.getInstance().getPinCode().toString(),
+            admin: pinCode,
             developer: 'abc123' //TODO: Remove this!
         };
         basicAuth({users})

@@ -34,6 +34,10 @@ export class Security {
         }
     }
 
+    hasPinCode(): boolean {
+        return !!this.pinCode;
+    }
+
     getPinCode(): number {
         return this.pinCode;
     }
