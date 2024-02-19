@@ -3,12 +3,8 @@ RUN apt-get update
 
 WORKDIR /app
 
-# Mosquitto
-RUN apt-get install -y mosquitto
-COPY setup/mosquitto.conf /etc/mosquitto/conf.d/myconfig.conf
-RUN mosquitto -d
-
 # Mopo Engine
+RUN npm config set update-notifier false
 COPY package* ./
 RUN npm ci --no-fund --no-audit
 COPY . .
