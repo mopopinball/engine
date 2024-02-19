@@ -36,7 +36,7 @@ sudo reboot now
 wget https://raw.githubusercontent.com/mopopinball/engine/master/setup/mosquitto.conf -O mosquitto.conf
 sudo docker run -d --restart always -p 1883:1883 -p 9001:9001 -v ./mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto
 sudo docker pull ghcr.io/mopopinball/engine:master
-sudo docker run -d --privileged --restart always ghcr.io/mopopinball/engine:master
+sudo docker run -d --privileged --network=host --restart always ghcr.io/mopopinball/engine:master
 ```
 
 ```

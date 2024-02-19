@@ -7,7 +7,7 @@ import path from 'path';
 import { logger } from '../logger';
 import { Security } from '../security';
 import { UpdateController } from './update-controller';
-const port = 80;
+const port = 1983;
 
 /**
  * Web server.
@@ -25,7 +25,7 @@ export class Server {
     }
 
     setupWebserverBindings(): void {
-        const staticDir = path.resolve('/home/pi/mopo/servicemenu');
+        const staticDir = path.resolve('/app/servicemenu');
         logger.info(`Setting static dir to ${staticDir}`);
         // TODO: refresh the pin code periodically and update the security/users.
         const users = {

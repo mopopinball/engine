@@ -76,6 +76,14 @@ export class Game {
     }
 
     async setup(): Promise<void> {
+        // init our instance variables.
+        // setting system initializes the pin code used by server.
+        if(this.hardwareConfig.system) {
+            Security.getInstance().setSystem(this.hardwareConfig.system);
+        }
+        this.server = new Server();
+        this.server.start();
+        
         await this.setupHardware();
         
         this.board.start();
@@ -96,12 +104,6 @@ export class Game {
         else {
             throw new Error('Unexpected system type.');
         }
-
-        // init our instance variables.
-        // setting system initializes the pin code used by server.
-        Security.getInstance().setSystem(this.hardwareConfig.system);
-        this.server = new Server();
-        this.server.start();
         
         this.name = this.gameStateConfig.metadata.name;
         this.fpsTracker = new FpsTracker();
