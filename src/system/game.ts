@@ -78,7 +78,7 @@ export class Game {
     async setup(): Promise<void> {
         // init our instance variables.
         // setting system initializes the pin code used by server.
-        if(this.hardwareConfig.system) {
+        if(this.hardwareConfig?.system) {
             Security.getInstance().setSystem(this.hardwareConfig.system);
         }
         this.server = new Server();
