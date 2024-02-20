@@ -27,5 +27,8 @@ RUN mkdir -p pics/available
 RUN tar xf pics.tar.gz -C pics/available --strip-components=4
 RUN rm pics.tar.gz
 
+# Data (typically bind mounted to host)
+RUN mkdir data
+
 # Run the engine
 CMD node dist/src/index.js

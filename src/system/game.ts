@@ -81,7 +81,7 @@ export class Game {
         if(this.hardwareConfig?.system) {
             Security.getInstance().setSystem(this.hardwareConfig.system);
         }
-        this.server = new Server();
+        this.server = new Server(this.hardwareConfig);
         this.server.start();
         
         await this.setupHardware();

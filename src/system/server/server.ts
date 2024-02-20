@@ -7,6 +7,8 @@ import path from 'path';
 import { logger } from '../logger';
 import { Security } from '../security';
 import { UpdateController } from './update-controller';
+import { SetupController } from './setup-controller';
+import { HardwareConfig } from '../hardware-config.schema';
 const port = 1983;
 
 /**
@@ -14,6 +16,8 @@ const port = 1983;
  */
 export class Server {
     private server: any;
+
+    constructor(private hardwareConfig: HardwareConfig){}
 
     start(): void {
         // Our process starts via systemd potentially before networking is ready. Wait some time
@@ -50,5 +54,6 @@ export class Server {
 
     private setupControllers() {
         new UpdateController().setup(app);
+        new SetupController(this.hardwareConfig).setup(app);
     }
 }
