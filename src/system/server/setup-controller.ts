@@ -1,14 +1,11 @@
 import express from 'express';
-import { Board } from '../board';
 import { GithubRelease } from '../github-release';
-import { EVENTS, MessageBroker } from '../messages';
 import { Update } from '../update';
 import { Controller } from "./controller";
 import cors from 'cors';
-import { logger } from '../logger';
 import { HardwareConfig } from '../hardware-config.schema';
 import { GameOption, GameSelector } from '../../game-selector/select-game';
-import { copyFileSync, writeFileSync } from 'fs';
+import { copyFileSync } from 'fs';
 import { join } from 'path';
 
 interface SetupState {
