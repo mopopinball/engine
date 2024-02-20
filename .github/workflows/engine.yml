@@ -28,7 +28,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
+    - run: npm config set update-notifier false
+    - run: npm ci --no-fund --no-audit
     - run: npm run build --if-present
     - run: npm run lint
     - run: npm test
