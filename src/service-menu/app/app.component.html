@@ -1,0 +1,94 @@
+<header>
+    
+    <div>
+        <img src="../mopo-logo.svg" width="32px" />
+        <h1>{{info?.name}} Serivce Menu</h1>
+        <h2>{{info?.gameName}}</h2>
+    </div>
+    <div *ngIf="debuggingEnabled" class="debugging">
+        <span class="title">Debugging is enabled</span>
+        <div class="title notice">
+            Design you own rules with the <a href="http://mopo-designer.s3-website-us-east-1.amazonaws.com/" target="_blank">MOPO Designer</a>!
+        </div>
+        <div class="body">
+            Upload a rule set:
+            <input type="file"
+                #fileload
+                (change)="load($event)" />
+        </div>
+    </div>
+    <div class="actions">
+        <div>
+            Engine: {{info?.version}}
+            <span *ngIf="availableUpdate?.system">
+                Engine {{availableUpdate?.system.name}} is available!
+                <button (click)="applyUpdate(availableUpdate.system)" [disabled]="systemUpdateInProgress">Apply</button>
+            </span>
+        </div>
+        <div>
+            Menu: {{menuVersion}}
+            <span *ngIf="availableUpdate?.serviceMenu">
+                Service Menu {{availableUpdate?.serviceMenu.name}} is available!
+                <button (click)="applyUpdate(availableUpdate.serviceMenu)" [disabled]="systemUpdateInProgress">Apply</button>
+            </span>
+            
+        </div>
+        <div><button (click)="checkForUpdate()" [disabled]="systemUpdateInProgress">Check for Update</button></div>
+        <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
+    </div>
+</header>
+<h3>Dips</h3>
+<div>
+    S1
+    <div>
+        <table class="dips">
+            <tr>
+                <td [class.on]="dips?.s1.sw1"></td>
+                <td [class.on]="dips?.s1.sw2"></td>
+                <td [class.on]="dips?.s1.sw3"></td>
+                <td [class.on]="dips?.s1.sw4"></td>
+                <td [class.on]="dips?.s1.sw5"></td>
+                <td [class.on]="dips?.s1.sw6"></td>
+                <td [class.on]="dips?.s1.sw7"></td>
+                <td [class.on]="dips?.s1.sw8"></td>
+            </tr>
+            <tr>
+                <td [class.on]="!dips?.s1.sw1"></td>
+                <td [class.on]="!dips?.s1.sw2"></td>
+                <td [class.on]="!dips?.s1.sw3"></td>
+                <td [class.on]="!dips?.s1.sw4"></td>
+                <td [class.on]="!dips?.s1.sw5"></td>
+                <td [class.on]="!dips?.s1.sw6"></td>
+                <td [class.on]="!dips?.s1.sw7"></td>
+                <td [class.on]="!dips?.s1.sw8"></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        Slam: {{dips?.slam}}
+    </div>
+</div>
+
+<h3><i class="far fa-lightbulb"></i> Lamps</h3>
+<div class="device-list">
+    <app-output-device *ngFor="let lamp of lamps" [device]="lamp" [icon]="'far fa-lightbulb'" (toggle)="toggleDevice($event)"></app-output-device>
+</div>
+
+<h3><i class="fas fa-arrows-alt-h"></i> Coils</h3>
+<div class="device-list">
+    <app-output-device *ngFor="let coil of coils" [device]="coil" [icon]="'fas fa-arrows-alt-h'" [lampIcon]="'far fa-lightbulb'" (toggle)="toggleDevice($event)"></app-output-device>
+</div>
+
+<h3><i class="fas fa-volume-up"></i> Sounds</h3>
+<div class="device-list">
+    <app-output-device *ngFor="let sound of sounds" [device]="sound" [icon]="'fas fa-volume-up'" (toggle)="toggleDevice($event)"></app-output-device>
+</div>
+
+<h3><i class="fas fa-toggle-on"></i> Switches</h3>
+<table>
+    <tr *ngFor="let row of rows">
+        <td *ngFor="let col of cols">
+            {{getSwitch(row, col)?.id}} <span class="number">#{{getSwitch(row, col)?.number}}</span>
+        </td>
+    </tr>
+</table>

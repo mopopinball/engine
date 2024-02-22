@@ -1,0 +1,14 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.service-menu.json",
+  "compilerOptions": {
+    "outDir": "./dist-service-menu/app",
+    "types": []
+  },
+  "files": [
+    "src/service-menu/main.ts"
+  ],
+  "include": [
+    "src/service-menu/**/*.d.ts"
+  ]
+}

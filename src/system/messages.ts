@@ -116,5 +116,7 @@ export enum EVENTS {
 export interface InfoMqttMessage {
     name: string;
     gameName: string;
-    version: string;   
+    version: string;
+    loopTime: number;
+    fps: number;
 }

@@ -1,0 +1,71 @@
+header {
+    display: flex;
+    justify-content: space-between;
+
+    img {
+        margin-right: 1em;
+    }
+
+    h1, h2, h3 {
+        display: inline-block;
+    }
+
+    h2, h3 {
+        margin-left: 1em;
+    }
+
+    .debugging {
+        .title {
+            background: darkorange;
+            text-transform: uppercase;
+        }
+
+        text-align: center;
+        background: orange;
+        border: solid 2px darkorange;
+        border-radius: 3px;
+
+        .body {
+            padding: 0.5em 1em;
+        }
+        
+        span {
+            width: 100%;
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 2px;
+        }
+
+        .notice {
+            font-style: italic;
+            text-transform: initial;
+        }
+    }
+
+    .actions {
+        font-size: small;
+        text-align: right;
+    }
+}
+
+.dips {
+    .on {
+        background: black;
+    }
+}
+
+.device-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.number {
+    font-size: x-small;
+}
+
+td {
+    padding: 5px;
+    border: solid 1px lightgray;
+    border-radius: 3px;
+}
