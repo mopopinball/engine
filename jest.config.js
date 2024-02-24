@@ -3,7 +3,7 @@ module.exports = {
       "<rootDir>/src"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/src/admin"
+      "<rootDir>/src/service-menu",
     ],
     "testMatch": [
       "**/__tests__/**/*.+(ts|tsx|js)",
