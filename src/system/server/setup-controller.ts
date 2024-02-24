@@ -1,4 +1,4 @@
-import express from 'express';
+import { Express } from 'express';
 import { GithubRelease } from '../github-release';
 import { Update } from '../update';
 import { Controller } from "./controller";
@@ -8,14 +8,14 @@ import { GameOption, GameSelector } from '../../game-selector/select-game';
 import { copyFileSync } from 'fs';
 import { join } from 'path';
 
-interface SetupState {
+export interface SetupState {
     required: boolean;
 }
 
 export class SetupController implements Controller {
     constructor(private hardwareConfig: HardwareConfig) {}
 
-    setup(app: express.Express): void {
+    setup(app: Express): void {
         app.post('/update/apply', async (req, res) => {
             const selectedUpdate = req.body as GithubRelease;
             await Update.getInstance().applyUpdate(selectedUpdate, true);

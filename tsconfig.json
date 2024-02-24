@@ -9,6 +9,9 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "strictNullChecks": false,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/admin/**/*"],

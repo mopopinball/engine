@@ -35,7 +35,7 @@ import { BlinkDisplayStyle } from "./devices/styles/blink-display-style";
 import { SERVICE_SWITCH } from "./special-switches";
 import { ServiceMenu } from "./service-menu";
 
-if(process.env.DEBUG) {
+if(process.env['DEBUG']) {
     logger.setLevel('debug');
 }
 
@@ -320,7 +320,7 @@ export class Game {
             }
         }
         catch (e) {
-            logger.error(`${e.message} ${e.stack}`);
+            logger.error(e);
         }
     }
 
@@ -410,7 +410,7 @@ export class Game {
         for (const switchEntry of Object.entries(this.hardwareConfig.devices.switches)) {
             const playfieldSwitch = new PlayfieldSwitch(
                 switchEntry[0], switchEntry[1].number, switchEntry[1].name,
-                process.env.NODE_ENV === 'test' ? 0 : switchEntry[1].debounceIntervalMs,
+                process.env['NODE_ENV'] === 'test' ? 0 : switchEntry[1].debounceIntervalMs,
                 switchEntry[1].qualifiesPlayfield
             );
             this.switches.set(playfieldSwitch.id, playfieldSwitch);

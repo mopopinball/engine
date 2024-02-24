@@ -5,20 +5,22 @@ WORKDIR /app
 
 EXPOSE 1983
 
-# Mopo Engine
+# Setup
 RUN npm config set update-notifier false
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci --no-fund --no-audit
 COPY src src
 COPY tsconfig.json .
+COPY tsconfig.service-menu.json .
+COPY angular.json .
+COPY tsconfig.app.json .
 RUN npm run tsc
 
 # Service menu
-RUN wget https://github.com/mopopinball/service-menu/releases/latest/download/dist.tar.gz -O menu.tar.gz
+RUN npx ng build
 RUN mkdir servicemenu
-RUN tar xf menu.tar.gz -C servicemenu --strip-components=2
-RUN rm menu.tar.gz
+RUN cp -r dist/service-menu/* servicemenu
 
 # PICS
 RUN wget https://github.com/mopopinball/pics/releases/latest/download/dist.tar.gz -O pics.tar.gz

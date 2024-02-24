@@ -37,6 +37,19 @@
         <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
     </div>
 </header>
+
+<div *ngIf="setupState?.required">
+    <h3>Welcome to MOPO</h3>
+    <p>Select a game</p>
+    <ul>
+        <li *ngFor="let game of gameOptions">
+            {{game.label}}
+            <button (click)="onSelectGame(game)">Select</button>
+        </li>
+    </ul>
+</div>
+
+<div *ngIf="!setupState?.required">
 <h3>Dips</h3>
 <div>
     S1
@@ -92,3 +105,4 @@
         </td>
     </tr>
 </table>
+</div>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
@@ -7,13 +7,15 @@ import { DipSwitchState } from '../../system/dip-switch-state';
 import { GithubRelease } from '../../system/github-release';
 import { InfoMqttMessage } from '../../system/messages';
 import { ClientDevice } from '../../system/server/client-device';
+import { SetupState } from '../../system/server/setup-controller';
+import { GameOption } from '../../game-selector/select-game';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     availableUpdate: UpdateDetails;
     info: InfoMqttMessage;
@@ -29,6 +31,8 @@ export class AppComponent implements OnDestroy {
     menuVersion = '';
     debuggingEnabled = true;
     @ViewChild('fileload') uploadInput: ElementRef;
+    setupState: SetupState;
+    gameOptions: GameOption[];
 
     constructor(private http: HttpClient, private _mqttService: MqttService) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
@@ -80,6 +84,9 @@ export class AppComponent implements OnDestroy {
 
         this.getDebugingStatus();
     }
+    ngOnInit(): void {
+        this.getSetupState();
+    }
 
     private createOrFetch(item: ClientDevice, collection: ClientDevice[]): ClientDevice {
         const device = collection.find((c) => c.id === item.id);
@@ -103,6 +110,24 @@ export class AppComponent implements OnDestroy {
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
+    }
+
+    getSetupState(): void {
+        this.http.get<SetupState>('/setup/state').subscribe((state) => {
+            this.setupState = state;
+
+            if(this.setupState.required) {
+                this.http.get<GameOption[]>('/setup/games').subscribe((games) => {
+                    this.gameOptions = games;
+                });
+            }
+        })
+    }
+
+    onSelectGame(game: GameOption): void {
+        this.http.post('/setup/games', game).subscribe(() => {
+            window.location.reload();
+        });
     }
 
     toggleDevice(device: ClientDevice): void {

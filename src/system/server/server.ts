@@ -3,7 +3,7 @@ import basicAuth from 'express-basic-auth';
 import bodyParser from 'body-parser';
 const app = express();
 
-import path from 'path';
+import { resolve } from 'path';
 import { logger } from '../logger';
 import { Security } from '../security';
 import { UpdateController } from './update-controller';
@@ -29,7 +29,7 @@ export class Server {
     }
 
     setupWebserverBindings(): void {
-        const staticDir = path.resolve('/app/servicemenu');
+        const staticDir = resolve('/app/servicemenu');
         logger.info(`Setting static dir to ${staticDir}`);
         // TODO: refresh the pin code periodically and update the security/users.
         const pinCode = Security.getInstance().hasPinCode() ? Security.getInstance().getPinCode().toString() : 'admin';
