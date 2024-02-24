@@ -8,22 +8,22 @@ import { OutputDeviceComponent } from './output-device/output-device.component';
 import { IMqttServiceOptions, MqttModule } from 'ngx-mqtt';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
-  hostname: document.location.hostname,
-  port: 9001
+    hostname: document.location.hostname,
+    port: 9001
 };
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    OutputDeviceComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        OutputDeviceComponent
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

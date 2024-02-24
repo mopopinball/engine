@@ -74,7 +74,8 @@ export interface RandomActionSchema {
     }[]
 }
 
-export type ActionSchemaType = DataActionSchema | TimedActionSchema | NamedTriggerActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
+export type ActionSchemaType = DataActionSchema | TimedActionSchema |
+    NamedTriggerActionSchema | DeviceActionSchema | StateActionSchema | ConditionalActionSchema | RandomActionSchema;
 
 export type ConditionalActionConditionSchema = ConditionalActionDataConditionSchema | ConditionalActionSwitchConditionSchema;
 

@@ -14,38 +14,38 @@ export class DesiredOutputState {
     
     static constructFromOutputState(outputState: OutputStateType): DesiredOutputState {
         switch(outputState.type) {
-            case OutputDeviceType.SOUND:
-                return new DesiredOutputState(
-                    outputState.id, outputState.type, outputState.play
-                );
-                case OutputDeviceType.LIGHT: {
-                    // TODO: Make better
-                    const styles = [];
-                    const style = BlinkLightStyle.build(outputState.style);
-                    if (style) {
-                        styles.push(style);
-                    }
+        case OutputDeviceType.SOUND:
+            return new DesiredOutputState(
+                outputState.id, outputState.type, outputState.play
+            );
+        case OutputDeviceType.LIGHT: {
+            // TODO: Make better
+            const styles = [];
+            const style = BlinkLightStyle.build(outputState.style);
+            if (style) {
+                styles.push(style);
+            }
                     
-                    return new DesiredOutputState(
-                        outputState.id, outputState.type, outputState.state, styles
-                    );
-                }
-                case OutputDeviceType.DISPLAY: {
-                    // TODO: Make better
-                    const styles = [];
-                    const style = BlinkDisplayStyle.build(outputState.state, outputState.style);
-                    if (style) {
-                        styles.push(style);
-                    }
+            return new DesiredOutputState(
+                outputState.id, outputState.type, outputState.state, styles
+            );
+        }
+        case OutputDeviceType.DISPLAY: {
+            // TODO: Make better
+            const styles = [];
+            const style = BlinkDisplayStyle.build(outputState.state, outputState.style);
+            if (style) {
+                styles.push(style);
+            }
 
-                    return new DesiredOutputState(
-                        outputState.id, outputState.type, outputState.state, styles
-                    );
-                }
-            default:
-                return new DesiredOutputState(
-                    outputState.id, outputState.type, outputState.state
-                );
+            return new DesiredOutputState(
+                outputState.id, outputState.type, outputState.state, styles
+            );
+        }
+        default:
+            return new DesiredOutputState(
+                outputState.id, outputState.type, outputState.state
+            );
         }
     }
     
@@ -77,7 +77,8 @@ export class DesiredOutputState {
         if (setByAction && !this.isInstantState()) {
             this.preTempState = this.currentState;
             this.temp = true;
-        } else {
+        }
+        else {
             this.temp = false;
         }
         this.currentState = state;
@@ -104,43 +105,43 @@ export class DesiredOutputState {
 
     toJSON(): OutputStateType {
         switch(this.type) {
-            case OutputDeviceType.SOUND:
-                return {id: this.id, type: this.type, play: this.initialState as boolean};
-            case OutputDeviceType.COIL:
-                return {id: this.id, type: this.type, state: this.initialState as boolean};
-            case OutputDeviceType.LIGHT: {
-                const response: LightOutputState = {
-                    id: this.id, type: this.type,
-                    state: this.initialState as LightState
-                };
+        case OutputDeviceType.SOUND:
+            return {id: this.id, type: this.type, play: this.initialState as boolean};
+        case OutputDeviceType.COIL:
+            return {id: this.id, type: this.type, state: this.initialState as boolean};
+        case OutputDeviceType.LIGHT: {
+            const response: LightOutputState = {
+                id: this.id, type: this.type,
+                state: this.initialState as LightState
+            };
                 // TODO: Make this better.
-                if (this.styles?.length) {
-                    response.style = {};
-                }
-                this.styles.forEach((s) => {
-                    if (s instanceof BlinkLightStyle) {
-                        response.style['blink'] = s.interval;
-                    }
-                });
-                return response;
+            if (this.styles?.length) {
+                response.style = {};
             }
-            case OutputDeviceType.DISPLAY: {
-                const response: DisplayOutputState = {
-                    id: this.id,
-                    type: this.type,
-                    state: this.initialState as string
-                };
+            this.styles.forEach((s) => {
+                if (s instanceof BlinkLightStyle) {
+                    response.style['blink'] = s.interval;
+                }
+            });
+            return response;
+        }
+        case OutputDeviceType.DISPLAY: {
+            const response: DisplayOutputState = {
+                id: this.id,
+                type: this.type,
+                state: this.initialState as string
+            };
                 // TODO: Make this better.
-                if (this.styles?.length) {
-                    response.style = {};
-                }
-                this.styles.forEach((s) => {
-                    if (s instanceof BlinkDisplayStyle) {
-                        response.style['blink'] = s.interval;
-                    }
-                });
-                return response;
+            if (this.styles?.length) {
+                response.style = {};
             }
+            this.styles.forEach((s) => {
+                if (s instanceof BlinkDisplayStyle) {
+                    response.style['blink'] = s.interval;
+                }
+            });
+            return response;
+        }
         }
     }
 }

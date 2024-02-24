@@ -375,26 +375,26 @@ export class Game {
                 }
 
                 switch(desiredState.id) {
-                    case DisplayId.PLAYER1:
-                        this.displays.setPlayerDisplay(1, formattedString, desiredState.styles);
+                case DisplayId.PLAYER1:
+                    this.displays.setPlayerDisplay(1, formattedString, desiredState.styles);
                     break;
-                    case DisplayId.PLAYER2:
-                        this.displays.setPlayerDisplay(2, formattedString, desiredState.styles);
+                case DisplayId.PLAYER2:
+                    this.displays.setPlayerDisplay(2, formattedString, desiredState.styles);
                     break;
-                    case DisplayId.PLAYER3:
-                        this.displays.setPlayerDisplay(3, formattedString, desiredState.styles);
+                case DisplayId.PLAYER3:
+                    this.displays.setPlayerDisplay(3, formattedString, desiredState.styles);
                     break;
-                    case DisplayId.PLAYER4:
-                        this.displays.setPlayerDisplay(4, formattedString, desiredState.styles);
+                case DisplayId.PLAYER4:
+                    this.displays.setPlayerDisplay(4, formattedString, desiredState.styles);
                     break;
-                    case DisplayId.BALLNUM:
-                        this.displays.setBall(formattedString, desiredState.styles);
+                case DisplayId.BALLNUM:
+                    this.displays.setBall(formattedString, desiredState.styles);
                     break;
-                    case DisplayId.CREDITS:
-                        this.displays.setCredits(formattedString, desiredState.styles);
+                case DisplayId.CREDITS:
+                    this.displays.setCredits(formattedString, desiredState.styles);
                     break;
                 }
-             }
+            }
         }
         this.engineDirty = false;
     }

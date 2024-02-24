@@ -36,7 +36,8 @@ export class UpdatePics {
     private isPicOutdated(definition: UpdatePicDefinition): boolean {
         if (!existsSync(definition.path) || !existsSync(definition.appliedPath)) {
             return true;
-        } else {
+        }
+        else {
             return sync(definition.path) !== sync(definition.appliedPath);
         }
     }

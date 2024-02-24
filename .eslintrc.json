@@ -4,9 +4,10 @@
         "commonjs": true,
         "es6": true
     },
-    "extends": [
-        "google"
+    "ignorePatterns": [
+        "**/service-menu"
     ],
+    "parser": "@typescript-eslint/parser",
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -16,17 +17,9 @@
     },
     "rules": {
         "indent": ["error", 4],
-        "require-jsdoc": ["error", {
-            "require": {
-                "FunctionDeclaration": false,
-                "MethodDefinition": false,
-                "ClassDeclaration": true,
-                "ArrowFunctionExpression": false,
-                "FunctionExpression": false
-            }
-        }],
+        "require-jsdoc": ["off"],
         "brace-style": ["error", "stroustrup"],
-        "max-len": ["error", 120],
+        "max-len": ["error", 180],
         "comma-dangle": "off"
     }
 }

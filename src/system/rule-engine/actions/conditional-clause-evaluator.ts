@@ -16,13 +16,13 @@ export class ConditionalClauseEvaluator {
         // determine if the action is satasified by ANDing every condition.
         const areConditionsSatasified = conditions.every((condition) => {
             switch(condition.conditionType) {
-                case 'data':
-                    return this.onData(condition);
-                    break;
-                case 'switch':
-                    return this.onSwitch(condition);
-                default:
-                    logger.warn(`Cannot process condition type.`);
+            case 'data':
+                return this.onData(condition);
+                break;
+            case 'switch':
+                return this.onSwitch(condition);
+            default:
+                logger.warn(`Cannot process condition type.`);
             }
         });
         logger.debug(`[Conditional Clauses] evaluating ${conditions.length} conditions. Satisfied = ${areConditionsSatasified}`);

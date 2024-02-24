@@ -12,7 +12,9 @@ const game = new Game(
 const exitHandler = () => {
     game.exit();
     // give it sime time to exit.
-    setTimeout(() => {process.exit();}, 250);
+    setTimeout(() => {
+        process.exit();
+    }, 250);
 }
 
 //do something when app is closing

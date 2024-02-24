@@ -129,14 +129,14 @@ export class RuleEngine extends DirtyNotifier {
 
         let matchingTrigger: TriggerType = null;
         switch(type) {
-            case TriggerTypeEnum.SWITCH:
-                matchingTrigger = this.getSwitchTrigger(id, holdIntervalMs);
+        case TriggerTypeEnum.SWITCH:
+            matchingTrigger = this.getSwitchTrigger(id, holdIntervalMs);
             break;
-            case TriggerTypeEnum.MULTI_SWITCH:
-                matchingTrigger = this.getMultiSwitchTrigger({switchId: id, holdIntervalMs: holdIntervalMs});
-                break;
-            case TriggerTypeEnum.ID:
-                matchingTrigger = this.getTrigger(id);
+        case TriggerTypeEnum.MULTI_SWITCH:
+            matchingTrigger = this.getMultiSwitchTrigger({switchId: id, holdIntervalMs: holdIntervalMs});
+            break;
+        case TriggerTypeEnum.ID:
+            matchingTrigger = this.getTrigger(id);
             break;
         }
 
@@ -331,49 +331,49 @@ export class RuleEngine extends DirtyNotifier {
 
     private toJsonData(d: DataItem): DataSchemaType {
         switch(d.type) {
-            case 'number':
-                return {
-                    type: 'number',
-                    id: d.id,
-                    value: d.initValue,
-                    attributes: {
-                        isWholeNumber: d.attributes?.isWholeNumber,
-                        resetOnStateStop: d.attributes?.resetOnStateStop
-                    }
-                };
-            case 'string':
-                return {
-                    type: 'string',
-                    id: d.id,
-                    value: d.initValue,
-                    attributes: {
-                        resetOnStateStop: d.attributes?.resetOnStateStop
-                    }
+        case 'number':
+            return {
+                type: 'number',
+                id: d.id,
+                value: d.initValue,
+                attributes: {
+                    isWholeNumber: d.attributes?.isWholeNumber,
+                    resetOnStateStop: d.attributes?.resetOnStateStop
                 }
-            default:
-                throw new Error('Could not serialize');
+            };
+        case 'string':
+            return {
+                type: 'string',
+                id: d.id,
+                value: d.initValue,
+                attributes: {
+                    resetOnStateStop: d.attributes?.resetOnStateStop
+                }
+            }
+        default:
+            throw new Error('Could not serialize');
         }
     }
 
     private static fromJsonData(data: DataSchemaType): DataItem {
         switch(data.type) {
-            case 'number':
-            default: // handle backwards compat.
-                return {
-                    type: 'number',
-                    id: data.id,
-                    value: data.value,
-                    initValue: data.value,
-                    attributes: data.attributes
-                };
-            case 'string':
-                return {
-                    type: 'string',
-                    id: data.id,
-                    value: data.value,
-                    initValue: data.value,
-                    attributes: data.attributes
-                };
+        case 'number':
+        default: // handle backwards compat.
+            return {
+                type: 'number',
+                id: data.id,
+                value: data.value,
+                initValue: data.value,
+                attributes: data.attributes
+            };
+        case 'string':
+            return {
+                type: 'string',
+                id: data.id,
+                value: data.value,
+                initValue: data.value,
+                attributes: data.attributes
+            };
         }
     }
 

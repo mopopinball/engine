@@ -38,22 +38,22 @@ export class ConditionClause {
 
     private toConditionJson(condition: Condition): ConditionalActionConditionSchema {
         switch (condition.conditionType) {
-            case 'data':
-                return {
-                    conditionType: 'data',
-                    dataId: condition.dataId,
-                    operator: condition.operator,
-                    operand: condition.operand,
-                    expression: condition.expression
-                };
-            case 'switch':
-                return {
-                    conditionType: 'switch',
-                    switchId: condition.switchId,
-                    activated: condition.activated
-                };
-            default:
-                logger.warn('Cannot serialized condition.');
+        case 'data':
+            return {
+                conditionType: 'data',
+                dataId: condition.dataId,
+                operator: condition.operator,
+                operand: condition.operand,
+                expression: condition.expression
+            };
+        case 'switch':
+            return {
+                conditionType: 'switch',
+                switchId: condition.switchId,
+                activated: condition.activated
+            };
+        default:
+            logger.warn('Cannot serialized condition.');
         }
     }
 
@@ -66,22 +66,22 @@ export class ConditionClause {
 
     public static createCondition(c: ConditionalActionConditionSchema): Condition {
         switch (c.conditionType) {
-            case 'data': 
-                return {
-                    conditionType: c.conditionType,
-                    dataId: c.dataId,
-                    operator: c.operator,
-                    operand: c.operand,
-                    expression: c.expression
-                };
-            case 'switch':
-                return {
-                    conditionType: c.conditionType,
-                    switchId: c.switchId,
-                    activated: c.activated,
-                };
-            default:
-                logger.warn(`Unexpected condition type, skipping.`);
+        case 'data': 
+            return {
+                conditionType: c.conditionType,
+                dataId: c.dataId,
+                operator: c.operator,
+                operand: c.operand,
+                expression: c.expression
+            };
+        case 'switch':
+            return {
+                conditionType: c.conditionType,
+                switchId: c.switchId,
+                activated: c.activated,
+            };
+        default:
+            logger.warn(`Unexpected condition type, skipping.`);
         }
     }
 }

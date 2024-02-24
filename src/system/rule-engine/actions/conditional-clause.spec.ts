@@ -9,8 +9,8 @@ describe('conditional-clause', () => {
                 switchId: 'sw',
                 activated: true
             }], {
-                triggerId: 't0'
-            }
+            triggerId: 't0'
+        }
         )
         
         // exercise

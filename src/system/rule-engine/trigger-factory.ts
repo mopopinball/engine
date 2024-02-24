@@ -28,40 +28,40 @@ export class TriggerFactory {
         // First, find or create the incoming trigger.
         let trigger: TriggerType = null;
         switch(triggerSchema.type) {
-            case TriggerTypeEnum.SWITCH: {
-                trigger = engine.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
-                if (!trigger) {
-                    trigger = SwitchTrigger.fromJSON(triggerSchema);
-                    engine.triggers.splice(index, 0, trigger);
-                }
-                break;
+        case TriggerTypeEnum.SWITCH: {
+            trigger = engine.getSwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+            if (!trigger) {
+                trigger = SwitchTrigger.fromJSON(triggerSchema);
+                engine.triggers.splice(index, 0, trigger);
             }
-            case TriggerTypeEnum.MULTI_SWITCH: {
-                trigger = engine.getTrigger(triggerSchema.id);
-                if (!trigger) {
-                    trigger = MultiSwitchTrigger.fromJSON(triggerSchema);
-                    engine.triggers.splice(index, 0, trigger);
-                }
-                break;
+            break;
+        }
+        case TriggerTypeEnum.MULTI_SWITCH: {
+            trigger = engine.getTrigger(triggerSchema.id);
+            if (!trigger) {
+                trigger = MultiSwitchTrigger.fromJSON(triggerSchema);
+                engine.triggers.splice(index, 0, trigger);
             }
-            case TriggerTypeEnum.ID: {
-                trigger = engine.getTrigger(triggerSchema.id);
-                if (!trigger) {
-                    trigger = IdTrigger.fromJSON(triggerSchema);
-                    engine.triggers.splice(index, 0, trigger);
-                }
-                break;
+            break;
+        }
+        case TriggerTypeEnum.ID: {
+            trigger = engine.getTrigger(triggerSchema.id);
+            if (!trigger) {
+                trigger = IdTrigger.fromJSON(triggerSchema);
+                engine.triggers.splice(index, 0, trigger);
             }
-            case TriggerTypeEnum.TIMER: {
-                trigger = engine.getTrigger(triggerSchema.id);
-                if (!trigger) {
-                    trigger = TimerTrigger.fromJSON(triggerSchema);
-                    engine.triggers.splice(index, 0, trigger);
-                }
-                break;
+            break;
+        }
+        case TriggerTypeEnum.TIMER: {
+            trigger = engine.getTrigger(triggerSchema.id);
+            if (!trigger) {
+                trigger = TimerTrigger.fromJSON(triggerSchema);
+                engine.triggers.splice(index, 0, trigger);
             }
-            default:
-                logger.warn('Unexpected trigger type.');
+            break;
+        }
+        default:
+            logger.warn('Unexpected trigger type.');
         }
 
         // Second, create this triggers actions.
@@ -70,20 +70,20 @@ export class TriggerFactory {
 
     private static fromJson(triggerSchema: TriggerSchemasType): TriggerType {
         switch(triggerSchema.type) {
-            case TriggerTypeEnum.SWITCH: {
-                return SwitchTrigger.fromJSON(triggerSchema);
-            }
-            case TriggerTypeEnum.MULTI_SWITCH: {
-                return MultiSwitchTrigger.fromJSON(triggerSchema);
-            }
-            case TriggerTypeEnum.ID: {
-                return IdTrigger.fromJSON(triggerSchema);
-            }
-            case TriggerTypeEnum.TIMER: {
-                return TimerTrigger.fromJSON(triggerSchema);
-            }
-            default:
-                logger.warn('Unexpected trigger type.');
+        case TriggerTypeEnum.SWITCH: {
+            return SwitchTrigger.fromJSON(triggerSchema);
+        }
+        case TriggerTypeEnum.MULTI_SWITCH: {
+            return MultiSwitchTrigger.fromJSON(triggerSchema);
+        }
+        case TriggerTypeEnum.ID: {
+            return IdTrigger.fromJSON(triggerSchema);
+        }
+        case TriggerTypeEnum.TIMER: {
+            return TimerTrigger.fromJSON(triggerSchema);
+        }
+        default:
+            logger.warn('Unexpected trigger type.');
         }
     }
 

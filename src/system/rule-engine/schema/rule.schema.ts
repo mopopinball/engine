@@ -27,7 +27,6 @@ export interface NumberDataSchema extends DataSchema<number> {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface StringDataSchema extends DataSchema<string> {
     type: 'string';
 }

@@ -76,7 +76,8 @@ export class Update {
         if (releases.length === 0) {
             logger.info('No update found');
             return null;
-        } else {
+        }
+        else {
             return releases[0];
         }
     }
@@ -166,7 +167,7 @@ export class Update {
                     sync: true,
                     strip: 2,
                     C: outDir
-                  })
+                })
             ).on('end', () => resolve());
         });
     }

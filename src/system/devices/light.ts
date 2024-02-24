@@ -80,7 +80,8 @@ export class Light extends OutputDevice {
         if (init !== this.styleState) {
             if (this.styleState === LightState.ON) {
                 this.on();
-            } else if (this.styleState === LightState.OFF) {
+            }
+            else if (this.styleState === LightState.OFF) {
                 this.off();
             }
         }

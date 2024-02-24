@@ -46,23 +46,23 @@ export class AppComponent implements OnInit, OnDestroy {
         this.subscription = this._mqttService.observe('mopo/devices/+/all/state').subscribe((message: IMqttMessage) => {
             const parsedPayload: ClientDevice[] = JSON.parse(message.payload.toString()); 
             switch (message.topic) {
-                case 'mopo/devices/lamps/all/state':
-                    for (const parsedDevice of parsedPayload) {
-                        this.createOrFetch(parsedDevice, this.lamps).isOn = parsedDevice.isOn;
-                    }
+            case 'mopo/devices/lamps/all/state':
+                for (const parsedDevice of parsedPayload) {
+                    this.createOrFetch(parsedDevice, this.lamps).isOn = parsedDevice.isOn;
+                }
                 break;
-                case 'mopo/devices/coils/all/state':
-                    for (const parsedDevice of parsedPayload) {
-                        this.createOrFetch(parsedDevice, this.coils).isOn = parsedDevice.isOn;
-                    }
+            case 'mopo/devices/coils/all/state':
+                for (const parsedDevice of parsedPayload) {
+                    this.createOrFetch(parsedDevice, this.coils).isOn = parsedDevice.isOn;
+                }
                 break;
-                case 'mopo/devices/sounds/all/state':
-                    for (const parsedDevice of parsedPayload) {
-                        this.createOrFetch(parsedDevice, this.sounds).isOn = parsedDevice.isOn;
-                    }
+            case 'mopo/devices/sounds/all/state':
+                for (const parsedDevice of parsedPayload) {
+                    this.createOrFetch(parsedDevice, this.sounds).isOn = parsedDevice.isOn;
+                }
                 break;
-                case 'mopo/devices/switches/all/state':
-                    this.switches = JSON.parse(message.payload.toString());
+            case 'mopo/devices/switches/all/state':
+                this.switches = JSON.parse(message.payload.toString());
                 break;
             }
             if (this.lamps.length > 0 && this.coils.length > 0 && this.sounds.length > 0 && this.switches.length > 0) {

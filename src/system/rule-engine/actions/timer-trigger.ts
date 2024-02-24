@@ -19,7 +19,8 @@ export class TimerTrigger extends Trigger {
         
         if (this.mode === TimerTriggerMode.INTERVAL) {
             this.timeout = setInterval(() => this.tick(), this.valueMs);
-        } else {
+        }
+        else {
             this.timeout = setTimeout(() => this.tick(), this.valueMs);
         }
     }
@@ -31,7 +32,8 @@ export class TimerTrigger extends Trigger {
 
         if (this.mode === TimerTriggerMode.INTERVAL) {
             clearInterval(this.timeout);
-        } else {
+        }
+        else {
             clearTimeout(this.timeout);
         }
         this.timeout = null;

@@ -36,24 +36,24 @@ export class DataAction extends Action {
             DataEvaluator.evaluate(this.operand, this.data as Map<string, NumberData>);
 
         switch(this.operation) {
-            case DataOperation.INCREMENT:
-                this.getData().value += currentOperand; 
-                break;
-            case DataOperation.DECREMENT:
-                this.getData().value -= currentOperand;
-                if (this.getData().attributes?.isWholeNumber && this.getData().value < 0) {
-                    this.getData().value = 0;
-                }
-                break;
-            case DataOperation.ASSIGN:
-                this.getData().value = currentOperand;
-                break;
-            case DataOperation.MULTIPLY:
-                this.getData().value *= currentOperand;
-                break;
-            case DataOperation.DIVIDE:
-                this.getData().value /= currentOperand;
-                break;
+        case DataOperation.INCREMENT:
+            this.getData().value += currentOperand; 
+            break;
+        case DataOperation.DECREMENT:
+            this.getData().value -= currentOperand;
+            if (this.getData().attributes?.isWholeNumber && this.getData().value < 0) {
+                this.getData().value = 0;
+            }
+            break;
+        case DataOperation.ASSIGN:
+            this.getData().value = currentOperand;
+            break;
+        case DataOperation.MULTIPLY:
+            this.getData().value *= currentOperand;
+            break;
+        case DataOperation.DIVIDE:
+            this.getData().value /= currentOperand;
+            break;
         }
     }
 

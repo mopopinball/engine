@@ -5,9 +5,9 @@ import { ClientDevice } from '../../../system/server/client-device';
 // import { ClientDevice } from '@mopopinball/engine/src/system/server/client-device';
 
 @Component({
-  selector: 'app-output-device',
-  templateUrl: './output-device.component.html',
-  styleUrls: ['./output-device.component.scss']
+    selector: 'app-output-device',
+    templateUrl: './output-device.component.html',
+    styleUrls: ['./output-device.component.scss']
 })
 export class OutputDeviceComponent {
   @Input() device: ClientDevice;
@@ -18,23 +18,23 @@ export class OutputDeviceComponent {
   private testingInterval: NodeJS.Timeout;
 
   toggleDevice(): void {
-    this.device.isOn = !this.device.isOn;
-    this.toggle.emit(this.device);
+      this.device.isOn = !this.device.isOn;
+      this.toggle.emit(this.device);
   }
 
   isLampDriver(lamp: ClientDevice): boolean {
-    return lamp.driverType === DriverType.LAMP;
+      return lamp.driverType === DriverType.LAMP;
   }
 
   toggleTesting(): void {
-    this.isTesting = !this.isTesting;
+      this.isTesting = !this.isTesting;
 
-    if (this.isTesting) {
-      this.testingInterval = setInterval(() => this.toggleDevice(), 1000);
-    }
-    else {
-        clearInterval(this.testingInterval);
-    }
+      if (this.isTesting) {
+          this.testingInterval = setInterval(() => this.toggleDevice(), 1000);
+      }
+      else {
+          clearInterval(this.testingInterval);
+      }
   }
 
 }

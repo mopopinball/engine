@@ -21,7 +21,8 @@ export class BlinkLightStyle implements Style {
         const blinkStyleEntry = Object.entries(style).find((entry) => entry[0] === 'blink');
         if (blinkStyleEntry) {
             return new BlinkLightStyle(blinkStyleEntry[1] as number, LightState.OFF);
-        } else {
+        }
+        else {
             return null;
         }
     }
