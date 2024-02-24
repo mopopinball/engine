@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.13.0, 18]
+        node-version: [18]
 
     steps:
     - uses: actions/checkout@v2
@@ -58,6 +58,7 @@ jobs:
   docker:
     name: Release Docker Image
     runs-on: self-hosted
+    timeout-minutes: 30
     needs: build
     permissions:
       contents: read
