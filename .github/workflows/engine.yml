@@ -58,7 +58,7 @@ jobs:
   docker:
     name: Release Docker Image
     runs-on: self-hosted
-    timeout-minutes: 30
+    timeout-minutes: 45
     needs: build
     permissions:
       contents: read
