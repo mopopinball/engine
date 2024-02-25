@@ -10,6 +10,7 @@ RUN npm config set update-notifier false
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci --no-fund --no-audit
+
 COPY src src
 COPY tsconfig.json .
 COPY tsconfig.service-menu.json .
