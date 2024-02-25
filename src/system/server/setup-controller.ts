@@ -7,6 +7,7 @@ import { HardwareConfig } from '../hardware-config.schema';
 import { GameOption, GameSelector } from '../../game-selector/select-game';
 import { copyFileSync } from 'fs';
 import { join } from 'path';
+import { gamestateConfigPath, hardwareConfigPath } from '../constants';
 
 export interface SetupState {
     required: boolean;
@@ -35,12 +36,11 @@ export class SetupController implements Controller {
         });
 
         app.post('/setup/games', (req, res) => {
-            const dataDir = '/app/data'
             const selectedGame = req.body as GameOption;
-            copyFileSync(selectedGame.hardwarePath, join(dataDir, 'hardware-config.json'));
-            copyFileSync(selectedGame.gamestatePath, join(dataDir, 'gamestate-config.json'))
+            copyFileSync(selectedGame.hardwarePath, hardwareConfigPath);
+            copyFileSync(selectedGame.gamestatePath, gamestateConfigPath)
 
-            res.send(200);
+            res.sendStatus(200);
 
             process.exit(0);
         });

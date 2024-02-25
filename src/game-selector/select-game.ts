@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, symlinkSync, unlinkSync } from '
 import { resolve } from 'path';
 import {terminal} from 'terminal-kit';
 import { RuleSchema } from '../system/rule-engine/schema/rule.schema';
+import { hardwareConfigPath } from '../system/constants';
 
 export interface GameOption {
     gamestatePath: string;
@@ -39,11 +40,10 @@ export class GameSelector {
             }
             symlinkSync(resolve(gameConfigs[response.selectedIndex].gamestatePath), gamestateDest);
 
-            const hardwareDest = '/home/pi/mopo/hardware-config.json';
-            if (existsSync(hardwareDest)) {
-                unlinkSync(hardwareDest);
+            if (existsSync(hardwareConfigPath)) {
+                unlinkSync(hardwareConfigPath);
             }
-            symlinkSync(resolve(gameConfigs[response.selectedIndex].hardwarePath), hardwareDest);
+            symlinkSync(resolve(gameConfigs[response.selectedIndex].hardwarePath), hardwareConfigPath);
             
             process.exit();
         });

@@ -18,7 +18,8 @@ apply(log, {
         return `[${timestamp}]`;
     },
 });
-  
+
+/** The main logger for the server. */
 export const logger = log;
 
 export const welcomeLogger = () => {
