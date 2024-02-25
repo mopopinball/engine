@@ -75,3 +75,9 @@ sudo sh -c "curl https://raw.githubusercontent.com/mopopinball/engine/master/set
 
 Mopo Pinball has a visual designer which is used to design games. Games have new rules, advanced display output and
 other features.
+
+## Gitlab Runner
+
+```shell
+sudo usermod -a -G docker pi
+```

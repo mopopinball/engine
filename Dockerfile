@@ -1,5 +1,4 @@
 FROM node:18
-RUN apt-get update
 
 WORKDIR /app
 
@@ -9,7 +8,7 @@ EXPOSE 1983
 RUN npm config set update-notifier false
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --no-fund --no-audit
+RUN npm i --no-fund --no-audit --skip-dev
 
 COPY src src
 COPY tsconfig.json .
