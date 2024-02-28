@@ -8,7 +8,7 @@ EXPOSE 1983
 RUN npm config set update-notifier false
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm i --no-fund --no-audit --skip-dev
+RUN npm i --no-fund --no-audit --skip-dev --maxsockets 10
 
 COPY src src
 COPY tsconfig.json .
