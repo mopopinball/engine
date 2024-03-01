@@ -1,5 +1,5 @@
 import { logger } from "../logger";
-import {promise as gpiop} from 'rpi-gpio';
+import GPIO, {promise as gpiop} from 'rpi-gpio';
 
 /**
  * A GPIO pin.
@@ -10,7 +10,11 @@ export class GpioPin {
     static instances: GpioPin[];
     setupComplete: boolean;
     
-    constructor(private pinNumber: number, private direction: 'in' | 'out' | 'low' | 'high', private edge: 'none' | 'rising' | 'falling' | 'both' = 'none') {
+    constructor(
+        private readonly pinNumber: number,
+        private readonly direction: 'in' | 'out' | 'low' | 'high',
+        private readonly edge: 'none' | 'rising' | 'falling' | 'both' = 'none'
+    ) {
         if (!pinNumber) {
             throw new Error('Provide a pin number');
         }
@@ -90,6 +94,15 @@ export class GpioPin {
             return undefined;
         }
         return await gpiop.read(this.pinNumber);
+    }
+
+    on(listener: (...args: any[]) => void): void {
+        // GPIO.on fires for all gpio pin changes. Only re-emit when its changed for our pin.
+        GPIO.on('change', (channel, value) => {
+            if (channel === this.pinNumber) {
+                listener(value);
+            }
+        });
     }
 }
 

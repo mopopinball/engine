@@ -43,10 +43,8 @@ sudo docker run --name=mopo -d --privileged --network=host --restart always -v /
 ## Updating
 
 ```shell
-sudo docker pull ghcr.io/mopopinball/engine:master
-sudo docker kill mopo
-sudo docker rm mopo
-sudo docker run --name=mopo -d --privileged --network=host --restart always -v /home/pi/mopo-data:/app/data ghcr.io/mopopinball/engine:master
+wget https://raw.githubusercontent.com/mopopinball/engine/master/setup/update.sh -O update.sh
+./update.sh
 ```
 
 ```

@@ -33,4 +33,4 @@ RUN rm pics.tar.gz
 RUN mkdir data
 
 # Run the engine
-CMD node dist/src/index.js
+CMD node -r source-map-support/register dist/src/index.js

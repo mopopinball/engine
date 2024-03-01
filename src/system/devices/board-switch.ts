@@ -1,6 +1,9 @@
 import { GpioPin } from "./gpio-pin";
 import { Switch } from "./switch";
-import {DIR_IN, EDGE_BOTH, on} from 'rpi-gpio';
+// import {GPIO, DIR_IN, EDGE_BOTH, on} from 'rpi-gpio';
+
+// import GPIO from 'rpi-gpio';
+
 // const gpio = require('rpi-gpio');
 
 /**
@@ -10,11 +13,7 @@ export class BoardSwitch extends Switch {
     private readonly gpioPin: GpioPin; 
     constructor(id: string, private pin: number, activeLow: boolean) {
         super(id, activeLow);
-        this.gpioPin = new GpioPin(this.pin, DIR_IN, EDGE_BOTH);
-        on('change', (channel, value) => {
-            if (channel === this.pin) {
-                this.onChange(value);
-            }
-        });
+        this.gpioPin = new GpioPin(this.pin, 'in', 'both');
+        this.gpioPin.on((value) => this.onChange(value));
     }
 }

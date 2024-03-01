@@ -5,7 +5,7 @@ import { EVENTS, MessageBroker } from "../messages";
 import { GpioPin } from "./gpio-pin";
 import { Pic } from "./pic";
 
-import {DIR_IN, DIR_LOW, EDGE_RISING, on} from 'rpi-gpio'
+import { DIR_IN, DIR_LOW, EDGE_RISING } from 'rpi-gpio'
 import * as pins from '../../pins.json';
 import { DipSwitchState } from "../dip-switch-state";
 import { GpioRegistrator } from "../gpio-registrator";
@@ -52,7 +52,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
     private s1_5: number;
     private slam: number;
     private ready = false;
-    
+
     public static getInstance(): SwitchesPic {
         if (!SwitchesPic.instance) {
             SwitchesPic.instance = new SwitchesPic();
@@ -72,43 +72,43 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
 
         // MessageBroker.subscribe('mopo/pic/IC1/update', () => this.programHex());
 
-        on('change', async (channel) => {
-            if (!this.ready) {
-                return;
-            }
-            if (channel === pins.IC1_OUT_RDY) {
-                // if (this.reading) {
-                //     logger.error('already reading');
-                //     return;
-                // }
+        // on('change', async (channel) => {
+        //     if (!this.ready) {
+        //         return;
+        //     }
+        //     // if (channel === pins.IC1_OUT_RDY) {
+        //     //     // if (this.reading) {
+        //     //     //     logger.error('already reading');
+        //     //     //     return;
+        //     //     // }
 
-                // this.reading = true;
-                // if (!this.picReady) {
-                //     this.picReady = true;
-                //     logger.debug('init ack');
-                //     this.reading = false;
-                //     this._sendAck();
-                // }
-                // else {
-                const sendOk = await this._readData();
-                // this.reading = false;
-                if (sendOk) {
-                    this.errorCount = 0;
-                    this._sendAck();
-                }
-                else {
-                    this._sendAck();
-                    // this.errorCount++;
-                    // if (this.errorCount > 3) {
-                    //     this.reset();
-                    // }
-                    // else {
-                    //     this._sendRetry();
-                    // }
-                }
-                // }
-            }
-        });
+        //     //     // this.reading = true;
+        //     //     // if (!this.picReady) {
+        //     //     //     this.picReady = true;
+        //     //     //     logger.debug('init ack');
+        //     //     //     this.reading = false;
+        //     //     //     this._sendAck();
+        //     //     // }
+        //     //     // else {
+        //     //     const sendOk = await this._readData();
+        //     //     // this.reading = false;
+        //     //     if (sendOk) {
+        //     //         this.errorCount = 0;
+        //     //         this._sendAck();
+        //     //     }
+        //     //     else {
+        //     //         this._sendAck();
+        //     //         // this.errorCount++;
+        //     //         // if (this.errorCount > 3) {
+        //     //         //     this.reset();
+        //     //         // }
+        //     //         // else {
+        //     //         //     this._sendRetry();
+        //     //         // }
+        //     //     }
+        //     //     // }
+        //     // }
+        // });
 
         // MessageBroker.on('S3', (value) => {
         //     if (value) {
@@ -128,9 +128,47 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
         this._data2 = new GpioPin(pins.IC1_Data2, DIR_IN);
         this._data3 = new GpioPin(pins.IC1_Data3, DIR_IN);
         this._outReady = new GpioPin(pins.IC1_OUT_RDY, DIR_IN, EDGE_RISING);
+        this._outReady.on(() => this.onIC1_OUT_RDY());
         this._ack = new GpioPin(pins.IC1_ACK, DIR_LOW);
         this._retry = new GpioPin(pins.IC1_Resend, DIR_LOW);
         this._reset = new GpioPin(pins.IC1_Reset, DIR_LOW);
+    }
+
+    private async onIC1_OUT_RDY() {
+        if (!this.ready) {
+            return;
+        }
+
+        // if (this.reading) {
+        //     logger.error('already reading');
+        //     return;
+        // }
+
+        // this.reading = true;
+        // if (!this.picReady) {
+        //     this.picReady = true;
+        //     logger.debug('init ack');
+        //     this.reading = false;
+        //     this._sendAck();
+        // }
+        // else {
+        const sendOk = await this._readData();
+        // this.reading = false;
+        if (sendOk) {
+            this.errorCount = 0;
+            this._sendAck();
+        }
+        else {
+            this._sendAck();
+            // this.errorCount++;
+            // if (this.errorCount > 3) {
+            //     this.reset();
+            // }
+            // else {
+            //     this._sendRetry();
+            // }
+        }
+        // }
     }
 
     async setup(): Promise<void> {
@@ -208,20 +246,20 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
                 logger.debug('Bad switch data, CRC failed. Resend.');
                 return false;
             }
-            
+
             switch (opCode) {
-            case 0:
-                this._onVersionPayload();
-                break;
-            case 1:
-                this._onDipPayload();
-                break;
-            case 2:
-                this._onSwitchMatrixPayload();
-                break;
-            default:
-                logger.error(new Error('Unexpected op code.'));
-                return false;
+                case 0:
+                    this._onVersionPayload();
+                    break;
+                case 1:
+                    this._onDipPayload();
+                    break;
+                case 2:
+                    this._onSwitchMatrixPayload();
+                    break;
+                default:
+                    logger.error(new Error('Unexpected op code.'));
+                    return false;
             }
         }
 
@@ -354,7 +392,7 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
             slam: !!this.slam
         };
         MessageBroker.getInstance().emit(EVENTS.IC1_DIPS, state);
-        
+
     }
 
     getParity(n: number): number {

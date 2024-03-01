@@ -52,6 +52,7 @@
     "rpi-gpio": "2.1.5",
     "rsync": "^0.6.1",
     "rxjs": "~7.8.0",
+    "source-map-support": "^0.5.21",
     "tar": "^6.0.5",
     "terminal-kit": "^1.44.0",
     "tslib": "^2.3.0",
