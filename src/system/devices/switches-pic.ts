@@ -248,18 +248,18 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
             }
 
             switch (opCode) {
-                case 0:
-                    this._onVersionPayload();
-                    break;
-                case 1:
-                    this._onDipPayload();
-                    break;
-                case 2:
-                    this._onSwitchMatrixPayload();
-                    break;
-                default:
-                    logger.error(new Error('Unexpected op code.'));
-                    return false;
+            case 0:
+                this._onVersionPayload();
+                break;
+            case 1:
+                this._onDipPayload();
+                break;
+            case 2:
+                this._onSwitchMatrixPayload();
+                break;
+            default:
+                logger.error(new Error('Unexpected op code.'));
+                return false;
             }
         }
 
