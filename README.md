@@ -44,7 +44,8 @@ sudo docker run --name=mopo -d --privileged --network=host --restart always -v /
 
 ```shell
 wget https://raw.githubusercontent.com/mopopinball/engine/master/setup/update.sh -O update.sh
-./update.sh
+chmod +x update.sh
+sudo ./update.sh
 ```
 
 ```

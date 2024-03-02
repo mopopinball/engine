@@ -38,6 +38,9 @@ import { ServiceMenu } from "./service-menu";
 if(process.env['DEBUG']) {
     logger.setLevel('debug');
 }
+else {
+    logger.setLevel('INFO');
+}
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);

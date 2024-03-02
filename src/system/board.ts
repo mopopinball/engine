@@ -51,6 +51,8 @@ export class Board implements GpioRegistrator {
     }
 
     registerGpioPins(): void {
+        logger.log('Registering board GPIO pins');
+        
         this.errorLed = new StatusLed('D2', pins.D2_Error_Led);
         this.piLed = new StatusLed('D3', pins.D3_Pi_Led);
         this.nodeLed = new StatusLed('D4', pins.D4_Node_Led);

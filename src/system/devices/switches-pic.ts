@@ -123,6 +123,8 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
     }
 
     registerGpioPins(): void {
+        logger.log('Registering switch GPIO pins');
+
         this._data0 = new GpioPin(pins.IC1_Data0, DIR_IN);
         this._data1 = new GpioPin(pins.IC1_Data1, DIR_IN);
         this._data2 = new GpioPin(pins.IC1_Data2, DIR_IN);
