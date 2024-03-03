@@ -4,6 +4,14 @@ WORKDIR /app
 
 EXPOSE 1983
 
+# PIC Programmer
+RUN mkdir /tmp/picpgm_install
+RUN wget http://picpgm.picprojects.net/download/picpgm-2.9.3.1-linux-armhf.tar.gz -O /tmp/picpgm_install/picpgm.tar.gz
+RUN tar xzvf /tmp/picpgm_install/picpgm.tar.gz -C /tmp/picpgm_install
+RUN cp -f /tmp/picpgm_install/picpgm .
+COPY setup/pgmifcfg.xml .
+RUN rm -rf /tmp/picpgm_install
+
 # Setup
 RUN npm config set update-notifier false
 COPY package.json ./
