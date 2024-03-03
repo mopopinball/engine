@@ -20,7 +20,9 @@ RUN npm run tsc
 # Service menu
 RUN npx ng build
 RUN mkdir servicemenu
-RUN cp -r dist/service-menu/* servicemenu
+RUN mv dist/service-menu servicemenu
+
+RUN rm -rf src tsconfig.json tsconfig.service-menu.json angular.json tsconfig.app.json package-lock.json
 
 # PICS
 RUN wget https://github.com/mopopinball/pics/releases/latest/download/dist.tar.gz -O pics.tar.gz

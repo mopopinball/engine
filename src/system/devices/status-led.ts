@@ -6,7 +6,7 @@ import{DIR_OUT} from 'rpi-gpio';
  * An on-borad status led wired to a GPIO pin.
  */
 export class StatusLed extends Light {
-    private gpioPin: GpioPin;
+    private readonly gpioPin: GpioPin;
 
     constructor(id: string, private pin: number) {
         super(id, id, LightState.OFF);

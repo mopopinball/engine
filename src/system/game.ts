@@ -42,6 +42,8 @@ else {
     logger.setLevel('INFO');
 }
 
+logger.info('Welcome to Mopo Pinball!');
+
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);
     logger.error(`${err.message} ${detail}`);

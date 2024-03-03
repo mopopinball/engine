@@ -7,7 +7,7 @@ import { Switch } from "./switch";
 // const gpio = require('rpi-gpio');
 
 /**
- * An on-pcb switch.
+ * An on-pcb switch wired to a gpio pin.
  */
 export class BoardSwitch extends Switch {
     private readonly gpioPin: GpioPin; 

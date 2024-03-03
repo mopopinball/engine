@@ -3,12 +3,12 @@ import GPIO, {promise as gpiop} from 'rpi-gpio';
 
 /**
  * A GPIO pin.
- * The three static methods are to ensure gpio pins are setup sequentially, not concurrently.
  */
 export class GpioPin {
+    private static instances: GpioPin[] = [];
+
     private state: boolean;
-    static instances: GpioPin[];
-    setupComplete: boolean;
+    private setupComplete: boolean;
     
     constructor(
         private readonly pinNumber: number,
@@ -24,20 +24,13 @@ export class GpioPin {
         else if (this.direction === gpiop.DIR_HIGH) {
             this.state = true;
         }
-        GpioPin.register(this);
+
+        GpioPin.instances.push(this);
     }
 
-    static staticConstructor(): void {
-        if (!GpioPin.instances) {
-            GpioPin.instances = [];
-            // MessageBroker.on(EVENTS.SETUP_GPIO, () => GpioPin.setupSync());
-        }
-    }
-
-    static register(instance: GpioPin): void {
-        GpioPin.instances.push(instance);
-    }
-
+    /**
+     * Sets up the pins sequentially, not concurrently.
+     */
     static async setupSync(): Promise<void> {
         logger.info(`Setting up ${GpioPin.instances.length} GPIO pins.`);
         GpioPin.instances.sort((a, b) => a.pinNumber > b.pinNumber ? 1 : -1);
@@ -105,6 +98,3 @@ export class GpioPin {
         });
     }
 }
-
-// Since node doesnt support static constructors, we'll manually call it here.
-GpioPin.staticConstructor();
