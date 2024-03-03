@@ -201,6 +201,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     onUpdatePic(pic: string): void {
+        this.http.post(`/setup/pic/${pic}`, {}).subscribe(); 
         //     const dialogRef = this.dialog.open(DialogContentExampleDialog);
 
         // dialogRef.afterClosed().subscribe(result => {

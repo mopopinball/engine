@@ -11,6 +11,8 @@ import { gamestateConfigPath, hardwareConfigPath } from '../constants';
 import { DriverPic } from '../devices/driver-pic';
 import { DisplaysPic } from '../devices/displays-pic';
 import { SwitchesPic } from '../devices/switches-pic';
+import { execSync } from 'child_process';
+import { logger } from '../logger';
 
 export interface SetupState {
     required: boolean;
@@ -68,6 +70,15 @@ export class SetupController implements Controller {
             res.sendStatus(200);
 
             process.exit(0);
+        });
+
+        app.post('/setup/pic/:picId', (req, res) => {
+            const pic = req.params.picId;
+            logger.info(`Updating ${pic} PIC.`);
+
+            execSync('/app/picpgm', {stdio: 'inherit'});
+            
+            res.sendStatus(200);
         });
     }
 
