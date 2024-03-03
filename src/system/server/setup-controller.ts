@@ -8,9 +8,23 @@ import { GameOption, GameSelector } from '../../game-selector/select-game';
 import { copyFileSync } from 'fs';
 import { join } from 'path';
 import { gamestateConfigPath, hardwareConfigPath } from '../constants';
+import { DriverPic } from '../devices/driver-pic';
+import { DisplaysPic } from '../devices/displays-pic';
+import { SwitchesPic } from '../devices/switches-pic';
 
 export interface SetupState {
     required: boolean;
+    pics: {
+        driver: {
+            required: boolean
+        },
+        switches: {
+            required: boolean
+        },
+        displays: {
+            required: boolean
+        },
+    }
 }
 
 export class SetupController implements Controller {
@@ -25,7 +39,18 @@ export class SetupController implements Controller {
 
         app.get('/setup/state', cors(), (req, res) => {
             const state: SetupState = {
-                required: !this.hardwareConfig?.system
+                required: !this.hardwareConfig?.system,
+                pics: {
+                    driver: {
+                        required: DriverPic.getInstance().updateRequired()
+                    },
+                    displays: {
+                        required: DisplaysPic.getInstance().updateRequired()
+                    },
+                    switches: {
+                        required: SwitchesPic.getInstance().updateRequired()
+                    },
+                }
             };
 
             res.send(state);

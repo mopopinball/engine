@@ -31,7 +31,14 @@ export class AppComponent implements OnInit, OnDestroy {
     menuVersion = '';
     debuggingEnabled = true;
     @ViewChild('fileload') uploadInput: ElementRef;
-    setupState: SetupState;
+    setupState: SetupState = {
+        required: true,
+        pics: {
+            driver: {required: true},
+            switches: {required: true},
+            displays: {required: true}
+        }
+    };
     gameOptions: GameOption[];
 
     constructor(private http: HttpClient, private _mqttService: MqttService) {
@@ -191,5 +198,13 @@ export class AppComponent implements OnInit, OnDestroy {
             this.uploadInput.nativeElement.value = '';
         };
         fileReader.readAsText(file)
+    }
+
+    onUpdatePic(pic: string): void {
+        //     const dialogRef = this.dialog.open(DialogContentExampleDialog);
+
+        // dialogRef.afterClosed().subscribe(result => {
+        //   console.log(`Dialog result: ${result}`);
+        // });  
     }
 }

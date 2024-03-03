@@ -27,7 +27,6 @@ RUN npm run tsc
 
 # Service menu
 RUN npx ng build
-RUN mkdir servicemenu
 RUN mv dist/service-menu servicemenu
 
 RUN rm -rf src tsconfig.json tsconfig.service-menu.json angular.json tsconfig.app.json package-lock.json

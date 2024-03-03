@@ -3,13 +3,12 @@ import {openPromisified} from 'i2c-bus';
 import { logger } from "../logger";
 import {padStart} from 'lodash';
 import { existsSync, readFileSync } from "fs";
+import { picPathAvailable, picPathInstalled } from "../constants";
 
 /**
  * An abstract PIC.
  */
 export abstract class Pic {
-    public static readonly picPathInstalled = '/home/pi/mopo/pics/installed';
-    public static readonly picPathAvailable = '/home/pi/mopo/pics/available';
     protected i2c1: PromisifiedBus;
 
     constructor(private readonly picAddress: number, protected readonly name: string) {
@@ -54,8 +53,12 @@ export abstract class Pic {
         }
     }
 
+    updateRequired(pic: string): boolean {
+        return this.getInstalledVersion(pic) !== this.getAvailableVersion(pic);
+    }
+
     protected getInstalledVersion(pic: string): string {
-        const path = `${Pic.picPathInstalled}/${pic}-version.json`;
+        const path = `${picPathInstalled}/${pic}-version.json`;
         if (!existsSync(path)) {
             return null;
         }
@@ -63,4 +66,12 @@ export abstract class Pic {
         return manifest.version;
     }
 
+    protected getAvailableVersion(pic: string): string {
+        const path = `${picPathAvailable}/${pic}-version.json`;
+        if (!existsSync(path)) {
+            return null;
+        }
+        const manifest = JSON.parse(readFileSync(path, {encoding: 'utf8'}));
+        return manifest.version;
+    }
 }

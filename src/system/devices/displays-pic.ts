@@ -132,7 +132,15 @@ export class DisplaysPic extends Pic {
         await this.write(this.buffer);
     }
 
+    updateRequired(): boolean {
+        return super.updateRequired('displays');
+    }
+
     getInstalledVersion(): string {
         return super.getInstalledVersion('displays');
+    }
+
+    getAvailableVersion(): string {
+        return super.getAvailableVersion('displays');
     }
 }

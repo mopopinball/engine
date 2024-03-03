@@ -406,8 +406,16 @@ export class SwitchesPic extends Pic implements GpioRegistrator {
         return parity;
     }
 
+    updateRequired(): boolean {
+        return super.updateRequired('switches');
+    }
+
     getInstalledVersion(): string {
         return super.getInstalledVersion('switches');
+    }
+
+    getAvailableVersion(): string {
+        return super.getAvailableVersion('switches');
     }
 
     // programHex(pathToHex: string): SpawnSyncReturns<string> {

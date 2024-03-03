@@ -49,6 +49,16 @@
     </ul>
 </div>
 
+<ng-container *ngFor="let pic of ['driver', 'switches', 'displays']">
+    <div *ngIf="setupState?.pics[pic].required" class="pic-update">
+        <h3>{{pic}} PIC update available</h3>
+        <p>Please update the {{ pic }} PIC</p>
+        <div>
+            <button (click)="onUpdatePic(pic)">Update</button>
+        </div>
+    </div>
+</ng-container>
+
 <div *ngIf="!setupState?.required">
 <h3>Dips</h3>
 <div>

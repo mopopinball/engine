@@ -11,6 +11,7 @@ import * as Rsync from 'rsync';
 import * as del from 'del';
 import { execSync } from 'child_process';
 import { Pic } from './devices/pic';
+import { picPathAvailable } from './constants';
 
 
 export class Update {
@@ -38,7 +39,7 @@ export class Update {
     }
 
     getPicVersion(): string {
-        const path = `${Pic.picPathAvailable}/package.json`;
+        const path = `${picPathAvailable}/package.json`;
         if (!existsSync(path)) {
             return '0.0.0';
         }
@@ -110,7 +111,7 @@ export class Update {
 
     private async applyPicsUpdate(release: GithubRelease): Promise<void> {
         logger.info(`Updating to Pics version ${release.name}.`);
-        await this.applyUpdateWorker(release, Pic.picPathAvailable);
+        await this.applyUpdateWorker(release, picPathAvailable);
     }
 
     private makeTempDir(): string {

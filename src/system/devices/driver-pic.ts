@@ -136,7 +136,15 @@ export class DriverPic extends Pic {
         await this.write(this.buffer);
     }
 
+    updateRequired(): boolean {
+        return super.updateRequired('driver');
+    }
+
     getInstalledVersion(): string {
         return super.getInstalledVersion('driver');
+    }
+
+    getAvailableVersion(): string {
+        return super.getAvailableVersion('driver');
     }
 }
