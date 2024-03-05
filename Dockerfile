@@ -12,6 +12,8 @@ RUN cp -f /tmp/picpgm_install/picpgm .
 COPY setup/pgmifcfg.xml .
 RUN rm -rf /tmp/picpgm_install
 
+RUN export NODE_OPTIONS=--max-old-space-size=768
+
 # Setup
 RUN npm config set update-notifier false
 COPY package.json ./
