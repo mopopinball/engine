@@ -7,7 +7,7 @@ import { HardwareConfig } from '../hardware-config.schema';
 import { GameOption, GameSelector } from '../../game-selector/select-game';
 import { copyFileSync } from 'fs';
 import { join } from 'path';
-import { gamestateConfigPath, hardwareConfigPath } from '../constants';
+import { gamestateConfigPath, hardwareConfigPath, picPathAvailable, picPathInstalled } from '../constants';
 import { DriverPic } from '../devices/driver-pic';
 import { DisplaysPic } from '../devices/displays-pic';
 import { SwitchesPic } from '../devices/switches-pic';
@@ -76,9 +76,45 @@ export class SetupController implements Controller {
             const pic = req.params.picId;
             logger.info(`Updating ${pic} PIC.`);
 
-            execSync('/app/picpgm', {stdio: 'inherit'});
-            
-            res.sendStatus(200);
+            try {
+                const hex = join(picPathAvailable, `mopo-${pic}.production.hex`);
+                const cmd = `/app/picpgm -p ${hex}`;
+                logger.info(`Executing ${cmd}`);
+                execSync(cmd, {stdio: 'inherit'});
+                copyFileSync(join(picPathAvailable, `${pic}-version.json`), join(picPathInstalled, `${pic}-version.json`));
+                res.sendStatus(200);
+            }
+            catch(e) {
+                res.sendStatus(500);
+                logger.error(`Pic programming failed with code ${e.status}`);
+                switch (e.status) {
+                case 1:
+                    logger.error('verify error occured');
+                    break;
+                case 2:
+                    logger.error('no programmer interface found');
+                    break;
+                case 3:
+                    logger.error('no PIC found');
+                    break;
+                case 4:
+                    logger.error('invalid parameter');
+                    break;
+                case 5:
+                    logger.error('HEX file has errors');
+                    break;
+                case 6:
+                    logger.error('problems with loading port I/O driver');
+                    break;
+                case 7:
+                    logger.error('no HEX file specified');
+                    break;
+                case 255:
+                default:
+                    logger.error('unexpected error occoured');
+                    break;
+                }
+            }
         });
     }
 

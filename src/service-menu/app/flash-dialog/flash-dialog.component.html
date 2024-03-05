@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Flash {{ data.pic }} PIC</h1>
+
+<div mat-dialog-content>
+    <p>Prepare to flash the {{ data.pic }} PIC:</p>
+    IMAGE
+    <ol>
+        <li>Install jumpers now</li>
+        <li>Press "Flash"</li>
+    </ol>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="true">Flash</button>
+</div>

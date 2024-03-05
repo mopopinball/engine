@@ -30,6 +30,7 @@
               "src/service-menu/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/service-menu/styles.scss"
             ],
             "scripts": []
@@ -93,6 +94,7 @@
               "src/service-menu/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/service-menu/styles.scss"
             ],
             "scripts": []

@@ -9,6 +9,8 @@ import { InfoMqttMessage } from '../../system/messages';
 import { ClientDevice } from '../../system/server/client-device';
 import { SetupState } from '../../system/server/setup-controller';
 import { GameOption } from '../../game-selector/select-game';
+import {MatDialog} from '@angular/material/dialog';
+import { FlashDialogComponent } from './flash-dialog/flash-dialog.component';
 
 @Component({
     selector: 'app-root',
@@ -41,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     gameOptions: GameOption[];
 
-    constructor(private http: HttpClient, private _mqttService: MqttService) {
+    constructor(private http: HttpClient, private _mqttService: MqttService, public dialog: MatDialog) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
             this.info = JSON.parse(message.payload.toString());
         });
@@ -201,11 +203,15 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     onUpdatePic(pic: string): void {
-        this.http.post(`/setup/pic/${pic}`, {}).subscribe(); 
-        //     const dialogRef = this.dialog.open(DialogContentExampleDialog);
-
-        // dialogRef.afterClosed().subscribe(result => {
-        //   console.log(`Dialog result: ${result}`);
-        // });  
+        const dialogRef = this.dialog.open(FlashDialogComponent, {
+            data: {
+              pic: pic,
+            },
+          });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.http.post(`/setup/pic/${pic}`, {}).subscribe(); 
+            }
+        });  
     }
 }
