@@ -11,9 +11,8 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/admin/**/*"],
   "lib": ["es2018"]
 } 

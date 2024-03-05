@@ -6,7 +6,7 @@ import {
   MatDialogContent,
 } from '@angular/material/dialog';
 
-interface DialogData {
+export interface DialogData {
   pic: string;
 }
 
@@ -16,9 +16,5 @@ interface DialogData {
   styleUrls: ['./flash-dialog.component.scss']
 })
 export class FlashDialogComponent {
-
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 }
