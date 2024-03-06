@@ -12,8 +12,6 @@ RUN cp -f /tmp/picpgm_install/picpgm .
 COPY setup/pgmifcfg.xml .
 RUN rm -rf /tmp/picpgm_install
 
-RUN export NODE_OPTIONS=--max-old-space-size=768
-
 # Setup
 RUN npm config set update-notifier false
 COPY package.json ./
@@ -28,7 +26,7 @@ COPY tsconfig.app.json .
 RUN npm run tsc
 
 # Service menu
-RUN npx ng build
+RUN npm run build-prod
 RUN mv dist/service-menu servicemenu
 
 RUN rm -rf src tsconfig.json tsconfig.service-menu.json angular.json tsconfig.app.json package-lock.json
