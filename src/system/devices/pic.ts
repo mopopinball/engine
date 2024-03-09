@@ -4,6 +4,8 @@ import { logger } from "../logger";
 import {padStart} from 'lodash';
 import { existsSync, readFileSync } from "fs";
 import { picPathAvailable, picPathInstalled } from "../constants";
+import { join } from "path";
+import { execSync } from "child_process";
 
 /**
  * An abstract PIC.
@@ -73,5 +75,52 @@ export abstract class Pic {
         }
         const manifest = JSON.parse(readFileSync(path, {encoding: 'utf8'}));
         return manifest.version;
+    }
+
+    static flash(pic: string): boolean {
+        try {
+            const hexPath = join(picPathAvailable, `mopo-${pic}.production.hex`);
+            const cmd = `/app/picpgm -p ${hexPath}`;
+            logger.info(`Executing ${cmd}`);
+            execSync(cmd, {stdio: 'inherit'});
+            return true;
+        }
+        catch(e) {
+            // TODO: This is counter intuitive, but success is still throwing, but without status.
+            if(!e.status) {
+                logger.warn('Catching error without status');
+                return true;
+            }
+            
+            logger.error(`Pic programming failed with code ${e.status}`);
+            switch (e.status) {
+            case 1:
+                logger.error('verify error occured');
+                break;
+            case 2:
+                logger.error('no programmer interface found');
+                break;
+            case 3:
+                logger.error('no PIC found');
+                break;
+            case 4:
+                logger.error('invalid parameter');
+                break;
+            case 5:
+                logger.error('HEX file has errors');
+                break;
+            case 6:
+                logger.error('problems with loading port I/O driver');
+                break;
+            case 7:
+                logger.error('no HEX file specified');
+                break;
+            case 255:
+            default:
+                logger.error('unexpected error occoured');
+                break;
+            }
+            return false;
+        }
     }
 }
