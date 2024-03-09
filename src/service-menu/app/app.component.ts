@@ -11,6 +11,7 @@ import { SetupState } from '../../system/server/setup-controller';
 import { GameOption } from '../../game-selector/select-game';
 import {MatDialog} from '@angular/material/dialog';
 import { FlashDialogComponent } from './flash-dialog/flash-dialog.component';
+import { FlashState } from './flash-state';
 
 @Component({
     selector: 'app-root',
@@ -34,17 +35,17 @@ export class AppComponent implements OnInit, OnDestroy {
     debuggingEnabled = true;
     @ViewChild('fileload') uploadInput: ElementRef;
     setupState: SetupState;
-    flashState: {
+    flashState: FlashState = {
         driver: {
-            success: boolean;
-        };
+            success: false,
+        },
         switches: {
-            success: boolean;
-        };
+            success: false,
+        },
         displays: {
-            success: boolean;
-        };
-    }
+            success: false,
+        }
+    };
     gameOptions: GameOption[];
 
     constructor(private http: HttpClient, private _mqttService: MqttService, public dialog: MatDialog) {
