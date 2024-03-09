@@ -72,6 +72,12 @@ export class SetupController implements Controller {
             process.exit(0);
         });
 
+        app.post('/setup/restart', (req, res) => {
+            logger.warn('Restarting');
+            res.sendStatus(200);
+            process.exit(0);
+        });
+
         app.post('/setup/pic/:picId', (req, res) => {
             const pic = req.params.picId;
             logger.info(`Updating ${pic} PIC.`);
@@ -81,10 +87,15 @@ export class SetupController implements Controller {
                 const cmd = `/app/picpgm -p ${hex}`;
                 logger.info(`Executing ${cmd}`);
                 execSync(cmd, {stdio: 'inherit'});
-                copyFileSync(join(picPathAvailable, `${pic}-version.json`), join(picPathInstalled, `${pic}-version.json`));
-                res.sendStatus(200);
             }
             catch(e) {
+                // TODO: This is counter intuitive, but success is still throwing, but without status.
+                if(!e.status) {
+                    copyFileSync(join(picPathAvailable, `${pic}-version.json`), join(picPathInstalled, `${pic}-version.json`));
+                    res.sendStatus(200);
+                    return;
+                }
+
                 res.sendStatus(500);
                 logger.error(`Pic programming failed with code ${e.status}`);
                 switch (e.status) {

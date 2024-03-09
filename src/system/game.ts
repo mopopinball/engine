@@ -43,6 +43,8 @@ else {
 }
 
 logger.info('Welcome to Mopo Pinball!');
+logger.info('  See https://github.com/orgs/mopopinball for more info.')
+logger.info('  Made possible by LISY. See  https://lisy.dev for other great pinball projects.')
 
 function onUncaughtError(err) {
     const detail = err.stack ? err.stack : JSON.stringify(err);

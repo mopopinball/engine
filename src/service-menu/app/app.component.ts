@@ -33,14 +33,18 @@ export class AppComponent implements OnInit, OnDestroy {
     menuVersion = '';
     debuggingEnabled = true;
     @ViewChild('fileload') uploadInput: ElementRef;
-    setupState: SetupState = {
-        required: true,
-        pics: {
-            driver: {required: true},
-            switches: {required: true},
-            displays: {required: true}
-        }
-    };
+    setupState: SetupState;
+    flashState: {
+        driver: {
+            success: boolean;
+        };
+        switches: {
+            success: boolean;
+        };
+        displays: {
+            success: boolean;
+        };
+    }
     gameOptions: GameOption[];
 
     constructor(private http: HttpClient, private _mqttService: MqttService, public dialog: MatDialog) {
@@ -203,6 +207,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     onUpdatePic(pic: string): void {
+        this.flashState[pic].success = null;
         const dialogRef = this.dialog.open(FlashDialogComponent, {
             data: {
               pic: pic,
@@ -210,8 +215,17 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.http.post(`/setup/pic/${pic}`, {}).subscribe(); 
+                this.http.post(`/setup/pic/${pic}`, {}).subscribe(() => {
+                    this.flashState[pic].success = true;
+                }, () => {
+                    this.flashState[pic].success = false;
+                }); 
             }
         });  
+    }
+
+    restart(): void {
+        this.http.post('/setup/restart', {}).subscribe();
+        window.location.reload();
     }
 }

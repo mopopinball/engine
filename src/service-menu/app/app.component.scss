@@ -49,12 +49,20 @@ header {
     }
 }
 
-.pic-update {
-    text-align: center;
-    background: orange;
-    border: solid 2px darkorange;
-    border-radius: 3px;
+.pic-updates {
+    display: flex;
+    gap: 1em;
+
+    .pic-update {
+        padding: 1em;
+        text-align: center;
+        background: orange;
+        border: solid 2px darkorange;
+        border-radius: 3px;
+    }
 }
+
+
 
 .dips {
     .on {
@@ -76,3 +84,4 @@ td {
     border: solid 1px lightgray;
     border-radius: 3px;
 }
+
