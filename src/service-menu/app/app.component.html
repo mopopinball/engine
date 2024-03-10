@@ -55,14 +55,14 @@
             <h3>{{pic}} PIC update available</h3>
             <p>Please update the {{ pic }} PIC</p>
             <div>
-                <button (click)="onUpdatePic(pic)">Update</button>
+                <button (click)="onUpdatePic(pic)">Update {{pic}}</button>
             </div>
             <div *ngIf="flashState[pic].hasRun && flashState[pic].success">
-                <h3>Success</h3>
+                <i>Success</i>
                 <button (click)="restart()">Restart</button>
             </div>
             <div *ngIf="flashState[pic].hasRun && !flashState[pic].success">
-                <h3>Failure</h3>
+                <i>Failure</i>
             </div>
         </div>
     </ng-container>
