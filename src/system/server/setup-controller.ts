@@ -5,7 +5,7 @@ import { Controller } from "./controller";
 import cors from 'cors';
 import { HardwareConfig } from '../hardware-config.schema';
 import { GameOption, GameSelector } from '../../game-selector/select-game';
-import { copyFileSync, mkdirSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { gamestateConfigPath, hardwareConfigPath, picPathAvailable, picPathInstalled } from '../constants';
 import { DriverPic } from '../devices/driver-pic';
@@ -85,7 +85,7 @@ export class SetupController implements Controller {
 
             const flashSuccess = Pic.flash(pic);
             if(flashSuccess) {
-                if(!execSync(picPathInstalled)) {
+                if(!existsSync(picPathInstalled)) {
                     mkdirSync(picPathInstalled, { recursive: true });
                 }
                 copyFileSync(join(picPathAvailable, `${pic}-version.json`), join(picPathInstalled, `${pic}-version.json`));
