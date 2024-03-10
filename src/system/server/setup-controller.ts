@@ -1,10 +1,8 @@
 import { Express } from 'express';
-import { GithubRelease } from '../github-release';
-import { Update } from '../update';
 import { Controller } from "./controller";
 import cors from 'cors';
 import { HardwareConfig } from '../hardware-config.schema';
-import { GameOption, GameSelector } from '../../game-selector/select-game';
+import { GameOption, GameSelector } from './select-game';
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { gamestateConfigPath, hardwareConfigPath, picPathAvailable, picPathInstalled } from '../constants';
@@ -34,12 +32,6 @@ export class SetupController implements Controller {
     constructor(private hardwareConfig: HardwareConfig) {}
 
     setup(app: Express): void {
-        app.post('/update/apply', async (req, res) => {
-            const selectedUpdate = req.body as GithubRelease;
-            await Update.getInstance().applyUpdate(selectedUpdate, true);
-            res.send({result: 'ok'});
-        });
-
         app.get('/setup/state', cors(), (req, res) => {
             const state: SetupState = {
                 required: !this.hardwareConfig?.system,

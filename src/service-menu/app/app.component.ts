@@ -8,7 +8,7 @@ import { GithubRelease } from '../../system/github-release';
 import { InfoMqttMessage } from '../../system/messages';
 import { ClientDevice } from '../../system/server/client-device';
 import { SetupState } from '../../system/server/setup-controller';
-import { GameOption } from '../../game-selector/select-game';
+import { GameOption } from '../../system/server/select-game';
 import {MatDialog} from '@angular/material/dialog';
 import { FlashDialogComponent } from './flash-dialog/flash-dialog.component';
 import { FlashState } from './flash-state';

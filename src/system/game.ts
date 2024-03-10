@@ -14,7 +14,7 @@ import { RuleEngine } from "./rule-engine/rule-engine";
 import { RuleSchema } from "./rule-engine/schema/rule.schema";
 import { SwitchPayload } from "./rule-engine/switch-payload";
 import {MessageBroker, EVENTS} from './messages';
-// const Maintenance = require('./system/maintenance');
+import {version} from '../../package.json';
 import { SwitchesPic } from "./devices/switches-pic";
 import { logger } from "./logger";
 import { GpioPin } from "./devices/gpio-pin";
@@ -24,7 +24,6 @@ import { Security } from "./security";
 import { ClientDevice } from "./server/client-device";
 import { DriverType } from "./devices/driver-type";
 import { CoilType } from "./devices/coil-type";
-import { Update } from "./update";
 import { OutputDeviceType } from "./devices/output-device-type";
 import { LampRole } from "./devices/lamp-role";
 import { SwitchTrigger } from "./rule-engine/actions/switch-trigger";
@@ -133,7 +132,7 @@ export class Game {
         MessageBroker.getInstance().publishRetain('mopo/info/general', JSON.stringify({
             name: 'Mopo Pinball',
             gameName: this.name,
-            version: Update.getInstance().getVersion()
+            version: version
         }));
         
         this.updateDeviceMessages();
