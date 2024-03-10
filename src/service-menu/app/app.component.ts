@@ -37,12 +37,15 @@ export class AppComponent implements OnInit, OnDestroy {
     setupState: SetupState;
     flashState: FlashState = {
         driver: {
+            hasRun: false,
             success: false,
         },
         switches: {
+            hasRun: false,
             success: false,
         },
         displays: {
+            hasRun: false,
             success: false,
         }
     };
@@ -217,8 +220,10 @@ export class AppComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.http.post(`/setup/pic/${pic}`, {}).subscribe(() => {
+                    this.flashState[pic].hasRun = true;
                     this.flashState[pic].success = true;
                 }, () => {
+                    this.flashState[pic].hasRun = true;
                     this.flashState[pic].success = false;
                 }); 
             }

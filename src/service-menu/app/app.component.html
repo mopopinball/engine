@@ -1,7 +1,7 @@
 <header>
     
     <div>
-        <img src="../mopo-logo.svg" width="32px" />
+        <img src="../assets/mopo-logo.svg" width="32px" />
         <h1>{{info?.name}} Serivce Menu</h1>
         <h2>{{info?.gameName}}</h2>
     </div>
@@ -57,11 +57,11 @@
             <div>
                 <button (click)="onUpdatePic(pic)">Update</button>
             </div>
-            <div *ngIf="flashState[pic].success">
+            <div *ngIf="flashState[pic].hasRun && flashState[pic].success">
                 <h3>Success</h3>
                 <button (click)="restart()">Restart</button>
             </div>
-            <div *ngIf="flashState[pic].success === false">
+            <div *ngIf="flashState[pic].hasRun && !flashState[pic].success">
                 <h3>Failure</h3>
             </div>
         </div>
