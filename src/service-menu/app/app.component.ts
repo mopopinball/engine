@@ -237,4 +237,11 @@ export class AppComponent implements OnInit, OnDestroy {
         this.http.post('/setup/restart', {}).subscribe();
         window.location.reload();
     }
+
+    reselectGame(): void {
+        this.setupState = {
+            required: true,
+            pics: null,
+        }
+    }
 }

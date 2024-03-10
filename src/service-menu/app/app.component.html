@@ -1,71 +1,72 @@
-<header>
-    
-    <div>
-        <img src="../assets/mopo-logo.svg" width="32px" />
-        <h1>{{info?.name}} Serivce Menu</h1>
-        <h2>{{info?.gameName}}</h2>
-    </div>
-    <div *ngIf="debuggingEnabled" class="debugging">
-        <span class="title">Debugging is enabled</span>
-        <div class="title notice">
-            Design you own rules with the <a href="http://mopo-designer.s3-website-us-east-1.amazonaws.com/" target="_blank">MOPO Designer</a>!
-        </div>
-        <div class="body">
-            Upload a rule set:
-            <input type="file"
-                #fileload
-                (change)="load($event)" />
-        </div>
-    </div>
-    <div class="actions">
-        <div>
-            Engine: {{info?.version}}
-            <span *ngIf="availableUpdate?.system">
-                Engine {{availableUpdate?.system.name}} is available!
-                <button (click)="applyUpdate(availableUpdate.system)" [disabled]="systemUpdateInProgress">Apply</button>
-            </span>
-        </div>
-        <div>
-            Menu: {{menuVersion}}
-            <span *ngIf="availableUpdate?.serviceMenu">
-                Service Menu {{availableUpdate?.serviceMenu.name}} is available!
-                <button (click)="applyUpdate(availableUpdate.serviceMenu)" [disabled]="systemUpdateInProgress">Apply</button>
-            </span>
-            
-        </div>
-        <div><button (click)="checkForUpdate()" [disabled]="systemUpdateInProgress">Check for Update</button></div>
-        <div *ngIf="fps">{{fps?.fps}}fps ({{fps?.loopTime}}ms)</div>
-    </div>
-</header>
+<mat-toolbar>
+    <img src="../assets/mopo-logo.svg" width="32px" style="margin-right: 1em" />
+    <span>{{info?.name}} Serivce Menu</span>
+    <span class="game-name">{{info?.gameName}}</span>
+    <span class="example-spacer"></span>
+    <mat-chip-set>
+        <mat-chip>Version {{info?.version}}</mat-chip>
+        <mat-chip *ngIf="fps"> {{fps?.fps}}fps ({{fps?.loopTime}}ms) </mat-chip>
+      </mat-chip-set>
+    <button mat-button [matMenuTriggerFor]="menu" class="main-menu">Menu</button>
+    <mat-menu #menu="matMenu" >
+        <button mat-menu-item (click)="reselectGame()">Choose New Game</button>
+        
+    </mat-menu>
+</mat-toolbar>
 
-<div *ngIf="setupState?.required">
-    <h3>Welcome to MOPO</h3>
-    <p>Select a game</p>
-    <ul>
-        <li *ngFor="let game of gameOptions">
-            {{game.label}}
-            <button (click)="onSelectGame(game)">Select</button>
-        </li>
-    </ul>
-</div>
-
-<div class="pic-updates">
-    <ng-container *ngFor="let pic of ['driver', 'switches', 'displays']">
-        <div *ngIf="setupState?.pics[pic].required" class="pic-update">
-            <h3>{{pic}} PIC update available</h3>
-            <p>Please update the {{ pic }} PIC</p>
-            <div>
-                <button (click)="onUpdatePic(pic)">Update {{pic}}</button>
+<div class="service-menu">
+    <div class="alerts">
+        <mat-card *ngIf="debuggingEnabled">
+            <mat-card-header>
+                <mat-card-title>Debugging is enabled</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+            <div class="title notice">
+                Design you own rules with the <a href="http://mopo-designer.s3-website-us-east-1.amazonaws.com/" target="_blank">MOPO Designer</a>!
             </div>
-            <div *ngIf="flashState[pic].hasRun && flashState[pic].success">
-                <i>Success</i>
-                <button (click)="restart()">Restart</button>
+            <div class="body">
+                Upload a rule set:
+                <input type="file"
+                    #fileload
+                    (change)="load($event)" />
             </div>
-            <div *ngIf="flashState[pic].hasRun && !flashState[pic].success">
-                <i>Failure</i>
-            </div>
-        </div>
-    </ng-container>
+            </mat-card-content>
+      </mat-card>
+      <mat-card *ngIf="setupState?.required">
+        <mat-card-header>
+            <mat-card-title>Welcome to MOPO</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <p>Select a game</p>
+            <ul>
+                <li *ngFor="let game of gameOptions">
+                    {{game.label}}
+                    <button (click)="onSelectGame(game)">Select</button>
+                </li>
+            </ul>
+        </mat-card-content>
+        </mat-card>
+        <ng-container *ngFor="let pic of ['driver', 'switches', 'displays']">
+            <mat-card *ngIf="setupState?.pics[pic].required" class="pic-update">
+                <mat-card-header>
+                    <mat-card-title>{{pic}} PIC update available</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>Please update the {{ pic }} PIC</p>
+                <div>
+                    <button (click)="onUpdatePic(pic)">Update {{pic}}</button>
+                </div>
+                <div *ngIf="flashState[pic].hasRun && flashState[pic].success">
+                    <i>Success</i>
+                    <button (click)="restart()">Restart</button>
+                </div>
+                <div *ngIf="flashState[pic].hasRun && !flashState[pic].success">
+                    <i>Failure</i>
+                </div>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+    </div>
 </div>
 
 <div *ngIf="!setupState?.required">
