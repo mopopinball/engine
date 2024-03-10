@@ -134,11 +134,15 @@ export class AppComponent implements OnInit, OnDestroy {
             this.setupState = state;
 
             if(this.setupState.required) {
-                this.http.get<GameOption[]>('/setup/games').subscribe((games) => {
-                    this.gameOptions = games;
-                });
+                this.getGameOptions();
             }
         })
+    }
+
+    private getGameOptions(): void {
+        this.http.get<GameOption[]>('/setup/games').subscribe((games) => {
+            this.gameOptions = games;
+        });
     }
 
     onSelectGame(game: GameOption): void {
@@ -243,5 +247,6 @@ export class AppComponent implements OnInit, OnDestroy {
             required: true,
             pics: null,
         }
+        this.getGameOptions();
     }
 }
