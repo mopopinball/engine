@@ -11,7 +11,7 @@
   },
   "main": "src/game.js",
   "scripts": {
-    "build-prod": "node --max_old_space_size=768 ./node_modules/@angular/cli/bin/ng build",
+    "build-prod": "node --max_old_space_size=850 ./node_modules/@angular/cli/bin/ng build",
     "docker-build": "sudo docker build -t mopo-engine .",
     "docker-run": "sudo docker run -it mopo-engine bash",
     "lint-fix": "eslint . --ext .ts --fix",
