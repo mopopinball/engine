@@ -4,9 +4,10 @@
     <span class="game-name">{{info?.gameName}}</span>
     <span class="example-spacer"></span>
     <mat-chip-set>
+        <mat-chip *ngIf="updateAvailable || true" highlighted color="warn">Update Available!</mat-chip>
         <mat-chip>Version {{info?.version}}</mat-chip>
         <mat-chip *ngIf="fps"> {{fps?.fps}}fps ({{fps?.loopTime}}ms) </mat-chip>
-      </mat-chip-set>
+    </mat-chip-set>
     <button mat-button [matMenuTriggerFor]="menu" class="main-menu">Menu</button>
     <mat-menu #menu="matMenu" >
         <button mat-menu-item (click)="reselectGame()">Choose New Game</button>

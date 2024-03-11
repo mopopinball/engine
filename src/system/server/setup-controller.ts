@@ -32,6 +32,21 @@ export class SetupController implements Controller {
     constructor(private hardwareConfig: HardwareConfig) {}
 
     setup(app: Express): void {
+        app.get('/update', cors(), (req, res) => {
+            const available = new Date(JSON.parse(execSync('curl -s https://api.github.com/repos/mopopinball/engine/releases/latest').toString()).created_at);
+            logger.info(`Available version ${available}`);
+
+            const current = new Date(JSON.parse(execSync('docker inspect ghcr.io/mopopinball/engine:master').toString())[0].Created);
+            logger.info(`Current version ${current}`);
+
+            if(current.valueOf() < available.valueOf()) {
+                res.send({available: true});
+            }
+            else {
+                res.send({available: false});
+            }
+        });
+
         app.get('/setup/state', cors(), (req, res) => {
             const state: SetupState = {
                 required: !this.hardwareConfig?.system,

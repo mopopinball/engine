@@ -50,6 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     };
     gameOptions: GameOption[];
+    updateAvailable: boolean;
 
     constructor(private http: HttpClient, private _mqttService: MqttService, public dialog: MatDialog) {
         this._mqttService.observe('mopo/info/general').subscribe((message: IMqttMessage) => {
@@ -103,6 +104,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     ngOnInit(): void {
         this.getSetupState();
+
+        this.checkForUpdate();
     }
 
     private createOrFetch(item: ClientDevice, collection: ClientDevice[]): ClientDevice {
@@ -162,23 +165,9 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     checkForUpdate(): void {
-        throw new Error('reimplment me');
-        // this.systemUpdateInProgress = true;
-        // this.http.post<AvailableUpdate>('/update/check', {}).subscribe((update) => {
-        //     this.availableUpdate = {
-        //         system: update.system,
-        //         pics: update.pics,
-        //         serviceMenu: null // because the server doesnt know the current ver, it always returns a result
-        //     };
-        //     const remoteServiceMenuVer = coerce(update.serviceMenu.name);
-        //     const localServiceMenuVer = coerce(version)
-        //     if (gt(remoteServiceMenuVer, localServiceMenuVer)) {
-        //         this.availableUpdate.serviceMenu = update.serviceMenu;
-        //     }
-        //     this.systemUpdateInProgress = false;
-        // }, () => {
-        //     this.systemUpdateInProgress = false;
-        // });
+        this.http.get<{available: boolean}>('/update').subscribe((response) => {
+            this.updateAvailable = response.available;
+        })
     }
 
     applyUpdate(release: GithubRelease): void {
