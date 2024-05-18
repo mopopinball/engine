@@ -13,6 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
+    "declaration": true
   },
   "lib": ["es2018"]
 } 
