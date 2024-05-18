@@ -47,8 +47,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Package
-        run: ./package.sh
+      # - name: Package
+      #   run: ./package.sh
+      - name: tsc
+        run: npx tsc
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.MOPOPACKAGES }}
