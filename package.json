@@ -9,8 +9,9 @@
   "engines": {
     "node": ">10"
   },
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist/**"],
   "scripts": {
     "build-prod": "node --max_old_space_size=850 ./node_modules/@angular/cli/bin/ng build",
     "docker-build": "sudo docker build -t mopo-engine .",
