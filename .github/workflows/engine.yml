@@ -49,6 +49,8 @@ jobs:
           node-version: 18
       # - name: Package
       #   run: ./package.sh
+      - name: npm ci
+        run: npm ci --no-fund --no-audit
       - name: tsc
         run: npx tsc
       - name: Release
