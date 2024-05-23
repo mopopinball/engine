@@ -8,7 +8,7 @@ describe('Desired output state', () => {
         // setup
         const lightSchema: LightOutputState = {
             id: 'light-id',
-            state: LightState.BLINK,
+            state: {blink: 245},
             type: OutputDeviceType.LIGHT
         };
 
@@ -25,7 +25,7 @@ describe('Desired output state', () => {
         // setup
         const lightSchema: LightOutputState = {
             id: 'light-id',
-            state: LightState.BLINK,
+            state: { blink: 222 },
             type: OutputDeviceType.LIGHT
         };
         const desiredOutput: DesiredOutputState = DesiredOutputState.constructFromOutputState(lightSchema);
@@ -34,6 +34,6 @@ describe('Desired output state', () => {
         const output = JSON.stringify(desiredOutput);
 
         // check
-        expect(output).toEqual('{"id":"light-id","type":"light","state":2}');
+        expect(output).toEqual('{"id":"light-id","type":"light","state":{"blink":222}}');
     });
 });

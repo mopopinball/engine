@@ -4,8 +4,7 @@ import { Style } from "./styles/style";
 
 export enum LightState {
     OFF,
-    ON,
-    BLINK
+    ON
 }
 
 /**

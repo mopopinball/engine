@@ -15,12 +15,8 @@ export class BlinkLightStyle implements Style {
 
     // accepts a style in the format "blink: 250"
     static build(style?: OutputStyle): BlinkLightStyle {
-        if (!style) {
-            return null;
-        }
-        const blinkStyleEntry = Object.entries(style).find((entry) => entry[0] === 'blink');
-        if (blinkStyleEntry) {
-            return new BlinkLightStyle(blinkStyleEntry[1] as number, LightState.OFF);
+        if(style?.blink) {
+            return new BlinkLightStyle(style.blink, LightState.OFF);
         }
         else {
             return null;

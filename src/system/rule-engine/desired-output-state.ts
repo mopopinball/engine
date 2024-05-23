@@ -3,10 +3,14 @@ import { OutputDeviceType } from "../devices/output-device-type";
 import { BlinkDisplayStyle } from "../devices/styles/blink-display-style";
 import { BlinkLightStyle } from "../devices/styles/blink-light-style";
 import { Style } from "../devices/styles/style";
-import { DisplayOutputState, LightOutputState, OutputStateType } from "./schema/rule.schema";
+import { DisplayOutputState, LightOutputState, OutputStateType, OutputStyle } from "./schema/rule.schema";
 
-export declare type DesiredOutputStateType = LightState | boolean | string;
+/** The output value of the device. */
+export declare type DesiredOutputStateType = LightState | boolean | string | OutputStyle;
 
+/**
+ * A device's desired output state.
+ */
 export class DesiredOutputState {
     private currentState: DesiredOutputStateType;
     private preTempState: DesiredOutputStateType;
@@ -21,9 +25,11 @@ export class DesiredOutputState {
         case OutputDeviceType.LIGHT: {
             // TODO: Make better
             const styles = [];
-            const style = BlinkLightStyle.build(outputState.style);
-            if (style) {
-                styles.push(style);
+            if(typeof outputState.state === 'object') {
+                const style = BlinkLightStyle.build(outputState.state);
+                if (style) {
+                    styles.push(style);
+                }
             }
                     
             return new DesiredOutputState(
@@ -52,7 +58,6 @@ export class DesiredOutputState {
     constructor(
         public readonly id: string,
         public readonly type: OutputDeviceType,
-        // public readonly coilType: CoilType,
         private initialState: DesiredOutputStateType,
         public styles: Style[] = []
     ) {
@@ -114,15 +119,6 @@ export class DesiredOutputState {
                 id: this.id, type: this.type,
                 state: this.initialState as LightState
             };
-                // TODO: Make this better.
-            if (this.styles?.length) {
-                response.style = {};
-            }
-            this.styles.forEach((s) => {
-                if (s instanceof BlinkLightStyle) {
-                    response.style['blink'] = s.interval;
-                }
-            });
             return response;
         }
         case OutputDeviceType.DISPLAY: {

@@ -45,8 +45,7 @@ export interface OutputDeviceState {
 
 export interface LightOutputState extends OutputDeviceState {
     type: OutputDeviceType.LIGHT;
-    state: LightState;
-    style?: OutputStyle
+    state: LightState | OutputStyle;
 }
 
 export interface CoilOutputState extends OutputDeviceState {
@@ -65,8 +64,15 @@ export interface DisplayOutputState extends OutputDeviceState {
     style?: OutputStyle
 }
 
+/**
+ * A device output style. For example blinking.
+ * 
+ * @example
+ * {blink: 250}
+ */
 export interface OutputStyle {
-    [key: string]: string | number | OutputStyle;
+    // [key: string]: string | number | OutputStyle;
+    blink?: number;
 }
 
 export type OutputStateType = LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;

@@ -39,7 +39,7 @@ describe('Rule Engine Load()', () => {
     it('loads children', () => {
         expect(ruleEngine.children.length).toEqual(1);
         expect(ruleEngine.children[0].devices.size).toEqual(1);
-        expect(ruleEngine.children[0].devices.get('L4').getState()).toEqual(LightState.BLINK);
+        expect(ruleEngine.children[0].devices.get('L4').getState()).toEqual({blink: 222});
     });
 
     it('loads actions', () => {

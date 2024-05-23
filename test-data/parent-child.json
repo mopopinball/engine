@@ -36,7 +36,9 @@
             "state": {
                 "id": "L4",
                 "type": "light",
-                "state": 2
+                "state": {
+                    "blink": 321
+                }
             }
         }]
     }, {
@@ -58,7 +60,9 @@
                 {
                     "id": "L4",
                     "type": "light",
-                    "state": 2
+                    "state": {
+                        "blink": 222
+                    }
                 }
             ]
         }
