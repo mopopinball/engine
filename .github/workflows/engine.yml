@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-
+    name: Build/Test
     runs-on: ubuntu-latest
 
     strategy:
@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm config set update-notifier false
     - run: npm ci --no-fund --no-audit
-    - run: npm run build --if-present
+    - run: npx tsc
     - run: npm run lint
     - run: npm test
   release:
@@ -49,7 +49,7 @@ jobs:
           node-version: 18
       # - name: Package
       #   run: ./package.sh
-      - name: npm ci
+      - name: Install
         run: npm ci --no-fund --no-audit
       - name: tsc
         run: npx tsc
