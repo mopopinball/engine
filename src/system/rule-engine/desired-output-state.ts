@@ -3,10 +3,10 @@ import { OutputDeviceType } from "../devices/output-device-type";
 import { BlinkDisplayStyle } from "../devices/styles/blink-display-style";
 import { BlinkLightStyle } from "../devices/styles/blink-light-style";
 import { Style } from "../devices/styles/style";
-import { DisplayOutputState, LightOutputState, OutputStateType, OutputStyle } from "./schema/rule.schema";
+import { DisplayOutputState, LightOutputState, OutputStateType } from "./schema/rule.schema";
 
 /** The output value of the device. */
-export declare type DesiredOutputStateType = LightState | boolean | string | OutputStyle;
+export declare type DesiredOutputStateType = LightState | boolean | string;
 
 /**
  * A device's desired output state.
@@ -54,6 +54,46 @@ export class DesiredOutputState {
             );
         }
     }
+
+    //#region Lights
+
+    get forLight(): boolean {
+        return this.type === OutputDeviceType.LIGHT;
+    }
+
+    get lightMode(): LightState.ON | LightState.OFF | 'BLINK' {
+        if(this.getBlinkStyle()) {
+            return 'BLINK'
+        }
+        else {
+            return this.lightState;
+        }
+    }
+
+    get lightState(): LightState {
+        return this.currentState as LightState;
+    }
+
+    set lightState(value: LightState) {
+        this.currentState = value;
+    }
+
+    get blinkRate(): number {
+        return this.getBlinkStyle()?.interval;
+    }
+
+    set blinkRate(value: number) {
+        const blinkStyle = this.getBlinkStyle();
+        if(!blinkStyle) {
+            const blinkStyle = new BlinkLightStyle(value, LightState.OFF);
+            this.styles.push(blinkStyle);
+        }
+        else {
+            blinkStyle.interval = value;
+        }
+    }
+
+    //#endregion
     
     constructor(
         public readonly id: string,
@@ -64,15 +104,21 @@ export class DesiredOutputState {
         this.currentState = initialState;
     }
 
+    getBlinkStyle(): BlinkLightStyle {
+        return this.styles.find((s) => s instanceof BlinkLightStyle) as BlinkLightStyle;
+    }
+
     setInitialState(state: DesiredOutputStateType): void {
         this.initialState = state;
         this.currentState = state;
     }
 
+    /** @deprecated */
     getState(): DesiredOutputStateType {
         return this.currentState;
     }
 
+    /** @deprecated */
     setState(state: DesiredOutputStateType, setByAction: boolean): void {
         // Non-instanious states set by an action need to be unset when that rule exits.
         // eg. clear a action which turns on a light, or relay, etc.

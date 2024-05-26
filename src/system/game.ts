@@ -343,10 +343,10 @@ export class Game {
 
         const desiredDeviceStates = this.ruleEngine.getDevices().values();
         for (const desiredState of desiredDeviceStates) {
-            if (desiredState.type === OutputDeviceType.LIGHT) {
+            if (desiredState.forLight) {
                 const lamp = this.lamps.get(desiredState.id);
-                if (lamp.getState() !== desiredState.getState()) {
-                    lamp.setState(desiredState.getState() as LightState);
+                if (lamp.getState() !== desiredState.lightState) {
+                    lamp.setState(desiredState.lightState);
                 }
                 lamp.setStyles(desiredState.styles);
             }

@@ -45,7 +45,7 @@ export interface OutputDeviceState {
 
 export interface LightOutputState extends OutputDeviceState {
     type: OutputDeviceType.LIGHT;
-    state: LightState | OutputStyle;
+    state: LightState;
 }
 
 export interface CoilOutputState extends OutputDeviceState {
