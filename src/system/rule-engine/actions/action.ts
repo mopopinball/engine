@@ -9,7 +9,7 @@ export abstract class Action extends DirtyNotifier {
     protected rootEngine: RuleEngine;
     protected data: Map<string, DataItem>;
     protected devices: Map<string, DesiredOutputState>;
-    protected designer: DesignerAttributes;
+    public designer: DesignerAttributes;
     
     constructor(public readonly type: ActionType) {
         super();
