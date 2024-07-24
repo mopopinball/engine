@@ -45,7 +45,9 @@ export class TimerTrigger extends Trigger {
     }
 
     static fromJSON(triggerSchema: TimerTriggerSchema): TimerTrigger {
-        return new TimerTrigger(triggerSchema.id, triggerSchema.valueMs, triggerSchema.mode);
+        const trigger = new TimerTrigger(triggerSchema.id, triggerSchema.valueMs, triggerSchema.mode);
+        trigger.designer = triggerSchema.designer;
+        return trigger;
     }
 
     toJSON(): TimerTriggerSchema {
@@ -55,7 +57,8 @@ export class TimerTrigger extends Trigger {
             id: this.id,
             mode: this.mode,
             valueMs: this.valueMs,
-            actions: convertedBase.actions
+            actions: convertedBase.actions,
+            designer: convertedBase.designer
         };
     }
 

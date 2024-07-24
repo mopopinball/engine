@@ -62,12 +62,14 @@ export class DataAction extends Action {
     }
 
     public static fromJSON(actionSchema: DataActionSchema): DataAction {
-        return new DataAction(
+        const action = new DataAction(
             actionSchema.dataId, 
             actionSchema.operation, 
             actionSchema.operand,
             actionSchema.expression
         );
+        action.designer = actionSchema.designer;
+        return action;
     }
 
     toJSON(): DataActionSchema {
@@ -76,7 +78,8 @@ export class DataAction extends Action {
             dataId: this.dataKey,
             operation: this.operation,
             operand: this.operand,
-            expression: this.expression
+            expression: this.expression,
+            designer: this.designer
         }
     }
 

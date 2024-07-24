@@ -78,12 +78,13 @@ export class TimedAction extends Action {
                     intervalMs: s.intervalMs,
                     actions: s.actions.map((a) => a.toJSON())
                 };
-            })
+            }),
+            designer: this.designer
         };
     }
 
     public static fromJSON(actionSchema: TimedActionSchema): TimedAction {
-        return new TimedAction(
+        const action = new TimedAction(
             actionSchema.id,
             actionSchema.steps.map((s) => {
                 return {
@@ -92,6 +93,9 @@ export class TimedAction extends Action {
                 };
             })
         );
+        action.designer = actionSchema.designer;
+
+        return action;
     }
 
     public toString(): string {

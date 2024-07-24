@@ -1,6 +1,7 @@
 // ALL TRIGGER SCHEMAS
 
 import { ActionSchemaType } from "./actions.schema";
+import { DesignerSchema } from "./designer.schema";
 
 export enum TriggerTypeEnum {
     SWITCH = 'switch',
@@ -45,4 +46,5 @@ export type TriggerSchemasType = SwitchTriggerSchema | MultiSwitchTriggerSchema 
 
 export interface TriggerSchema {
     actions: ActionSchemaType[]
+    designer: DesignerSchema
 }

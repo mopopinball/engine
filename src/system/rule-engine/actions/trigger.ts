@@ -1,5 +1,6 @@
 import { TriggerSchema } from "../schema/triggers.schema";
 import { Action } from "./action";
+import { DesignerAttributes } from "./designer-attributes";
 import { IdTrigger } from "./id-trigger";
 import { MultiSwitchTrigger } from "./multi-switch-trigger";
 import { SwitchTrigger } from "./switch-trigger";
@@ -9,10 +10,12 @@ export type TriggerType = SwitchTrigger | MultiSwitchTrigger | IdTrigger | Timer
 
 export abstract class Trigger {
     actions: Action[] = [];
+    designer: DesignerAttributes;
 
     toJSON(): TriggerSchema {
         return {
-            actions: this.actions.map((a) => a.toJSON())
+            actions: this.actions.map((a) => a.toJSON()),
+            designer: this.designer
         }
     }
 

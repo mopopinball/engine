@@ -48,7 +48,7 @@ export class RandomAction extends Action {
     }
 
     static fromJSON(actionSchema: RandomActionSchema): RandomAction {
-        return new RandomAction(
+        const action = new RandomAction(
             actionSchema.candidates.map((c) => {
                 return {
                     clause: ConditionClause.fromJSON(c.clause),
@@ -56,6 +56,8 @@ export class RandomAction extends Action {
                 };
             })
         );
+        action.designer = actionSchema.designer;
+        return action;
     }
 
     public toJSON(): RandomActionSchema {
@@ -66,7 +68,8 @@ export class RandomAction extends Action {
                     clause: c.clause.toJSON(),
                     weight: c.weight
                 }
-            })
+            }),
+            designer: this.designer
         };
     }
 

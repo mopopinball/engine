@@ -2,6 +2,7 @@
 
 import { Operator } from "../actions/condition-clause";
 import { DataOperation } from "../actions/data-action";
+import { DesignerSchema } from "./designer.schema";
 import { CoilOutputState, DisplayOutputState, LightOutputState, SoundOutputState } from "./rule.schema";
 
 export enum ActionType {
@@ -20,11 +21,13 @@ export interface DataActionSchema {
     operation?: DataOperation;
     operand?: number | string;
     expression?: string;
+    designer: DesignerSchema;
 }
 
 export interface DeviceActionSchema {
     type: ActionType.DEVICE;
     state: LightOutputState | CoilOutputState | SoundOutputState | DisplayOutputState;
+    designer: DesignerSchema;
 }
 
 export interface TimedActionSchema {
@@ -34,12 +37,14 @@ export interface TimedActionSchema {
         intervalMs: number,
         actions: ActionSchemaType[]
     }[]
+    designer: DesignerSchema;
 }
 
 export interface StateActionSchema {
     type: ActionType.STATE;
     startTargetId: string;
     stopTargetId: string;
+    designer: DesignerSchema;
 }
 
 export interface ConditionalResultSchema {
@@ -58,12 +63,14 @@ export interface ConditionalActionSchema {
     trueTriggerId?: string;
     falseTriggerId?: string;
     falseResult?: ConditionalResultSchema
+    designer: DesignerSchema;
 }
 
 // Not a "Trigger"
 export interface NamedTriggerActionSchema {
     type: ActionType.NAMED;
     triggerId: string;
+    designer: DesignerSchema;
 }
 
 export interface RandomActionSchema {
@@ -72,6 +79,7 @@ export interface RandomActionSchema {
         clause: ConditionalClauseSchema;
         weight?: number;
     }[]
+    designer: DesignerSchema;
 }
 
 export type ActionSchemaType = DataActionSchema | TimedActionSchema |

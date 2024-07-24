@@ -14,14 +14,17 @@ export class NamedTriggerAction extends Action {
     toJSON(): NamedTriggerActionSchema {
         return {
             type: ActionType.NAMED,
-            triggerId: this.triggerId
+            triggerId: this.triggerId,
+            designer: this.designer
         };
     }
 
     static fromJSON(actionSchema: NamedTriggerActionSchema): NamedTriggerAction {
-        return new NamedTriggerAction(
+        const action = new NamedTriggerAction(
             actionSchema.triggerId
         );
+        action.designer = actionSchema.designer;
+        return action;
     }
 
     public toString(): string {

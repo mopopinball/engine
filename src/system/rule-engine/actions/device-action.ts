@@ -29,7 +29,8 @@ export class DeviceAction extends Action {
     toJSON(): DeviceActionSchema {
         return {
             type: ActionType.DEVICE,
-            state: this.state.toJSON()
+            state: this.state.toJSON(),
+            designer: this.designer
         }
     }
 

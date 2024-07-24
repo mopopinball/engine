@@ -43,17 +43,21 @@ export class ConditionalAction extends Action {
             clauses = actionSchema.clauses.map((c) => ConditionClause.fromJSON(c));
         }
 
-        return new ConditionalAction(
+        const action = new ConditionalAction(
             clauses,
-            {triggerId: actionSchema.falseResult.triggerId}
+            {triggerId: actionSchema.falseResult.triggerId},
+            
         );
+        action.designer = actionSchema.designer;
+        return action;
     }
 
     toJSON(): ConditionalActionSchema {
         return {
             type: ActionType.CONDITION,
             clauses: this.clauses.map((c) => c.toJSON()),
-            falseResult: {triggerId: this.falseResult?.triggerId}
+            falseResult: {triggerId: this.falseResult?.triggerId},
+            designer: this.designer
         };
     }
 

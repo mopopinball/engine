@@ -1,4 +1,5 @@
 import { SwitchTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
+import { DesignerAttributes } from "./designer-attributes";
 import { Trigger } from "./trigger";
 
 export class SwitchTrigger extends Trigger {
@@ -10,7 +11,9 @@ export class SwitchTrigger extends Trigger {
     }
 
     static fromJSON(triggerSchema: SwitchTriggerSchema): SwitchTrigger {
-        return new SwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+        const swt = new SwitchTrigger(triggerSchema.switchId, triggerSchema.holdIntervalMs);
+        swt.designer = triggerSchema.designer;
+        return swt;
     }
 
     toJSON(): SwitchTriggerSchema {
@@ -19,7 +22,8 @@ export class SwitchTrigger extends Trigger {
             type: this.type,
             switchId: this.switchId,
             holdIntervalMs: this.holdIntervalMs,
-            actions: convertedBase.actions
+            actions: convertedBase.actions,
+            designer: convertedBase.designer
         };
     }
 

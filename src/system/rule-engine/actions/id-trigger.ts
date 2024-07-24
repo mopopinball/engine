@@ -9,7 +9,9 @@ export class IdTrigger extends Trigger {
     }
 
     static fromJSON(triggerSchema: IdTriggerSchema): IdTrigger {
-        return new IdTrigger(triggerSchema.id);
+        const trigger = new IdTrigger(triggerSchema.id);
+        trigger.designer = triggerSchema.designer;
+        return trigger;
     }
 
     toJSON(): IdTriggerSchema {
@@ -17,7 +19,8 @@ export class IdTrigger extends Trigger {
         return {
             type: this.type,
             id: this.id,
-            actions: convertedBase.actions
+            actions: convertedBase.actions,
+            designer: convertedBase.designer
         };
     }
 

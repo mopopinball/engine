@@ -14,7 +14,12 @@ describe('Trigger Factory', () => {
         TriggerFactory.createTrigger({
             type: TriggerTypeEnum.SWITCH,
             switchId: 'a',
-            actions: []
+            actions: [],
+            designer: {
+                id: 'i',
+                x: 1,
+                y: 2
+            }
         } as TriggerSchemasType, engine);
 
         // exercise: Both copying a sw trigger and inserting it a index 0.
@@ -22,6 +27,6 @@ describe('Trigger Factory', () => {
 
         // check
         expect(engine.triggers.length).toBe(2);
-        expect((engine.triggers[0] as SwitchTriggerSchema).switchId).toBeNull();
+        expect((engine.triggers[0] as unknown as SwitchTriggerSchema).switchId).toBeNull();
     });
 });

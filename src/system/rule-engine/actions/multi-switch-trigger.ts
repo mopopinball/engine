@@ -10,7 +10,9 @@ export class MultiSwitchTrigger extends Trigger {
     }
 
     static fromJSON(triggerSchema: MultiSwitchTriggerSchema): MultiSwitchTrigger {
-        return new MultiSwitchTrigger(triggerSchema.id, triggerSchema.switches);
+        const trigger = new MultiSwitchTrigger(triggerSchema.id, triggerSchema.switches);
+        trigger.designer = triggerSchema.designer;
+        return trigger;
     }
 
     toJSON(): MultiSwitchTriggerSchema {
@@ -19,7 +21,8 @@ export class MultiSwitchTrigger extends Trigger {
             id: this.id,
             type: this.type,
             switches: this.switches,
-            actions: convertedBase.actions
+            actions: convertedBase.actions,
+            designer: convertedBase.designer
         };
     }
 

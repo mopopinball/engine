@@ -26,17 +26,21 @@ export class StateAction extends Action {
     }
 
     static fromJSON(actionSchema: StateActionSchema): StateAction {
-        return new StateAction(
+        const action = new StateAction(
             actionSchema.startTargetId,
             actionSchema.stopTargetId
         );
+
+        action.designer = actionSchema.designer;
+        return action;
     }
 
     toJSON(): StateActionSchema {
         return {
             type: ActionType.STATE,
             startTargetId: this.startTargetId,
-            stopTargetId: this.stopTargetId
+            stopTargetId: this.stopTargetId,
+            designer: this.designer
         }
     }
 
