@@ -14,10 +14,13 @@ export class ActionFactory {
         switch (actionSchema.type) {
         case ActionType.DATA:
             return DataAction.fromJSON(actionSchema);
-        case ActionType.DEVICE:
-            return new DeviceAction(
+        case ActionType.DEVICE: {
+            const action = new DeviceAction(
                 DesiredOutputState.constructFromOutputState(actionSchema.state)
             );
+            action.designer = actionSchema.designer;
+            return action;
+        }
         case ActionType.STATE: 
             return StateAction.fromJSON(actionSchema);
         case ActionType.CONDITION:
