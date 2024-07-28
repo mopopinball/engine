@@ -1,6 +1,6 @@
 import { TriggerSchema } from "../schema/triggers.schema";
 import { Action } from "./action";
-import { DesignerAttributes } from "./designer-attributes";
+import { DesignerAttributes } from "../designer-attributes";
 import { IdTrigger } from "./id-trigger";
 import { MultiSwitchTrigger } from "./multi-switch-trigger";
 import { SwitchTrigger } from "./switch-trigger";

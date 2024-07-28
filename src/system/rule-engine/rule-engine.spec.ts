@@ -6,6 +6,7 @@ import { LightState } from "../devices/light";
 import { SwitchTrigger } from "./actions/switch-trigger";
 import { DataAction, DataOperation } from "./actions/data-action";
 import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
+import { OutputDeviceType } from "../devices/output-device-type";
 
 describe('Rules', () => {
     let ruleEngine: RuleEngine = null;
@@ -268,6 +269,29 @@ describe('Rules', () => {
             // check
             expect(serialization).toBeTruthy();
             // expect(serialization).toBe('{"devices":[{"id":"SHOOT_AGAIN","type":"light","state":0},{"id":"L4","type":"light","state":1}]}');
+        });
+
+        it('serializes designer correctly', () => {
+            //setup
+            const data: RuleSchema = loadTestData(testData);
+            ruleEngine = RuleEngine.load(data);
+            ruleEngine.designer = {
+                outputDevices: [
+                    {id: 'i', type: OutputDeviceType.LIGHT, x: 10, y: 11}
+                ]
+            };
+            const serialization = JSON.stringify(ruleEngine);
+
+            // exercise
+            const loaded = RuleEngine.load(JSON.parse(serialization) as unknown as RuleSchema, null);
+
+            // check
+            expect(loaded.designer.outputDevices[0]).toEqual({
+                id: 'i',
+                type: OutputDeviceType.LIGHT,
+                x: 10,
+                y: 11
+            })
         });
     });
 });

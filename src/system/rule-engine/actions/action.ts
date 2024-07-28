@@ -3,7 +3,7 @@ import { DesiredOutputState } from "../desired-output-state";
 import { DataItem } from "../rule-data";
 import { RuleEngine } from "../rule-engine";
 import { ActionSchemaType, ActionType } from "../schema/actions.schema";
-import { DesignerAttributes } from "./designer-attributes";
+import { DesignerAttributes } from "../designer-attributes";
 
 export abstract class Action extends DirtyNotifier {
     protected rootEngine: RuleEngine;

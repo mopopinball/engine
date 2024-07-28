@@ -14,6 +14,7 @@ import { TriggerFactory } from "./trigger-factory";
 import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTriggerId } from "./actions/switch-trigger-id";
 import { TimedAction } from "./actions/timed-action";
+import { RuleEngineDesignerAttributes } from "./rule-engine-designer-attributes";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -26,6 +27,10 @@ export class RuleEngine extends DirtyNotifier {
     rollbackActions: (DeviceAction | TimedAction)[] = [];
     triggers: TriggerType[] = [];
     children: RuleEngine[] = [];
+    /** Designer attributes for ROOT rule engine. */
+    designer: {
+        outputDevices: RuleEngineDesignerAttributes[]
+    }
 
     constructor(public id: string, public autoStart: boolean, private readonly parent: RuleEngine) {
         super();
@@ -65,6 +70,8 @@ export class RuleEngine extends DirtyNotifier {
                 engine.data.set(data.id, this.fromJsonData(data));
             }
         }
+
+        engine.designer = schema.designer;
 
         return engine;
     }
@@ -325,7 +332,8 @@ export class RuleEngine extends DirtyNotifier {
             children: this.children,
             triggers: this.triggers,
             devices: Array.from(this.devices.values()),
-            data: Array.from(this.data.values()).map((d) => this.toJsonData(d))
+            data: Array.from(this.data.values()).map((d) => this.toJsonData(d)),
+            designer: this.designer
         };
     }
 

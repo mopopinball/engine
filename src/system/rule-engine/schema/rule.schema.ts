@@ -1,5 +1,6 @@
 import { LightState } from "../../devices/light";
 import { OutputDeviceType } from "../../devices/output-device-type";
+import { DesignerSchema } from "./designer.schema";
 import { TriggerSchemasType } from "./triggers.schema";
 
 export interface RuleSchema {
@@ -9,7 +10,10 @@ export interface RuleSchema {
     data: DataSchemaType[];
     devices: [LightOutputState | CoilOutputState | SoundOutputState],
     triggers: [TriggerSchemasType],
-    children: RuleSchema[]
+    children: RuleSchema[],
+    designer: {
+        outputDevices: ({type: OutputDeviceType} | DesignerSchema)[]
+    } 
 }
 
 export interface RuleMetadata {

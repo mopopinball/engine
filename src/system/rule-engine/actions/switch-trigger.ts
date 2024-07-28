@@ -1,5 +1,5 @@
 import { SwitchTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
-import { DesignerAttributes } from "./designer-attributes";
+import { DesignerAttributes } from "../designer-attributes";
 import { Trigger } from "./trigger";
 
 export class SwitchTrigger extends Trigger {
