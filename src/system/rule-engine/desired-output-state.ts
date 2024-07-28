@@ -25,8 +25,8 @@ export class DesiredOutputState {
         case OutputDeviceType.LIGHT: {
             // TODO: Make better
             const styles = [];
-            if(typeof outputState.state === 'object') {
-                const style = BlinkLightStyle.build(outputState.state);
+            if(typeof outputState.style === 'object') {
+                const style = BlinkLightStyle.build(outputState.style);
                 if (style) {
                     styles.push(style);
                 }
@@ -165,6 +165,14 @@ export class DesiredOutputState {
                 id: this.id, type: this.type,
                 state: this.initialState as LightState
             };
+            if(this.styles?.length) {
+                response.style = {};
+            }
+            for(const style of this.styles) {
+                if(style instanceof BlinkLightStyle) {
+                    response.style.blink = style.interval;
+                }
+            }
             return response;
         }
         case OutputDeviceType.DISPLAY: {
@@ -179,7 +187,7 @@ export class DesiredOutputState {
             }
             this.styles.forEach((s) => {
                 if (s instanceof BlinkDisplayStyle) {
-                    response.style['blink'] = s.interval;
+                    response.style = {blink: s.interval};
                 }
             });
             return response;
