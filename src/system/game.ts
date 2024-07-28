@@ -504,7 +504,7 @@ export class Game {
         }
 
         try {
-            await this.updateDevices();
+            await this.updatePhysicalDevices();
         }
         catch (e) {
             logger.error(`${e.message} ${e.stack}`);
@@ -530,9 +530,11 @@ export class Game {
     }
 
     /**
-     * Updates all output devices defined for this game. This includes lights, coils and sounds.
+     * Updates all physical output devices defined for this game. This includes lights, coils and sounds.
+     * 
+     * This is done via the Driver PIC.
      */
-    private async updateDevices(): Promise<void> {
+    private async updatePhysicalDevices(): Promise<void> {
         // check if there is at least one dirty device.
         if (this.dirtyDevices.length === 0) {
             return;
