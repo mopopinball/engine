@@ -15,6 +15,7 @@ import { MultiSwitchTrigger } from "./actions/multi-switch-trigger";
 import { SwitchTriggerId } from "./actions/switch-trigger-id";
 import { TimedAction } from "./actions/timed-action";
 import { RuleEngineDesignerAttributes } from "./rule-engine-designer-attributes";
+import { DesignerAttributes } from "./designer-attributes";
 
 export class RuleEngine extends DirtyNotifier {
     static root: RuleEngine;
@@ -30,6 +31,7 @@ export class RuleEngine extends DirtyNotifier {
     /** Designer attributes for ROOT rule engine. */
     designer: {
         outputDevices: RuleEngineDesignerAttributes[]
+        inputDevices: DesignerAttributes[]
     }
 
     constructor(public id: string, public autoStart: boolean, private readonly parent: RuleEngine) {

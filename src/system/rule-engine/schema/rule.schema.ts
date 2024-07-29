@@ -13,7 +13,8 @@ export interface RuleSchema {
     triggers: [TriggerSchemasType],
     children: RuleSchema[],
     designer: {
-        outputDevices: OutputDeviceDesignerSchema[]
+        outputDevices: OutputDeviceDesignerSchema[],
+        inputDevices: DesignerSchema[]
     } 
 }
 

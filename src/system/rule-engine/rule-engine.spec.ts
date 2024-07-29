@@ -278,6 +278,11 @@ describe('Rules', () => {
             ruleEngine.designer = {
                 outputDevices: [
                     {id: 'i', type: OutputDeviceType.LIGHT, x: 10, y: 11}
+                ],
+                inputDevices: [
+                    {
+                        id: 'sw1', x: 44, y: 55
+                    }
                 ]
             };
             const serialization = JSON.stringify(ruleEngine);

@@ -5,6 +5,3 @@ export type DesignerSchema = {
     x: number;
     y: number;
 };
-//  | {
-//     [name: string]: string | number
-// };
