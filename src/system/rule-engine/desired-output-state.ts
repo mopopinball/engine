@@ -84,6 +84,13 @@ export class DesiredOutputState {
 
     set blinkRate(value: number) {
         const blinkStyle = this.getBlinkStyle();
+
+        // if not incoming value, clear our blink style.
+        if(!value && blinkStyle) {
+            this.styles.splice(this.styles.indexOf(blinkStyle), 1);
+            return;
+        }
+
         if(!blinkStyle) {
             const blinkStyle = new BlinkLightStyle(value, LightState.OFF);
             this.styles.push(blinkStyle);

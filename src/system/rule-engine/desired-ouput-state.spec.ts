@@ -46,6 +46,28 @@ describe('Desired output state', () => {
         expect(desiredOutput.blinkRate).toEqual(555);
     });
 
+    it('clears the blink rate', () => {
+        // setup
+        const lightSchema: LightOutputState = {
+            id: 'light-id',
+            state: LightState.ON,
+            type: OutputDeviceType.LIGHT
+        };
+        const desiredOutput: DesiredOutputState = DesiredOutputState.constructFromOutputState(lightSchema);
+        desiredOutput.blinkRate = 555;
+        expect(desiredOutput.lightMode).toEqual('BLINK');
+
+        // exercise
+        desiredOutput.blinkRate = null;
+        desiredOutput.lightState = LightState.OFF;
+
+        // check
+        expect(desiredOutput.forLight).toBeTruthy();
+        expect(desiredOutput.lightMode).toEqual(LightState.OFF);
+        expect(desiredOutput.blinkRate).toBeFalsy();
+        expect(desiredOutput.styles.length).toBe(0);
+    });
+
     it('serializes correctly', () => {
         // setup
         const lightSchema: LightOutputState = {
