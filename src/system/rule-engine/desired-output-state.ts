@@ -1,3 +1,4 @@
+import { copyFileSync } from "fs";
 import { LightState } from "../devices/light";
 import { OutputDeviceType } from "../devices/output-device-type";
 import { BlinkDisplayStyle } from "../devices/styles/blink-display-style";
@@ -101,6 +102,22 @@ export class DesiredOutputState {
     }
 
     //#endregion
+
+    // #region for coils
+
+    get forCoil(): boolean {
+        return this.type === OutputDeviceType.COIL;
+    }
+
+    get coilState(): boolean {
+        return this.currentState as boolean;
+    }
+
+    set coilState(value: boolean) {
+        this.currentState = value;
+    }
+
+    // #endregion
     
     constructor(
         public readonly id: string,
