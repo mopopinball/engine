@@ -1,4 +1,4 @@
-import { TriggerSchema } from "../schema/triggers.schema";
+import { TriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
 import { Action } from "./action";
 import { DesignerAttributes } from "../designer-attributes";
 import { IdTrigger } from "./id-trigger";
@@ -11,6 +11,8 @@ export type TriggerType = SwitchTrigger | MultiSwitchTrigger | IdTrigger | Timer
 export abstract class Trigger {
     actions: Action[] = [];
     designer: DesignerAttributes;
+
+    constructor(public readonly type: TriggerTypeEnum) {}
 
     toJSON(): TriggerSchema {
         return {

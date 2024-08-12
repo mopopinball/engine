@@ -4,12 +4,11 @@ import { TimerTriggerMode, TimerTriggerSchema, TriggerTypeEnum } from "../schema
 import { Trigger } from "./trigger"
 
 export class TimerTrigger extends Trigger {
-    readonly type = TriggerTypeEnum.TIMER;
     public readonly eventEmitter: EventEmitter;
     private timeout: NodeJS.Timeout;
     
     constructor(public id: string, public valueMs: number, public mode: TimerTriggerMode) {
-        super();
+        super(TriggerTypeEnum.TIMER);
         this.eventEmitter = new EventEmitter();
     }
 
@@ -53,7 +52,7 @@ export class TimerTrigger extends Trigger {
     toJSON(): TimerTriggerSchema {
         const convertedBase = super.toJSON();
         return {
-            type: this.type,
+            type: TriggerTypeEnum.TIMER,
             id: this.id,
             mode: this.mode,
             valueMs: this.valueMs,

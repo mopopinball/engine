@@ -3,10 +3,8 @@ import { SwitchTriggerId } from "./switch-trigger-id";
 import { Trigger } from "./trigger";
 
 export class MultiSwitchTrigger extends Trigger {
-    readonly type = TriggerTypeEnum.MULTI_SWITCH;
-
     constructor(public id: string, public switches: SwitchTriggerId[]) {
-        super();
+        super(TriggerTypeEnum.MULTI_SWITCH);
     }
 
     static fromJSON(triggerSchema: MultiSwitchTriggerSchema): MultiSwitchTrigger {
@@ -19,7 +17,7 @@ export class MultiSwitchTrigger extends Trigger {
         const convertedBase = super.toJSON();
         return {
             id: this.id,
-            type: this.type,
+            type: TriggerTypeEnum.MULTI_SWITCH,
             switches: this.switches,
             actions: convertedBase.actions,
             designer: convertedBase.designer

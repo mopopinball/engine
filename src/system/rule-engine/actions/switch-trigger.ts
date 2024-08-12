@@ -3,11 +3,9 @@ import { DesignerAttributes } from "../designer-attributes";
 import { Trigger } from "./trigger";
 
 export class SwitchTrigger extends Trigger {
-    readonly type = TriggerTypeEnum.SWITCH;
-    
     // todo: use new type
     constructor(public switchId: string, public holdIntervalMs?: number) {
-        super();
+        super(TriggerTypeEnum.SWITCH);
     }
 
     static fromJSON(triggerSchema: SwitchTriggerSchema): SwitchTrigger {
@@ -19,7 +17,7 @@ export class SwitchTrigger extends Trigger {
     toJSON(): SwitchTriggerSchema {
         const convertedBase = super.toJSON();
         return {
-            type: this.type,
+            type: TriggerTypeEnum.SWITCH,
             switchId: this.switchId,
             holdIntervalMs: this.holdIntervalMs,
             actions: convertedBase.actions,

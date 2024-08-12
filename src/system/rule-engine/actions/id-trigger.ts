@@ -2,10 +2,8 @@ import { IdTriggerSchema, TriggerTypeEnum } from "../schema/triggers.schema";
 import { Trigger } from "./trigger";
 
 export class IdTrigger extends Trigger {
-    readonly type = TriggerTypeEnum.ID;
-    
     constructor(public id: string) {
-        super();
+        super(TriggerTypeEnum.ID);
     }
 
     static fromJSON(triggerSchema: IdTriggerSchema): IdTrigger {
@@ -17,7 +15,7 @@ export class IdTrigger extends Trigger {
     toJSON(): IdTriggerSchema {
         const convertedBase = super.toJSON();
         return {
-            type: this.type,
+            type: TriggerTypeEnum.ID,
             id: this.id,
             actions: convertedBase.actions,
             designer: convertedBase.designer
