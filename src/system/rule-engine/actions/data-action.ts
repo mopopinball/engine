@@ -5,7 +5,7 @@ import { Action } from "./action";
 
 export class DataAction extends Action {
     constructor(
-        public readonly dataKey: string,
+        public dataKey: string,
         public operation?: DataOperation, public operand?: number | string,
         public expression?: string
     ) {
