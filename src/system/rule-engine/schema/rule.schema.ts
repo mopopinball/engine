@@ -9,8 +9,8 @@ export interface RuleSchema {
     metadata?: RuleMetadata;
     autostart: boolean;
     data: DataSchemaType[];
-    devices: [LightOutputState | CoilOutputState | SoundOutputState],
-    triggers: [TriggerSchemasType],
+    devices: OutputStateType[],
+    triggers: TriggerSchemasType[],
     children: RuleSchema[],
     designer: {
         outputDevices: OutputDeviceDesignerSchema[],

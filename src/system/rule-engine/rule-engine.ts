@@ -323,7 +323,7 @@ export class RuleEngine extends DirtyNotifier {
         }
     }
 
-    toJSON() {
+    toJSON(): RuleSchema {
         return {
             id: this.id,
             autostart: this.autoStart,
@@ -331,9 +331,9 @@ export class RuleEngine extends DirtyNotifier {
                 name: this.name,
                 description: this.description
             },
-            children: this.children,
-            triggers: this.triggers,
-            devices: Array.from(this.devices.values()),
+            children: this.children?.map((c) => c.toJSON()),
+            triggers: this.triggers?.map((t) => t.toJSON()),
+            devices: Array.from(this.devices.values()).map((d) => d.toJSON()),
             data: Array.from(this.data.values()).map((d) => this.toJsonData(d)),
             designer: this.designer
         };
