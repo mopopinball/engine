@@ -34,7 +34,7 @@ export class RuleEngine extends DirtyNotifier {
         inputDevices: DesignerAttributes[]
     }
 
-    constructor(public id: string, public autoStart: boolean, private readonly parent: RuleEngine) {
+    constructor(public id: string, public autoStart: boolean, public readonly parent: RuleEngine) {
         super();
         if (this.id === 'root') {
             RuleEngine.root = this;
